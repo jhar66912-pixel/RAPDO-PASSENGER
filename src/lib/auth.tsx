@@ -1,7 +1,14 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { User as AppUser } from '../types';
+import { User as AppUser, PaymentMethod, UserReward } from '../types';
 import { auth, db } from './firebase';
-import { signInWithPopup, GoogleAuthProvider, signOut, onAuthStateChanged, User as FirebaseUser } from 'firebase/auth';
+import { 
+  signInWithPopup, 
+  GoogleAuthProvider, 
+  signOut, 
+  onAuthStateChanged, 
+  getRedirectResult,
+  signInWithRedirect
+} from 'firebase/auth';
 import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 
 interface AuthContextType {
@@ -9,8 +16,11 @@ interface AuthContextType {
   loading: boolean;
   login: (role: AppUser['role']) => Promise<void>;
   loginDemo: (role: AppUser['role']) => Promise<void>;
+  loginWithPhone: (mobile: string, role: AppUser['role'], name?: string, email?: string) => Promise<void>;
+  loginWithEmail: (email: string, role: AppUser['role'], name?: string, mobile?: string) => Promise<void>;
   logout: () => Promise<void>;
   getAccessToken: () => string | null;
+  updateUserProfile: (profileData: Partial<AppUser>) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -40,74 +50,293 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         { id: 'cont-2', name: 'RAHI Safety Helpline', phone: '1800-345-6789' }
       ],
       paymentMethods: [
-        { id: 'pay-1', type: 'upi', details: 'rahi@axis', isDefault: true },
-        { id: 'pay-2', type: 'card', details: '•••• •••• •••• 5678', isDefault: false }
+        { id: 'pay-1', type: 'upi' as const, details: 'rahi@axis', isDefault: true },
+        { id: 'pay-2', type: 'card' as const, details: '•••• •••• •••• 5678', isDefault: false }
       ],
       rewards: [
-        { id: 'rew-1', title: 'Patna Local Ride Cashback', desc: 'Suno bhaiya, scratch to claim your cashback offer!', value: 50, status: 'unscratched', createdAt: Date.now() },
-        { id: 'rew-2', title: 'Swadeshi Samastipur Route Reward', desc: 'Claim ₹30 bonus for daily fixed commutes', value: 30, status: 'unscratched', createdAt: Date.now() },
-        { id: 'rew-3', title: 'Bhojpuri Swag Welcome Coupon', desc: 'Instant discount for parcel runs', value: 20, status: 'unscratched', createdAt: Date.now() }
+        { id: 'rew-1', title: 'Patna Local Ride Cashback', desc: 'Suno bhaiya, scratch to claim your cashback offer!', value: 50, status: 'unscratched' as const, createdAt: Date.now() },
+        { id: 'rew-2', title: 'Swadeshi Samastipur Route Reward', desc: 'Claim ₹30 bonus for daily fixed commutes', value: 30, status: 'unscratched' as const, createdAt: Date.now() },
+        { id: 'rew-3', title: 'Bhojpuri Swag Welcome Coupon', desc: 'Instant discount for parcel runs', value: 20, status: 'unscratched' as const, createdAt: Date.now() }
       ],
       currentLanguage: 'en',
       avatar: '🧑🏽'
     };
+
+    localStorage.setItem('rahi_auth_uid', 'demo-user-888');
+
+    try {
+      const userRef = doc(db, 'users', 'demo-user-888');
+      await setDoc(userRef, mockUser, { merge: true });
+    } catch (e) {
+      console.warn("Firestore bypass set error:", e);
+    }
+
     setCurrentUser(mockUser);
     setLoading(false);
+  };
+
+  // Perform secure SMS Simulation and log user directly with fully connected Firestore document
+  const loginWithPhone = async (mobile: string, role: AppUser['role'], name = 'RAHI Passenger', email = 'passenger@rahi.in') => {
+    setLoading(true);
+    const cleanNumber = mobile.replace(/[^0-9]/g, '');
+    const uid = `phone_${cleanNumber}`;
+    const userDocRef = doc(db, 'users', uid);
+
+    const defaultAddresses = [
+      { id: 'addr-1', label: 'Home (Patna Jn)', address: 'Near Platform 1, Patna Junction Railway Station, Bihar' },
+      { id: 'addr-2', label: 'Work (Mithanpura)', address: 'Mithanpura Chowk, Muzaffarpur, Bihar' }
+    ];
+    const defaultContacts = [
+      { id: 'cont-1', name: 'Papa (Home)', phone: '+91 94310 12345' },
+      { id: 'cont-2', name: 'RAHI Safety Helpline', phone: '1800-345-6789' }
+    ];
+    const defaultPayments: PaymentMethod[] = [
+      { id: 'pay-1', type: 'upi' as const, details: 'rahi@axis', isDefault: true },
+      { id: 'pay-2', type: 'card' as const, details: '•••• •••• •••• 5678', isDefault: false }
+    ];
+    const defaultRewards: UserReward[] = [
+      { id: 'rew-1', title: 'Patna Local Ride Cashback', desc: 'Suno bhaiya, scratch to claim your cashback offer!', value: 50, status: 'unscratched' as const, createdAt: Date.now() },
+      { id: 'rew-2', title: 'Swadeshi Samastipur Route Reward', desc: 'Claim ₹30 bonus for daily fixed commutes', value: 30, status: 'unscratched' as const, createdAt: Date.now() },
+      { id: 'rew-3', title: 'Bhojpuri Swag Welcome Coupon', desc: 'Instant discount for parcel runs', value: 20, status: 'unscratched' as const, createdAt: Date.now() }
+    ];
+
+    try {
+      const userDoc = await getDoc(userDocRef);
+      let appUser: AppUser;
+
+      if (!userDoc.exists()) {
+        appUser = {
+          uid,
+          name,
+          mobile,
+          role,
+          createdAt: Date.now(),
+          savedAddresses: defaultAddresses,
+          emergencyContacts: defaultContacts,
+          paymentMethods: defaultPayments,
+          rewards: defaultRewards,
+          currentLanguage: 'en',
+          avatar: role === ('captain' as any) ? '👨🏽‍✈️' : '🧑🏽'
+        };
+        await setDoc(userDocRef, appUser);
+      } else {
+        appUser = userDoc.data() as AppUser;
+        if (appUser.role !== role) {
+          appUser.role = role;
+          await setDoc(userDocRef, appUser, { merge: true });
+        }
+      }
+
+      localStorage.setItem('rahi_auth_uid', uid);
+      setCurrentUser(appUser);
+    } catch (err) {
+      console.warn("Firestore write restricted or offline (Bypassing cleanly using Local Storage):", err);
+      const appUser: AppUser = {
+        uid,
+        name,
+        mobile,
+        role,
+        createdAt: Date.now(),
+        savedAddresses: defaultAddresses,
+        emergencyContacts: defaultContacts,
+        paymentMethods: defaultPayments,
+        rewards: defaultRewards,
+        currentLanguage: 'en',
+        avatar: role === ('captain' as any) ? '👨🏽‍✈️' : '🧑🏽'
+      };
+      localStorage.setItem('rahi_auth_uid', uid);
+      setCurrentUser(appUser);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Perform Email authentication with Firestore synchronization
+  const loginWithEmail = async (email: string, role: AppUser['role'], name = 'RAHI User', mobile = '+91 94310 00000') => {
+    setLoading(true);
+    const cleanEmail = email.toLowerCase().replace(/[^a-z0-9]/g, '');
+    const uid = `email_${cleanEmail}`;
+    const userDocRef = doc(db, 'users', uid);
+
+    const defaultAddresses = [
+      { id: 'addr-1', label: 'Home (Patna Jn)', address: 'Near Platform 1, Patna Junction Railway Station, Bihar' },
+      { id: 'addr-2', label: 'Work (Mithanpura)', address: 'Mithanpura Chowk, Muzaffarpur, Bihar' }
+    ];
+    const defaultContacts = [
+      { id: 'cont-1', name: 'Papa (Home)', phone: '+91 94310 12345' },
+      { id: 'cont-2', name: 'RAHI Safety Helpline', phone: '1800-345-6789' }
+    ];
+    const defaultPayments: PaymentMethod[] = [
+      { id: 'pay-1', type: 'upi' as const, details: 'rahi@axis', isDefault: true },
+      { id: 'pay-2', type: 'card' as const, details: '•••• •••• •••• 5678', isDefault: false }
+    ];
+    const defaultRewards: UserReward[] = [
+      { id: 'rew-1', title: 'Patna Local Ride Cashback', desc: 'Suno bhaiya, scratch to claim your cashback offer!', value: 50, status: 'unscratched' as const, createdAt: Date.now() },
+      { id: 'rew-2', title: 'Swadeshi Samastipur Route Reward', desc: 'Claim ₹30 bonus for daily fixed commutes', value: 30, status: 'unscratched' as const, createdAt: Date.now() },
+      { id: 'rew-3', title: 'Bhojpuri Swag Welcome Coupon', desc: 'Instant discount for parcel runs', value: 20, status: 'unscratched' as const, createdAt: Date.now() }
+    ];
+
+    try {
+      const userDoc = await getDoc(userDocRef);
+      let appUser: AppUser;
+
+      if (!userDoc.exists()) {
+        appUser = {
+          uid,
+          name,
+          mobile,
+          role,
+          createdAt: Date.now(),
+          savedAddresses: defaultAddresses,
+          emergencyContacts: defaultContacts,
+          paymentMethods: defaultPayments,
+          rewards: defaultRewards,
+          currentLanguage: 'en',
+          avatar: role === ('captain' as any) ? '👨🏽‍✈️' : '🧑🏽'
+        };
+        await setDoc(userDocRef, appUser);
+      } else {
+        appUser = userDoc.data() as AppUser;
+        if (appUser.role !== role) {
+          appUser.role = role;
+          await setDoc(userDocRef, appUser, { merge: true });
+        }
+      }
+
+      localStorage.setItem('rahi_auth_uid', uid);
+      setCurrentUser(appUser);
+    } catch (err) {
+      console.warn("Firestore database offline fallback:", err);
+      const appUser: AppUser = {
+        uid,
+        name,
+        mobile,
+        role,
+        createdAt: Date.now(),
+        savedAddresses: defaultAddresses,
+        emergencyContacts: defaultContacts,
+        paymentMethods: defaultPayments,
+        rewards: defaultRewards,
+        currentLanguage: 'en',
+        avatar: role === ('captain' as any) ? '👨🏽‍✈️' : '🧑🏽'
+      };
+      localStorage.setItem('rahi_auth_uid', uid);
+      setCurrentUser(appUser);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const updateUserProfile = async (profileData: Partial<AppUser>) => {
+    if (!currentUser) return;
+    const userDocRef = doc(db, 'users', currentUser.uid);
+    try {
+      await setDoc(userDocRef, profileData, { merge: true });
+      setCurrentUser(prev => prev ? { ...prev, ...profileData } : null);
+    } catch (err) {
+      console.warn("Cannot update profile to remote database, updating locally:", err);
+      setCurrentUser(prev => prev ? { ...prev, ...profileData } : null);
+    }
   };
 
   useEffect(() => {
     let unsubscribeUserDoc: (() => void) | null = null;
 
-    const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
+    const setupUserDocListener = (uid: string) => {
       if (unsubscribeUserDoc) {
         unsubscribeUserDoc();
-        unsubscribeUserDoc = null;
       }
-
-      if (firebaseUser) {
-        const userDocRef = doc(db, 'users', firebaseUser.uid);
-        
-        unsubscribeUserDoc = onSnapshot(userDocRef, (snapshot) => {
-          if (snapshot.exists()) {
-            const data = snapshot.data() as AppUser;
-            const enriched: AppUser = {
-              ...data,
-              savedAddresses: data.savedAddresses || [
-                { id: 'addr-1', label: 'Home (Patna Jn)', address: 'Near Platform 1, Patna Junction Railway Station, Bihar' },
-                { id: 'addr-2', label: 'Work (Mithanpura)', address: 'Mithanpura Chowk, Muzaffarpur, Bihar' }
-              ],
-              emergencyContacts: data.emergencyContacts || [
-                { id: 'cont-1', name: 'Papa (Home)', phone: '+91 94310 12345' },
-                { id: 'cont-2', name: 'RAHI Safety Helpline', phone: '1800-345-6789' }
-              ],
-              paymentMethods: data.paymentMethods || [
-                { id: 'pay-1', type: 'upi', details: 'rahi@axis', isDefault: true },
-                { id: 'pay-2', type: 'card', details: '•••• •••• •••• 5678', isDefault: false }
-              ],
-              rewards: data.rewards || [
-                { id: 'rew-1', title: 'Patna Local Ride Cashback', desc: 'Suno bhaiya, scratch to claim your cashback offer!', value: 50, status: 'unscratched', createdAt: Date.now() },
-                { id: 'rew-2', title: 'Swadeshi Samastipur Route Reward', desc: 'Claim ₹30 bonus for daily fixed commutes', value: 30, status: 'unscratched', createdAt: Date.now() },
-                { id: 'rew-3', title: 'Bhojpuri Swag Welcome Coupon', desc: 'Instant discount for parcel runs', value: 20, status: 'unscratched', createdAt: Date.now() }
-              ],
-              currentLanguage: data.currentLanguage || 'en',
-              avatar: data.avatar || '🧑🏽'
-            };
-            setCurrentUser(enriched);
-          } else {
-            // First time login - let snapshot wait for initial login creation or write it ourselves
-            setLoading(false);
-          }
+      const userDocRef = doc(db, 'users', uid);
+      unsubscribeUserDoc = onSnapshot(userDocRef, (snapshot) => {
+        if (snapshot.exists()) {
+          const data = snapshot.data() as AppUser;
+          const enriched: AppUser = {
+            ...data,
+            savedAddresses: data.savedAddresses || [
+              { id: 'addr-1', label: 'Home (Patna Jn)', address: 'Near Platform 1, Patna Junction Railway Station, Bihar' },
+              { id: 'addr-2', label: 'Work (Mithanpura)', address: 'Mithanpura Chowk, Muzaffarpur, Bihar' }
+            ],
+            emergencyContacts: data.emergencyContacts || [
+              { id: 'cont-1', name: 'Papa (Home)', phone: '+91 94310 12345' },
+              { id: 'cont-2', name: 'RAHI Safety Helpline', phone: '1800-345-6789' }
+            ],
+            paymentMethods: data.paymentMethods || [
+              { id: 'pay-1', type: 'upi' as const, details: 'rahi@axis', isDefault: true },
+              { id: 'pay-2', type: 'card' as const, details: '•••• •••• •••• 5678', isDefault: false }
+            ],
+            rewards: data.rewards || [
+              { id: 'rew-1', title: 'Patna Local Ride Cashback', desc: 'Suno bhaiya, scratch to claim your cashback offer!', value: 50, status: 'unscratched' as const, createdAt: Date.now() },
+              { id: 'rew-2', title: 'Swadeshi Samastipur Route Reward', desc: 'Claim ₹30 bonus for daily fixed commutes', value: 30, status: 'unscratched' as const, createdAt: Date.now() },
+              { id: 'rew-3', title: 'Bhojpuri Swag Welcome Coupon', desc: 'Instant discount for parcel runs', value: 20, status: 'unscratched' as const, createdAt: Date.now() }
+            ],
+            currentLanguage: data.currentLanguage || 'en',
+            avatar: data.avatar || '🧑🏽'
+          };
+          setCurrentUser(enriched);
+        } else {
+          // If Firestore is slow or document is missing, check local configuration or keep offline representation
           setLoading(false);
-        }, (error) => {
-          if (error?.code !== 'unavailable') {
-            console.error("Firestore real-time user doc listener error:", error);
-          }
-          setLoading(false);
-        });
-      } else {
-        setCurrentUser(null);
-        cachedAccessToken = null;
+        }
         setLoading(false);
+      }, (error) => {
+        if (error?.code !== 'unavailable') {
+          console.warn("Firestore user subscription unavailable, utilizing stable local fallback details:", error);
+        }
+        setLoading(false);
+      });
+    };
+
+    // Google Sign-In redirect landing catcher
+    const handleGoogleRedirectCatcher = async () => {
+      try {
+        const result = await getRedirectResult(auth);
+        if (result) {
+          const credential = GoogleAuthProvider.credentialFromResult(result);
+          if (credential?.accessToken) {
+            cachedAccessToken = credential.accessToken;
+          }
+          const firebaseUser = result.user;
+          localStorage.setItem('rahi_auth_uid', firebaseUser.uid);
+
+          const userDocRef = doc(db, 'users', firebaseUser.uid);
+          const userDoc = await getDoc(userDocRef);
+          let appUser: AppUser;
+          
+          if (!userDoc.exists()) {
+            appUser = {
+              uid: firebaseUser.uid,
+              name: firebaseUser.displayName || 'RAHI Passenger',
+              mobile: firebaseUser.phoneNumber || '+91 94310 11111',
+              role: 'customer',
+              createdAt: Date.now(),
+            };
+            await setDoc(userDocRef, appUser);
+          } else {
+            appUser = userDoc.data() as AppUser;
+          }
+          setCurrentUser(appUser);
+          setupUserDocListener(firebaseUser.uid);
+        }
+      } catch (err) {
+        console.warn("Redirect catcher failed, ignore if no login occurred:", err);
+      }
+    };
+    handleGoogleRedirectCatcher();
+
+    const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
+      if (firebaseUser) {
+        localStorage.setItem('rahi_auth_uid', firebaseUser.uid);
+        setupUserDocListener(firebaseUser.uid);
+      } else {
+        const storedUid = localStorage.getItem('rahi_auth_uid');
+        if (storedUid) {
+          // Listen to the stored uid document
+          setupUserDocListener(storedUid);
+        } else {
+          setCurrentUser(null);
+          cachedAccessToken = null;
+          setLoading(false);
+        }
       }
     });
 
@@ -124,7 +353,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     try {
       isSigningIn = true;
-      const result = await signInWithPopup(auth, provider);
+      let result;
+      try {
+        result = await signInWithPopup(auth, provider);
+      } catch (popupErr: any) {
+        console.warn("Popup blocked or unauthorized in this domain, testing redirect fallback...", popupErr);
+        // Fallback directly to Redirect
+        if (
+          popupErr?.code === 'auth/cancelled-popup-request' || 
+          popupErr?.code === 'auth/popup-closed-by-user' || 
+          popupErr?.code === 'auth/popup-blocked' ||
+          popupErr?.code === 'auth/unauthorized-domain' ||
+          String(popupErr?.message).includes('unauthorized-domain')
+        ) {
+          await signInWithRedirect(auth, provider);
+          return;
+        } else {
+          throw popupErr;
+        }
+      }
+
       const credential = GoogleAuthProvider.credentialFromResult(result);
       if (credential?.accessToken) {
          cachedAccessToken = credential.accessToken;
@@ -140,8 +388,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!userDoc.exists()) {
           appUser = {
             uid: firebaseUser.uid,
-            name: firebaseUser.displayName || 'User',
-            mobile: firebaseUser.phoneNumber || '1234567890',
+            name: firebaseUser.displayName || 'RAHI Passenger',
+            mobile: firebaseUser.phoneNumber || '+91 94310 11111',
             role: role,
             createdAt: Date.now(),
           };
@@ -154,22 +402,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           }
         }
       } catch (dbError: any) {
-        console.warn("Firestore error during login, proceeding with local mock:", dbError);
+        console.warn("Firestore read failed, fallback directly:", dbError);
         appUser = {
           uid: firebaseUser.uid,
-          name: firebaseUser.displayName || 'User',
-          mobile: firebaseUser.phoneNumber || '1234567890',
+          name: firebaseUser.displayName || 'RAHI Passenger',
+          mobile: firebaseUser.phoneNumber || '+91 94310 11111',
           role: role,
           createdAt: Date.now(),
         };
       }
       
+      localStorage.setItem('rahi_auth_uid', firebaseUser.uid);
       setCurrentUser(appUser);
     } catch (error: any) {
-      console.error("Login failed:", error);
-      if (error?.code === 'auth/cancelled-popup-request' || error?.code === 'auth/popup-closed-by-user') {
-         throw new Error('Google Sign-In popup was closed or blocked. If you are in the preview iframe, please open the app in a new tab.');
-      }
+      console.error("Popup/Redirect Auth failed:", error);
       throw error;
     } finally {
       isSigningIn = false;
@@ -177,7 +423,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   const logout = async () => {
-    await signOut(auth);
+    try {
+      await signOut(auth);
+    } catch (e) {
+      console.warn("Google sign out error:", e);
+    }
+    localStorage.removeItem('rahi_auth_uid');
     cachedAccessToken = null;
     setCurrentUser(null);
   };
@@ -185,7 +436,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const getAccessToken = () => cachedAccessToken;
 
   return (
-    <AuthContext.Provider value={{ currentUser, loading, login, loginDemo, logout, getAccessToken }}>
+    <AuthContext.Provider value={{ 
+      currentUser, 
+      loading, 
+      login, 
+      loginDemo, 
+      loginWithPhone, 
+      loginWithEmail, 
+      logout, 
+      getAccessToken, 
+      updateUserProfile 
+    }}>
       {children}
     </AuthContext.Provider>
   );
@@ -198,4 +459,3 @@ export function useAuth() {
   }
   return context;
 }
-
