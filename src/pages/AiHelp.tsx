@@ -334,6 +334,17 @@ export default function AiHelp() {
   return (
     <div id="ai-help-screen" className="flex flex-col flex-1 bg-[#0A0A0A] overflow-hidden min-h-screen text-white relative font-sans">
       
+      {/* Holographic AI Background Image */}
+      <div className="absolute inset-0 z-0 select-none pointer-events-none">
+        <img 
+          src="https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&q=80&w=800" 
+          alt="Holographic AI Background" 
+          className="w-full h-full object-cover opacity-[0.06] mix-blend-screen scale-105 pointer-events-none"
+          referrerPolicy="no-referrer"
+        />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/80 via-[#0A0A0A]/95 to-[#0A0A0A] pointer-events-none" />
+      </div>
+
       {/* Decorative Blur Spheres */}
       <div className="absolute top-[10%] right-[-10vw] w-[50vw] h-[50vw] bg-[#FFD000]/5 rounded-full blur-[120px] pointer-events-none z-0" />
       <div className="absolute bottom-[20%] left-[-15vw] w-[45vw] h-[45vw] bg-yellow-500/5 rounded-full blur-[100px] pointer-events-none z-0" />
@@ -350,7 +361,7 @@ export default function AiHelp() {
             </div>
             <div>
               <h2 className="text-sm font-black tracking-widest uppercase text-white flex items-center gap-2">
-                RAHI Help AI <span className="text-[9px] bg-[#FFD000] text-black font-extrabold px-1.5 py-0.5 rounded">DeepSeek PRO</span>
+                RAHI Help AI <span className="text-[9px] bg-[#FFD000] text-black font-extrabold px-1.5 py-0.5 rounded">GEMINI PRO</span>
               </h2>
               <p className="text-[10px] text-white/50 font-bold uppercase tracking-wide">
                 Bihar Express Commutes Support Desk
@@ -580,6 +591,46 @@ export default function AiHelp() {
             </div>
           </div>
         )}
+
+        {/* Active Recording 3D Overlay */}
+        <AnimatePresence>
+          {isRecording && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9 }}
+              className="absolute inset-0 z-50 flex flex-col items-center justify-center bg-[#0A0A0A]/90 backdrop-blur-3xl rounded-[34px] overflow-hidden border border-blue-500/30"
+            >
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-blue-500/20 rounded-full blur-[80px] animate-pulse"></div>
+              
+              <motion.div 
+                animate={{ scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }}
+                transition={{ repeat: Infinity, duration: 2 }}
+                className="relative z-10 w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 p-[2px] shadow-[0_0_50px_rgba(59,130,246,0.5)] mb-8"
+              >
+                <div className="w-full h-full bg-[#0A0A0A] rounded-full flex items-center justify-center overflow-hidden relative">
+                   <div className="absolute inset-0 bg-blue-500/20 animate-ping"></div>
+                   <Mic className="w-12 h-12 text-blue-400 relative z-10 drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]" />
+                </div>
+              </motion.div>
+
+              <h3 className="relative z-10 text-2xl font-black text-white tracking-widest uppercase mb-2 drop-shadow-lg">Listening...</h3>
+              <p className="relative z-10 text-blue-300/80 text-sm font-bold tracking-widest uppercase animate-pulse">Speak to RAHI Helper</p>
+              
+              {/* Audio visualizer simulation */}
+              <div className="flex gap-2 mt-12 relative z-10 items-end h-16">
+                 {[1, 2, 3, 4, 5, 6, 7].map((i) => (
+                    <motion.div
+                       key={i}
+                       animate={{ height: [`${Math.random() * 20 + 20}%`, `${Math.random() * 80 + 20}%`, `${Math.random() * 20 + 20}%`] }}
+                       transition={{ repeat: Infinity, duration: 0.5 + Math.random() * 0.5, ease: "easeInOut" }}
+                       className="w-2 bg-blue-400 rounded-full shadow-[0_0_10px_rgba(59,130,246,0.8)]"
+                    />
+                 ))}
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* Chat Control Console */}
         <div className="bg-[#121212] border border-white/5 p-3 rounded-[34px] flex items-center gap-2 shadow-2xl relative">

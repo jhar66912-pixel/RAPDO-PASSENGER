@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { DEMO_ROUTES, Booking } from '../types';
 import { MapPin, Search, Navigation, Star, PhoneCall, Sparkles, Bike, PackageOpen, Mic, Calendar, X } from 'lucide-react';
@@ -10,6 +12,7 @@ import { db } from '../lib/firebase';
 import BottomNav from '../components/BottomNav';
 
 export default function BookingPage() {
+  const navigate = useNavigate();
   const { currentUser, loading: authLoading, getAccessToken } = useAuth();
   const [isInitializing, setIsInitializing] = useState(true);
   const [isScheduling, setIsScheduling] = useState(false);
@@ -381,297 +384,369 @@ export default function BookingPage() {
   }
 
   return (
-    <div className="flex-1 bg-[#0A0A0A] min-h-screen pt-4 pb-12 px-4 sm:px-6 lg:px-8 font-sans">
+    <div className="flex-1 bg-[#050505] min-h-screen pt-4 pb-24 px-4 sm:px-6 lg:px-8 font-sans">
       {/* Mobile Frame Simulation for Web */}
-      <div className="max-w-md mx-auto min-h-[85vh] bg-[#121212] rounded-[48px] shadow-[0_30px_60px_rgba(0,0,0,0.5)] border border-white/5 overflow-hidden relative flex flex-col mt-4">
+      <div className="max-w-md mx-auto min-h-[85vh] bg-[#0A0A0A] rounded-[48px] shadow-[0_40px_80px_rgba(0,0,0,0.8)] border border-white/5 overflow-hidden relative flex flex-col mt-4">
         
-        {/* Background Ambient Glow */}
-        <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-[#FFD000]/10 rounded-full blur-[80px] pointer-events-none mix-blend-screen" />
-        <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.03] mix-blend-overlay"></div>
+        {/* Dynamic Cinematic Background Layer */}
+        <div className="absolute inset-0 z-0 select-none pointer-events-none">
+          <img 
+            src={bookingStatus 
+              ? "https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&q=80&w=800" 
+              : "https://images.unsplash.com/photo-1622185135505-2d795003994a?auto=format&fit=crop&q=80&w=800"
+            }
+            alt="Cinematic Background Backdrop" 
+            className="w-full h-full object-cover opacity-15 mix-blend-luminosity scale-105 pointer-events-none transition-all duration-1000"
+            referrerPolicy="no-referrer"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#0A0A0A]/85 via-[#0A0A0A]/95 to-[#0A0A0A] pointer-events-none" />
+        </div>
 
-        <div className="p-8 relative z-10 flex-1 overflow-y-auto no-scrollbar">
+        {/* Background Ambient Glow */}
+        <div className="absolute top-0 right-[-100px] w-[400px] h-[400px] bg-gradient-to-bl from-[#FFD000]/10 to-blue-500/5 rounded-full blur-[90px] pointer-events-none mix-blend-screen z-10" />
+        <div className="absolute bottom-0 left-[-100px] w-[300px] h-[300px] bg-blue-500/5 rounded-full blur-[80px] pointer-events-none mix-blend-screen z-10" />
+
+        <div className="p-8 relative z-20 flex-1 overflow-y-auto no-scrollbar">
           {/* Header */}
-          <div className="flex justify-between items-center mb-10">
+          <motion.div 
+             initial={{ opacity: 0, y: -20 }}
+             animate={{ opacity: 1, y: 0 }}
+             className="flex justify-between items-center mb-8"
+          >
             <div>
-              <p className="text-white/40 text-[10px] font-bold tracking-[0.2em] uppercase">Kahan jana hai?</p>
-              <h1 className="text-3xl font-black text-white tracking-tight mt-1">Hello, {currentUser?.name?.split(' ')[0] || 'Dost'}</h1>
+              <p className="text-white/40 text-[10px] font-black tracking-[0.2em] uppercase">Kahan jana hai?</p>
+              <h1 className="text-3xl font-black text-white tracking-tight mt-1 flex items-center gap-2">
+                 Hello, {currentUser?.name?.split(' ')[0] || 'Dost'}
+                 <motion.span animate={{ rotate: [0, 15, -5, 10, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}>👋</motion.span>
+              </h1>
             </div>
-            <div className="w-14 h-14 bg-gradient-to-br from-[#FFD000] to-[#F5B700] p-[2px] rounded-full flex items-center justify-center shadow-[0_0_20px_rgba(255,208,0,0.3)]">
-               <div className="bg-[#121212] w-full h-full rounded-full flex items-center justify-center border-2 border-[#121212]">
-                  <span className="text-2xl">🧑🏽</span>
+            <div className="w-14 h-14 bg-gradient-to-br from-[#FFD000] to-[#F5B700] p-[2px] rounded-[20px] flex items-center justify-center shadow-[0_0_30px_rgba(255,208,0,0.3)] transform-gpu hover:scale-105 transition-all">
+               <div className="bg-[#0A0A0A] w-full h-full rounded-[18px] flex items-center justify-center">
+                  <span className="text-2xl drop-shadow-md">🧑🏽</span>
                </div>
             </div>
-          </div>
+          </motion.div>
 
           {/* AI Suggestion Pill */}
           {!bookingStatus && (
-            <div className="bg-[#1A1A1A] border border-[#FFD000]/20 hover:bg-white/[0.04] rounded-3xl p-5 flex items-center gap-5 mb-8 shadow-lg relative overflow-hidden transition-all duration-300 group cursor-pointer">
-              <div className="absolute -right-4 -bottom-4 w-16 h-16 bg-[#FFD000]/10 rounded-full blur-xl group-hover:bg-[#FFD000]/20 transition-all"></div>
-              <div className="w-12 h-12 bg-gradient-to-br from-[#FFD000]/20 to-transparent rounded-[18px] flex items-center justify-center shrink-0 border border-[#FFD000]/30 group-hover:scale-110 transition-transform">
-                 <Sparkles className="text-[#FFD000] w-6 h-6" />
+            <motion.div 
+               initial={{ opacity: 0, scale: 0.95 }}
+               animate={{ opacity: 1, scale: 1 }}
+               whileHover={{ scale: 1.02 }}
+               className="bg-[#121212]/80 backdrop-blur-xl border border-[#FFD000]/30 hover:bg-[#1A1A1A] rounded-[28px] p-5 flex items-center gap-5 mb-8 shadow-[0_20px_40px_rgba(255,208,0,0.05)] relative overflow-hidden transition-all duration-300 group cursor-pointer"
+            >
+              <div className="absolute inset-0 bg-gradient-to-r from-[#FFD000]/0 via-[#FFD000]/5 to-[#FFD000]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
+              <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-[#FFD000]/15 rounded-full blur-[20px] group-hover:bg-[#FFD000]/25 transition-all duration-500"></div>
+              
+              <div className="w-12 h-12 bg-[#FFD000]/10 rounded-[18px] flex items-center justify-center shrink-0 border border-[#FFD000]/30 group-hover:scale-110 shadow-inner transition-transform duration-300">
+                 <Sparkles className="text-[#FFD000] w-6 h-6 animate-pulse" />
               </div>
-              <div className="relative z-10">
-                 <p className="text-[10px] text-[#FFD000] uppercase tracking-widest font-black mb-1">AI Recommended</p>
-                 <p className="text-sm text-white font-bold tracking-wide">Office ride available in 2 mins</p>
+              <div className="relative z-10 w-full flex justify-between items-center">
+                 <div>
+                    <p className="text-[9px] text-[#FFD000] uppercase tracking-widest font-black mb-1">RAHI AI Insight</p>
+                    <p className="text-sm text-white font-bold tracking-wide">Fares 15% lower now</p>
+                 </div>
               </div>
-            </div>
+            </motion.div>
           )}
 
-          {bookingStatus ? (
-            <div className="animate-in fade-in slide-in-from-bottom flex-1 flex flex-col h-full">
-               {/* Map View for active/searching ride */}
-               <div className="flex-1 min-h-[350px] w-full rounded-[36px] overflow-hidden border border-white/5 shadow-2xl relative mb-6">
-                 <Map 
-                   defaultCenter={pickupCoords || riderLocation || {lat: 25.7796, lng: 84.7499}}
-                   center={riderLocation || pickupCoords || {lat: 25.7796, lng: 84.7499}}
-                   defaultZoom={15}
-                   internalUsageAttributionIds={['gmp_mcp_codeassist_v1_aistudio']}
-                   disableDefaultUI={true}
-                   gestureHandling="greedy"
-                 >
-                   {pickupCoords && dropCoords && (
-                     <RouteDisplay origin={pickupCoords} destination={dropCoords} />
-                   )}
-                   {pickupCoords && (
-                     <Marker position={pickupCoords} icon={pickupIcon} />
-                   )}
-                   {dropCoords && (
-                     <Marker position={dropCoords} icon={dropIcon} />
-                   )}
-                   {riderLocation && bookingStatus.status === 'accepted' && (
-                     <Marker position={riderLocation} icon={bikeIcon} />
-                   )}
-                 </Map>
-                 <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#121212] to-transparent pointer-events-none" />
-               </div>
-
-               <div className="bg-[#1A1A1A] border border-white/5 rounded-[36px] p-8 shadow-2xl text-center relative mt-auto">
-                  <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 bg-[#121212] border border-white/10 rounded-full flex items-center justify-center shadow-2xl">
-                    <div className="w-16 h-16 rounded-full bg-[#1A1A1A] flex items-center justify-center border border-white/5">
-                        <Search className={`w-8 h-8 text-[#FFD000] ${bookingStatus.status === 'searching' ? 'animate-pulse' : ''}`} />
-                    </div>
-                  </div>
-                  <div className="pt-10">
-                    <h2 className="text-2xl font-black text-white mb-2 tracking-tight">
-                       {bookingStatus.status === 'searching' && 'Finding your Captain...'}
-                       {bookingStatus.status === 'accepted' && 'Captain is arriving!'}
-                       {bookingStatus.status === 'completed' && 'Ride Completed!'}
-                    </h2>
-                    
-                    <div className="bg-[#121212] rounded-[24px] p-6 mt-8 border border-white/5 shadow-inner">
-                       <div className="flex justify-between items-center pb-4 border-b border-white/5">
-                          <span className="text-[10px] text-white/40 uppercase tracking-widest font-black">Ride PIN</span>
-                          <span className="text-3xl font-mono tracking-widest text-[#FFD000] font-black">{bookingStatus.rideOtp}</span>
-                       </div>
-                       <div className="flex justify-between items-center pt-4">
-                          <span className="text-[10px] text-white/40 uppercase tracking-widest font-black">Fare Est.</span>
-                          <span className="text-2xl font-black text-white">₹{bookingStatus.fare || 'TBD'}</span>
-                       </div>
-                    </div>
+          <AnimatePresence mode="wait">
+            {bookingStatus ? (
+              <motion.div 
+                 initial={{ opacity: 0, y: 20 }}
+                 animate={{ opacity: 1, y: 0 }}
+                 exit={{ opacity: 0, y: -20 }}
+                 className="flex-1 flex flex-col h-full"
+              >
+                 {/* Map View for active/searching ride */}
+                 <div className="flex-1 min-h-[350px] w-full rounded-[36px] overflow-hidden border border-white/10 shadow-[0_20px_50px_rgba(0,0,0,0.6)] relative mb-6">
+                   <div className="absolute inset-0 bg-gradient-to-br from-blue-500/10 to-transparent pointer-events-none z-10 mix-blend-overlay"></div>
+                   <Map 
+                     defaultCenter={pickupCoords || riderLocation || {lat: 25.7796, lng: 84.7499}}
+                     center={riderLocation || pickupCoords || {lat: 25.7796, lng: 84.7499}}
+                     defaultZoom={15}
+                     internalUsageAttributionIds={['gmp_mcp_codeassist_v1_aistudio']}
+                     disableDefaultUI={true}
+                     gestureHandling="greedy"
+                   >
+                     {pickupCoords && dropCoords && (
+                       <RouteDisplay origin={pickupCoords} destination={dropCoords} />
+                     )}
+                     {pickupCoords && (
+                       <Marker position={pickupCoords} icon={pickupIcon} />
+                     )}
+                     {dropCoords && (
+                       <Marker position={dropCoords} icon={dropIcon} />
+                     )}
+                     {riderLocation && bookingStatus.status === 'accepted' && (
+                       <Marker position={riderLocation} icon={bikeIcon} />
+                     )}
+                   </Map>
+                   <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/80 to-transparent pointer-events-none z-20" />
                  </div>
 
-                 <button onClick={() => {
-                     if (activeBookingId) {
-                        updateDoc(doc(db, 'bookings', activeBookingId), { status: 'cancelled' });
-                     }
-                     setBookingStatus(null);
-                     setActiveBookingId(null);
-                 }} className="w-full mt-8 py-5 bg-red-500/10 text-red-500 font-black text-sm uppercase tracking-widest rounded-[20px] hover:bg-red-500/20 active:scale-95 transition-all">Cancel Dispatch</button>
-               </div>
-            </div>
-          ) : (
-            <div className="animate-in fade-in zoom-in-95 duration-500">
-              
-              {/* Category selector */}
-              <div className="grid grid-cols-2 gap-4 mb-8">
-                 <button className="bg-[#1A1A1A] border border-white/5 p-5 rounded-[32px] flex flex-col items-center justify-center gap-4 hover:border-[#FFD000]/30 transition-all group group-hover:-translate-y-1 shadow-lg">
-                    <div className="w-14 h-14 bg-[#FFD000]/10 rounded-[20px] flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                       <Bike className="text-[#FFD000] w-7 h-7" />
+                 <motion.div 
+                    initial={{ y: 100 }}
+                    animate={{ y: 0 }}
+                    className="bg-[#121212]/90 backdrop-blur-2xl border border-white/10 rounded-[36px] p-8 shadow-[0_-20px_40px_rgba(0,0,0,0.5)] text-center relative mt-auto z-30"
+                 >
+                    <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 bg-[#0A0A0A] border border-white/10 rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.8)]">
+                      <div className="w-16 h-16 rounded-full bg-[#1A1A1A] flex items-center justify-center border border-white/5 shadow-inner">
+                          {bookingStatus.status === 'searching' 
+                             ? <Search className="w-8 h-8 text-[#FFD000] animate-ping" />
+                             : <Bike className="w-8 h-8 text-[#00DF89]" />
+                          }
+                      </div>
                     </div>
-                    <span className="text-white font-bold text-sm tracking-wide">Bike Ride</span>
-                 </button>
-                 <button className="bg-[#1A1A1A] border border-white/5 p-5 rounded-[32px] flex flex-col items-center justify-center gap-4 hover:border-blue-500/30 transition-all group group-hover:-translate-y-1 shadow-lg">
-                    <div className="w-14 h-14 bg-blue-500/10 rounded-[20px] flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                       <PackageOpen className="text-blue-400 w-7 h-7" />
-                    </div>
-                    <span className="text-white font-bold text-sm tracking-wide">Send Parcel</span>
-                 </button>
-              </div>
+                    <div className="pt-10">
+                      <h2 className="text-2xl font-black text-white mb-1 tracking-tight">
+                         {bookingStatus.status === 'searching' && 'Locating Captain...'}
+                         {bookingStatus.status === 'accepted' && 'Captain Arriving!'}
+                         {bookingStatus.status === 'completed' && 'Ride Completed!'}
+                      </h2>
+                      <p className="text-white/40 text-[10px] font-black uppercase tracking-widest mb-6 border border-white/5 inline-block px-3 py-1 bg-white/5 rounded-full">Secure Transport</p>
+                      
+                      <div className="bg-[#1A1A1A] rounded-[24px] p-6 mt-4 border border-white/5 shadow-inner flex flex-col gap-4">
+                         <div className="flex justify-between items-center pb-4 border-b border-white/5">
+                            <span className="text-[10px] text-white/40 uppercase tracking-widest font-black flex items-center gap-2"><Sparkles className="w-3 h-3 text-[#FFD000]" /> OTP PIN</span>
+                            <span className="text-4xl font-mono tracking-widest text-[#FFD000] font-black drop-shadow-[0_0_10px_rgba(255,208,0,0.4)]">{bookingStatus.rideOtp}</span>
+                         </div>
+                         <div className="flex justify-between items-center">
+                            <span className="text-[10px] text-white/40 uppercase tracking-widest font-black">Total Fare</span>
+                            <span className="text-2xl font-black text-white">₹{bookingStatus.fare || 'TBD'}</span>
+                         </div>
+                      </div>
+                   </div>
 
-              {/* Booking Form */}
-              <div className="bg-[#1A1A1A] border border-white/5 rounded-[36px] p-8 shadow-2xl">
-                <div className="flex gap-2 mb-8 p-1.5 bg-[#121212] rounded-[24px] border border-white/5 shadow-inner">
-                  <button 
-                    className={`flex-1 py-3.5 rounded-[20px] text-xs uppercase tracking-widest font-black transition-all duration-300 ${mode === 'fixed' ? 'bg-[#FFD000] text-black shadow-lg scale-[1.02]' : 'text-white/40 hover:text-white'}`}
-                    onClick={() => setMode('fixed')}
-                  >
-                    Routes
-                  </button>
-                  <button 
-                    className={`flex-1 py-3.5 rounded-[20px] text-xs uppercase tracking-widest font-black transition-all duration-300 ${mode === 'custom' ? 'bg-[#FFD000] text-black shadow-lg scale-[1.02]' : 'text-white/40 hover:text-white'}`}
-                    onClick={() => setMode('custom')}
-                  >
-                    Custom Map
-                  </button>
+                   <button onClick={() => {
+                       if (activeBookingId) {
+                          updateDoc(doc(db, 'bookings', activeBookingId), { status: 'cancelled' });
+                       }
+                       setBookingStatus(null);
+                       setActiveBookingId(null);
+                   }} className="w-full mt-6 py-5 bg-red-500/10 text-red-500 font-black text-[11px] uppercase tracking-widest rounded-[20px] hover:bg-red-500/20 active:scale-95 transition-all shadow-inner border border-red-500/20">Cancel Dispatch</button>
+                 </motion.div>
+              </motion.div>
+            ) : (
+              <motion.div 
+                 initial={{ opacity: 0, scale: 0.95 }}
+                 animate={{ opacity: 1, scale: 1 }}
+                 exit={{ opacity: 0, scale: 0.95 }}
+                 className="duration-500"
+              >
+                
+                {/* Category selector */}
+                <div className="grid grid-cols-2 gap-4 mb-8">
+                   <button className="bg-[#121212] border border-white/5 p-5 rounded-[32px] flex flex-col items-center justify-center gap-4 hover:border-[#FFD000]/30 transition-all group shadow-[0_10px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_15px_40px_rgba(255,208,0,0.1)] relative overflow-hidden">
+                      <div className="absolute top-0 right-0 w-20 h-20 bg-[#FFD000]/5 rounded-full blur-[30px] group-hover:bg-[#FFD000]/10 transition-all"></div>
+                      <div className="w-14 h-14 bg-[#1A1A1A] rounded-[20px] shadow-inner flex items-center justify-center group-hover:-translate-y-1 transition-transform duration-300 border border-white/5">
+                         <Bike className="text-[#FFD000] w-7 h-7 drop-shadow-md" />
+                      </div>
+                      <span className="text-white font-black text-sm tracking-wide">Bike Ride</span>
+                   </button>
+                   <button onClick={() => navigate('/parcel')} className="bg-[#121212] border border-white/5 p-5 rounded-[32px] flex flex-col items-center justify-center gap-4 hover:border-blue-500/30 transition-all group shadow-[0_10px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_15px_40px_rgba(59,130,246,0.1)] relative overflow-hidden">
+                      <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/5 rounded-full blur-[30px] group-hover:bg-blue-500/10 transition-all"></div>
+                      <div className="w-14 h-14 bg-[#1A1A1A] rounded-[20px] shadow-inner flex items-center justify-center group-hover:-translate-y-1 transition-transform duration-300 border border-white/5">
+                         <PackageOpen className="text-blue-400 w-7 h-7 drop-shadow-md" />
+                      </div>
+                      <span className="text-white font-black text-sm tracking-wide">Send Parcel</span>
+                   </button>
                 </div>
 
-                {mode === 'fixed' ? (
-                  <form onSubmit={handleBookFixed} className="space-y-6">
-                    <div className="relative">
-                      <select 
-                        required
-                        value={selectedRouteId}
-                        onChange={(e) => setSelectedRouteId(e.target.value)}
-                        className="block w-full px-5 py-5 border border-white/5 bg-white/[0.02] hover:bg-white/[0.04] focus:bg-white/[0.06] text-white rounded-[24px] text-sm font-medium tracking-wide outline-none appearance-none transition-colors"
-                        style={{ colorScheme: 'dark' }}
-                      >
-                        <option value="" className="bg-[#1A1A1A]">-- Select Destination --</option>
-                        {DEMO_ROUTES.map(r => (
-                          <option key={r.routeId} value={r.routeId} className="bg-[#1A1A1A] text-white font-medium my-2">
-                            {r.pickupName} → {r.dropName}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    
-                    {selectedRoute && (
-                      <div className="bg-[#FFD000]/10 p-6 rounded-[24px] border border-[#FFD000]/20 flex justify-between items-center animate-in fade-in zoom-in-95 duration-300 group">
-                         <div>
-                           <p className="text-[10px] font-black text-[#FFD000] uppercase tracking-widest mb-1">Guaranteed Fare</p>
-                           <p className="text-4xl font-black text-white tracking-tighter">₹{selectedRoute.fare}</p>
-                         </div>
-                         <div className="w-14 h-14 bg-[#FFD000]/20 rounded-full flex items-center justify-center shrink-0 border border-[#FFD000]/30 shadow-[0_0_15px_rgba(255,208,0,0.2)] group-hover:scale-110 transition-transform">
-                            <span className="text-2xl drop-shadow-md">💰</span>
-                         </div>
-                      </div>
-                    )}
-                    
-                    <div className="flex gap-3 mt-8">
-                       <button
-                         type="submit"
-                         disabled={!selectedRouteId}
-                         className="flex-1 group relative overflow-hidden py-5 bg-gradient-to-br from-[#FFD000] to-[#F5B700] text-black font-black text-[11px] uppercase tracking-widest rounded-[20px] shadow-[0_10px_30px_rgba(255,208,0,0.3)] hover:shadow-[0_10px_40px_rgba(255,208,0,0.5)] hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
-                       >
-                         <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out skew-x-12" />
-                         Initialize Ride
-                       </button>
-                       <button
-                         type="button"
-                         onClick={handleScheduleClick}
-                         disabled={!selectedRouteId || isScheduling}
-                         className="flex-1 group relative overflow-hidden py-5 bg-[#1A1A1A] text-white border border-[#FFD000]/30 font-black text-[11px] uppercase tracking-widest rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:bg-[#FFD000]/10 hover:border-[#FFD000]/60 hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
-                       >
-                         {isScheduling ? 'Scheduling...' : <><Calendar className="w-4 h-4 text-[#FFD000]"/> Schedule</>}
-                       </button>
-                    </div>
-                  </form>
-                ) : (
-                  <form onSubmit={handleBookCustom} className="space-y-6">
-                    <div className="h-48 w-full rounded-[24px] overflow-hidden border border-white/5 relative shadow-lg group cursor-pointer">
-                       <div className="absolute inset-0 bg-white/10 mix-blend-overlay opacity-0 group-hover:opacity-100 transition-opacity z-20 pointer-events-none"></div>
-                       <Map 
-                         defaultCenter={{lat: 25.7796, lng: 84.7499}}
-                         defaultZoom={12}
-                         internalUsageAttributionIds={['gmp_mcp_codeassist_v1_aistudio']}
-                         onClick={handleMapClick}
-                         disableDefaultUI={true}
-                         gestureHandling="greedy"
-                       >
-                         {pickupCoords && dropCoords && (
-                           <RouteDisplay origin={pickupCoords} destination={dropCoords} />
-                         )}
-                         {pickupCoords && (
-                           <Marker position={pickupCoords} icon={pickupIcon} />
-                         )}
-                         {dropCoords && (
-                           <Marker position={dropCoords} icon={dropIcon} />
-                         )}
-                       </Map>
-                       <div className="absolute top-4 left-4 right-4 bg-[#121212]/90 backdrop-blur-md px-4 py-3 rounded-2xl border border-white/10 text-center font-bold text-[10px] uppercase tracking-widest pointer-events-none text-white shadow-lg">
-                          {selectionMode === 'pickup' ? '📍 Tap map to set Pickup' : '📍 Tap map to set Drop'}
-                       </div>
-                    </div>
- 
-                    <div className="space-y-4">
+                {/* Booking Form */}
+                <div className="bg-[#121212] border border-white/5 rounded-[36px] p-8 shadow-[0_20px_60px_rgba(0,0,0,0.4)] relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-b from-white/[0.02] to-transparent pointer-events-none"></div>
+                  
+                  <div className="flex gap-2 mb-8 p-1.5 bg-[#0A0A0A] rounded-[24px] border border-white/5 shadow-inner relative z-10">
+                    <button 
+                      className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-[20px] text-xs uppercase tracking-widest font-black transition-all duration-300 ${mode === 'fixed' ? 'bg-[#FFD000] text-black shadow-[0_5px_15px_rgba(255,208,0,0.3)] scale-[1.02]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+                      onClick={() => setMode('fixed')}
+                    >
+                      Routes
+                    </button>
+                    <button 
+                      className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-[20px] text-xs uppercase tracking-widest font-black transition-all duration-300 ${mode === 'custom' ? 'bg-[#FFD000] text-black shadow-[0_5px_15px_rgba(255,208,0,0.3)] scale-[1.02]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+                      onClick={() => setMode('custom')}
+                    >
+                      <Search className="w-4 h-4" /> Custom Map
+                    </button>
+                  </div>
+
+                  {mode === 'fixed' ? (
+                    <form onSubmit={handleBookFixed} className="space-y-6 relative z-10">
                       <div className="relative group">
-                         <div className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-white/5 rounded-full flex items-center justify-center">
-                            <MapPin className="w-5 h-5 text-white/50 group-focus-within:text-white transition-colors" />
-                         </div>
-                         <input 
-                           type="text" required
-                           value={customPickup} onChange={e => setCustomPickup(e.target.value)}
-                           onFocus={() => setSelectionMode('pickup')}
-                           placeholder="Select Pickup Coordinates"
-                           className="block w-full pl-16 pr-4 py-5 border-none bg-white/[0.02] hover:bg-white/[0.04] focus:bg-white/[0.06] text-white rounded-[24px] text-sm font-medium tracking-wide outline-none transition-all placeholder:text-white/30"
-                         />
+                        <select 
+                          required
+                          value={selectedRouteId}
+                          onChange={(e) => setSelectedRouteId(e.target.value)}
+                          className="block w-full px-5 py-5 border border-white/5 bg-[#1A1A1A] hover:bg-[#1f1f1f] focus:bg-[#1f1f1f] text-white rounded-[24px] text-sm font-bold tracking-wide outline-none appearance-none transition-all shadow-inner focus:ring-2 focus:ring-[#FFD000]/30"
+                          style={{ colorScheme: 'dark' }}
+                        >
+                          <option value="" className="bg-[#1A1A1A]">-- Select Destination --</option>
+                          {DEMO_ROUTES.map(r => (
+                            <option key={r.routeId} value={r.routeId} className="bg-[#1A1A1A] text-white font-medium my-2">
+                              {r.pickupName} → {r.dropName}
+                            </option>
+                          ))}
+                        </select>
                       </div>
-                      <div className="relative group">
-                         <div className="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 bg-[#FFD000]/10 rounded-full flex items-center justify-center">
-                            <Navigation className="w-5 h-5 text-[#FFD000] group-focus-within:scale-110 transition-transform" />
-                         </div>
-                         <input 
-                           type="text" required
-                           value={customDrop} onChange={e => setCustomDrop(e.target.value)}
-                           onFocus={() => setSelectionMode('drop')}
-                           placeholder="Select Drop Coordinates"
-                           className="block w-full pl-16 pr-4 py-5 border-none bg-white/[0.02] hover:bg-white/[0.04] focus:bg-white/[0.06] text-white rounded-[24px] text-sm font-medium tracking-wide outline-none transition-all placeholder:text-white/30"
-                         />
+                      
+                      {selectedRoute && (
+                        <motion.div 
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          className="bg-gradient-to-br from-[#FFD000]/10 to-[#121212] p-6 rounded-[24px] border border-[#FFD000]/30 flex justify-between items-center shadow-[0_10px_30px_rgba(255,208,0,0.1)] group relative overflow-hidden"
+                        >
+                           <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFD000]/10 blur-[40px] rounded-full"></div>
+                           <div className="relative z-10">
+                             <p className="text-[10px] font-black text-[#FFD000] uppercase tracking-widest mb-1 flex items-center gap-2"><Sparkles className="w-3 h-3" /> Guaranteed Fare</p>
+                             <p className="text-4xl font-black text-white tracking-tighter drop-shadow-md">₹{selectedRoute.fare}</p>
+                           </div>
+                           <div className="relative z-10 w-14 h-14 bg-gradient-to-tr from-[#FFD000] to-[#F5B700] p-[1px] rounded-full shadow-[0_0_20px_rgba(255,208,0,0.3)] group-hover:scale-110 transition-transform">
+                              <div className="w-full h-full bg-[#121212] rounded-full flex items-center justify-center shadow-inner">
+                                <span className="text-xl">💰</span>
+                              </div>
+                           </div>
+                        </motion.div>
+                      )}
+                      
+                      <div className="flex gap-4 mt-8">
+                         <button
+                           type="submit"
+                           disabled={!selectedRouteId}
+                           className="flex-[2] group relative overflow-hidden py-5 bg-gradient-to-r from-[#FFD000] to-[#F5B700] text-black font-black text-[11px] uppercase tracking-widest rounded-[20px] shadow-[0_15px_30px_rgba(255,208,0,0.3)] hover:shadow-[0_20px_40px_rgba(255,208,0,0.4)] hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                         >
+                           <div className="absolute inset-0 bg-white/30 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-[1.5s] ease-in-out skew-x-12" />
+                           Initialize Ride
+                         </button>
+                         <button
+                           type="button"
+                           onClick={handleScheduleClick}
+                           disabled={!selectedRouteId || isScheduling}
+                           className="flex-[1] group relative overflow-hidden py-5 bg-[#0A0A0A] text-white border border-white/10 font-black text-[11px] uppercase tracking-widest rounded-[20px] shadow-inner hover:bg-[#1A1A1A] hover:border-[#FFD000]/50 hover:text-[#FFD000] hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                         >
+                           {isScheduling ? '...' : <Calendar className="w-5 h-5"/>}
+                         </button>
                       </div>
-                    </div>
-                    
-                    <div className="flex gap-3 mt-8">
-                       <button
-                         type="submit"
-                         disabled={!customPickup || !customDrop}
-                         className="flex-[2] group relative overflow-hidden py-5 bg-gradient-to-br from-[#FFD000] to-[#F5B700] text-black font-black text-xs uppercase tracking-widest rounded-[20px] shadow-[0_10px_30px_rgba(255,208,0,0.3)] hover:shadow-[0_10px_40px_rgba(255,208,0,0.5)] hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
-                       >
-                         <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out skew-x-12" />
-                         Initialize Ride
-                       </button>
-                       <button
-                         type="button"
-                         onClick={handleScheduleClick}
-                         disabled={!customPickup || !customDrop || isScheduling}
-                         className="flex-1 group relative overflow-hidden py-5 bg-[#1A1A1A] text-white border border-[#FFD000]/30 font-black text-[11px] uppercase tracking-widest rounded-[20px] shadow-[0_10px_30px_rgba(0,0,0,0.3)] hover:bg-[#FFD000]/10 hover:border-[#FFD000]/60 hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
-                       >
-                         <Calendar className="w-4 h-4 text-[#FFD000]"/>
-                       </button>
-                    </div>
-                  </form>
-                )}
-              </div>
-              
-              {/* Voice Booking Mock */}
-              <div className="mt-8 p-5 rounded-[28px] bg-gradient-to-r from-blue-900/20 to-purple-900/20 border border-blue-500/20 flex items-center gap-5 hover:bg-white/5 transition-colors backdrop-blur-md cursor-pointer group shadow-[0_0_20px_rgba(59,130,246,0.1)]">
-                 <div className="w-14 h-14 bg-gradient-to-br from-blue-500 to-indigo-600 rounded-[20px] flex items-center justify-center flex-shrink-0 shadow-lg group-hover:scale-110 transition-transform">
-                    <Mic className="w-6 h-6 text-white" />
-                 </div>
-                 <div>
-                    <h4 className="text-white font-black tracking-wide mb-1 flex items-center gap-2">Voice AI <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></span></h4>
-                    <p className="text-blue-200/50 text-xs italic tracking-wide">"Bhaiya Station chalna hai..."</p>
-                 </div>
-              </div>
- 
-            </div>
-          )}
+                    </form>
+                  ) : (
+                    <form onSubmit={handleBookCustom} className="space-y-6 relative z-10">
+                      <div className="h-56 w-full rounded-[24px] overflow-hidden border border-white/10 relative shadow-[0_10px_30px_rgba(0,0,0,0.5)] group cursor-pointer group-hover:border-[#FFD000]/30 transition-colors">
+                         <div className="absolute inset-0 bg-gradient-to-t from-[#121212] to-transparent mix-blend-overlay opacity-50 z-20 pointer-events-none"></div>
+                         <Map 
+                           defaultCenter={{lat: 25.7796, lng: 84.7499}}
+                           defaultZoom={12}
+                           internalUsageAttributionIds={['gmp_mcp_codeassist_v1_aistudio']}
+                           onClick={handleMapClick}
+                           disableDefaultUI={true}
+                           gestureHandling="greedy"
+                         >
+                           {pickupCoords && dropCoords && (
+                             <RouteDisplay origin={pickupCoords} destination={dropCoords} />
+                           )}
+                           {pickupCoords && (
+                             <Marker position={pickupCoords} icon={pickupIcon} />
+                           )}
+                           {dropCoords && (
+                             <Marker position={dropCoords} icon={dropIcon} />
+                           )}
+                         </Map>
+                         <div className="absolute top-4 left-4 right-4 bg-[#0A0A0A]/90 backdrop-blur-xl px-4 py-3 rounded-2xl border border-[#FFD000]/20 text-center font-black text-[10px] uppercase tracking-widest pointer-events-none text-[#FFD000] shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
+                            {selectionMode === 'pickup' ? '📍 Tap map to set Pickup' : '📍 Tap map to set Drop'}
+                         </div>
+                      </div>
+   
+                      <div className="space-y-4 relative">
+                        <div className="absolute left-6 top-8 bottom-8 w-0.5 bg-gradient-to-b from-white/20 to-[#FFD000]/50 border-dashed z-0"></div>
+                        <div className="relative group z-10">
+                           <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#121212] border border-white/20 rounded-full flex items-center justify-center shadow-inner group-focus-within:border-white/50 transition-colors">
+                              <div className="w-2 h-2 rounded-full bg-white/50 group-focus-within:bg-white"></div>
+                           </div>
+                           <input 
+                             type="text" required
+                             value={customPickup} onChange={e => setCustomPickup(e.target.value)}
+                             onFocus={() => setSelectionMode('pickup')}
+                             placeholder="Select Pickup Coordinates"
+                             className="block w-full pl-16 pr-4 py-5 border border-white/5 bg-[#1A1A1A] hover:bg-[#1f1f1f] focus:bg-[#1f1f1f] text-white rounded-[24px] text-sm font-bold tracking-wide outline-none transition-all placeholder:text-white/30 focus:ring-2 focus:ring-white/10 shadow-inner"
+                           />
+                        </div>
+                        <div className="relative group z-10">
+                           <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#121212] border border-[#FFD000]/30 rounded-full flex items-center justify-center shadow-inner group-focus-within:border-[#FFD000] transition-colors">
+                              <div className="w-2 h-2 rounded-full bg-[#FFD000]"></div>
+                           </div>
+                           <input 
+                             type="text" required
+                             value={customDrop} onChange={e => setCustomDrop(e.target.value)}
+                             onFocus={() => setSelectionMode('drop')}
+                             placeholder="Select Drop Coordinates"
+                             className="block w-full pl-16 pr-4 py-5 border border-white/5 bg-[#1A1A1A] hover:bg-[#1f1f1f] focus:bg-[#1f1f1f] text-white rounded-[24px] text-sm font-bold tracking-wide outline-none transition-all placeholder:text-white/30 focus:ring-2 focus:ring-[#FFD000]/20 shadow-inner"
+                           />
+                        </div>
+                      </div>
+                      
+                      <div className="flex gap-4 mt-8">
+                         <button
+                           type="submit"
+                           disabled={!customPickup || !customDrop}
+                           className="flex-[2] group relative overflow-hidden py-5 bg-gradient-to-r from-[#FFD000] to-[#F5B700] text-black font-black text-[11px] uppercase tracking-widest rounded-[20px] shadow-[0_15px_30px_rgba(255,208,0,0.3)] hover:shadow-[0_20px_40px_rgba(255,208,0,0.4)] hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                         >
+                           <div className="absolute inset-0 bg-white/30 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-[1.5s] ease-in-out skew-x-12" />
+                           Initialize Ride
+                         </button>
+                         <button
+                           type="button"
+                           onClick={handleScheduleClick}
+                           disabled={!customPickup || !customDrop || isScheduling}
+                           className="flex-[1] group relative overflow-hidden py-5 bg-[#0A0A0A] text-white border border-white/10 font-black text-[11px] uppercase tracking-widest rounded-[20px] shadow-inner hover:bg-[#1A1A1A] hover:border-[#FFD000]/50 hover:text-[#FFD000] hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                         >
+                           <Calendar className="w-5 h-5"/>
+                         </button>
+                      </div>
+                    </form>
+                  )}
+                </div>
+                
+                {/* Voice Booking Mock */}
+                <motion.div 
+                   whileHover={{ scale: 1.02 }}
+                   whileTap={{ scale: 0.98 }}
+                   className="mt-8 p-5 rounded-[28px] bg-[#121212]/80 border border-white/5 flex items-center gap-5 hover:border-blue-500/30 transition-all backdrop-blur-md cursor-pointer group shadow-[0_10px_30px_rgba(0,0,0,0.2)] relative overflow-hidden"
+                >
+                   <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 mix-blend-screen pointer-events-none"></div>
+                   <div className="w-14 h-14 bg-[#1A1A1A] border border-blue-500/30 rounded-[20px] flex items-center justify-center flex-shrink-0 shadow-inner group-hover:border-blue-400 group-hover:bg-blue-500/10 transition-all">
+                      <Mic className="w-6 h-6 text-blue-400 drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]" />
+                   </div>
+                   <div className="relative z-10">
+                      <h4 className="text-white font-black tracking-wide mb-1 flex items-center gap-2 text-sm">Voice Interface <span className="w-2 h-2 rounded-full bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,1)] animate-ping"></span></h4>
+                      <p className="text-blue-200/40 text-xs italic tracking-wide font-medium">"Bhaiya Station chalna hai..."</p>
+                   </div>
+                </motion.div>
+   
+              </motion.div>
+            )}
+          </AnimatePresence>
         </div>
         <BottomNav />
       </div>
-      
+
       {/* Rating Modal Overlap */}
       {showRating && (
-         <div className="fixed inset-0 bg-black/80 backdrop-blur-md z-50 flex items-center justify-center p-4">
-           <div className="bg-[#121212] rounded-[48px] p-10 max-w-sm w-full shadow-[0_30px_60px_rgba(0,0,0,0.8)] border border-white/5 transform scale-100 transition-transform relative overflow-hidden">
+         <div className="fixed inset-0 bg-[#0A0A0A]/95 backdrop-blur-3xl z-[100] flex items-center justify-center p-4 animate-in fade-in duration-300">
+           <div className="bg-[#121212] rounded-[48px] p-10 max-w-sm w-full shadow-[0_40px_80px_rgba(0,0,0,1)] border border-white/5 transform scale-100 transition-transform relative overflow-hidden flex flex-col items-center">
               <div className="absolute top-0 left-0 w-full h-[6px] bg-gradient-to-r from-[#FFD000]/20 via-[#FFD000] to-[#FFD000]/20" />
-              <div className="absolute top-[-50px] right-[-50px] w-32 h-32 bg-[#FFD000]/10 rounded-full blur-[40px]"></div>
+              <div className="absolute top-[-50px] right-[-50px] w-48 h-48 bg-[#FFD000]/10 rounded-full blur-[50px] pointer-events-none"></div>
  
-              <h3 className="text-3xl font-black text-white text-center mb-2 tracking-tight">Trip Evaluation</h3>
-              <p className="text-center text-white/40 text-[10px] font-bold uppercase tracking-widest mb-10">Rate Captain</p>
+              <div className="w-20 h-20 bg-[#1A1A1A] rounded-full border border-[#FFD000]/20 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(255,208,0,0.1)]">
+                 <Star className="w-10 h-10 text-[#FFD000] fill-[#FFD000]" />
+              </div>
+
+              <h3 className="text-3xl font-black text-white text-center mb-1 tracking-tight">Trip Evaluation</h3>
+              <p className="text-center text-white/40 text-[10px] font-black uppercase tracking-widest mb-8">Rate your Captain</p>
               
-              <div className="flex justify-center gap-3 mb-10">
+              <div className="flex justify-center gap-2 mb-10">
                  {[1,2,3,4,5].map(s => (
-                    <button key={s} onClick={() => setRatingVal(s)} className="hover:scale-125 transition-transform duration-300">
-                       <Star className={`w-12 h-12 ${ratingVal >= s ? 'text-[#FFD000] fill-[#FFD000] drop-shadow-[0_0_15px_rgba(255,208,0,0.5)]' : 'text-white/5'}`} />
+                    <button key={s} onClick={() => setRatingVal(s)} className="hover:scale-125 hover:-translate-y-2 transition-all duration-300 p-2">
+                       <Star className={`w-10 h-10 transition-colors ${ratingVal >= s ? 'text-[#FFD000] fill-[#FFD000] drop-shadow-[0_0_15px_rgba(255,208,0,0.5)]' : 'text-white/5'}`} />
                     </button>
                  ))}
               </div>
@@ -680,10 +755,10 @@ export default function BookingPage() {
                 placeholder="Share your experience intel..."
                 value={comment}
                 onChange={e => setComment(e.target.value)}
-                className="w-full bg-[#1A1A1A] border border-white/5 text-white placeholder:text-white/20 rounded-[24px] p-5 min-h-[120px] mb-8 focus:ring-2 focus:ring-[#FFD000] transition-all resize-none shadow-inner text-sm tracking-wide"
+                className="w-full bg-[#0A0A0A] border border-white/5 text-white placeholder:text-white/20 rounded-[24px] p-5 min-h-[120px] mb-8 focus:ring-2 focus:ring-[#FFD000]/30 transition-all resize-none shadow-inner text-sm tracking-wide outline-none"
               />
-              <button onClick={submitRating} className="w-full py-5 bg-gradient-to-br from-[#FFD000] to-[#F5B700] text-black font-black text-sm uppercase tracking-widest rounded-[20px] shadow-[0_10px_30px_rgba(255,208,0,0.3)] hover:scale-[1.02] active:scale-95 transition-transform">
-                 Submit Review
+              <button onClick={submitRating} className="w-full py-5 bg-gradient-to-r from-[#FFD000] to-[#F5B700] text-black font-black text-sm uppercase tracking-widest rounded-[20px] shadow-[0_15px_40px_rgba(255,208,0,0.3)] hover:scale-[1.02] active:scale-95 transition-all">
+                 Confirm Rating
               </button>
            </div>
          </div>
@@ -691,77 +766,73 @@ export default function BookingPage() {
 
       {/* Custom Native Date/Time Schedule Picker Overlay */}
       {showScheduleModal && (
-         <div className="fixed inset-0 bg-black/90 backdrop-blur-md z-50 flex items-center justify-center p-4">
-            <div className="bg-[#121212] rounded-[42px] border border-[#FFD000]/25 p-8 max-w-sm w-full text-center shadow-[0_0_50px_rgba(255,208,0,0.15)] relative overflow-hidden flex flex-col">
+         <div className="fixed inset-0 bg-[#0A0A0A]/95 backdrop-blur-3xl z-[100] flex items-center justify-center p-4 animate-in fade-in duration-300">
+            <div className="bg-[#121212] rounded-[42px] border border-[#FFD000]/25 p-8 max-w-sm w-full text-center shadow-[0_30px_80px_rgba(255,208,0,0.15)] relative overflow-hidden flex flex-col">
                <div className="absolute top-0 left-0 w-full h-[5px] bg-gradient-to-r from-[#FFD000] via-[#F5B700] to-[#FFD000]"></div>
                <button 
                  type="button" onClick={() => setShowScheduleModal(false)}
-                 className="absolute top-4 right-4 text-white/40 hover:text-white w-8 h-8 rounded-full bg-white/5 flex items-center justify-center"
+                 className="absolute top-6 right-6 text-white/40 hover:text-white w-10 h-10 rounded-full bg-[#1A1A1A] border border-white/5 flex items-center justify-center shadow-inner hover:bg-white/5 transition-colors"
                >
-                  <X className="w-4 h-4" />
+                  <X className="w-5 h-5" />
                </button>
                
-               <h3 className="text-2xl font-black text-white mb-2 mt-4 tracking-tight">Schedule Dispatch</h3>
-               <p className="text-[#FFD000] text-[9px] font-black uppercase tracking-widest mb-6">Select date and local Bihar timezone</p>
+               <h3 className="text-3xl font-black text-white mb-2 mt-4 tracking-tight">Schedule Dispatch</h3>
+               <p className="text-[#FFD000] text-[9px] font-black uppercase tracking-widest mb-8">AI Timing Synchronization</p>
  
-               <form onSubmit={handleNativeSchedule} className="space-y-5 text-left">
-                  <div>
-                     <label className="block text-white/40 text-[9px] font-black uppercase tracking-widest mb-2">Service Portfolio</label>
-                     <div className="grid grid-cols-2 gap-2 p-1 bg-[#1A1A1A] rounded-xl border border-white/5">
+               <form onSubmit={handleNativeSchedule} className="space-y-6 text-left">
+                  <div className="bg-[#1A1A1A] p-5 rounded-[28px] border border-white/5 shadow-inner">
+                     <label className="block text-white/40 text-[9px] font-black uppercase tracking-widest mb-3 text-center">Service Type</label>
+                     <div className="grid grid-cols-2 gap-2 p-1.5 bg-[#0A0A0A] rounded-[20px] border border-white/5">
                         <button 
                           type="button" onClick={() => setScheduleServiceType('bike')}
-                          className={`py-2 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${scheduleServiceType === 'bike' ? 'bg-[#FFD000] text-black font-black' : 'text-white/40'}`}
+                          className={`py-3 px-3 rounded-[16px] text-[10px] font-black uppercase tracking-widest transition-all ${scheduleServiceType === 'bike' ? 'bg-[#FFD000] text-black shadow-lg' : 'text-white/30 hover:text-white'}`}
                         >
-                           🏍️ BIKE RIDE
+                           🏍️ RIDE
                         </button>
                         <button 
                           type="button" onClick={() => setScheduleServiceType('parcel')}
-                          className={`py-2 px-3 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${scheduleServiceType === 'parcel' ? 'bg-[#FFD000] text-black font-black' : 'text-white/40'}`}
+                          className={`py-3 px-3 rounded-[16px] text-[10px] font-black uppercase tracking-widest transition-all ${scheduleServiceType === 'parcel' ? 'bg-[#FFD000] text-black shadow-lg' : 'text-white/30 hover:text-white'}`}
                         >
-                           📦 PARCEL RUN
+                           📦 PARCEL
                         </button>
                      </div>
                   </div>
  
-                  <div>
-                     <label className="block text-white/40 text-[9px] font-black uppercase tracking-widest mb-1.5 font-bold">Pick Date</label>
-                     <input 
-                       type="date"
-                       required
-                       min={new Date().toISOString().split("T")[0]}
-                       value={scheduleDate}
-                       onChange={e => setScheduleDate(e.target.value)}
-                       className="block w-full px-4 py-3 bg-[#1A1A1A] border border-white/10 rounded-xl text-xs font-mono font-bold outline-none text-white focus:border-[#FFD000]"
-                       style={{ colorScheme: 'dark' }}
-                     />
+                  <div className="flex gap-4">
+                    <div className="flex-1">
+                       <label className="block text-white/40 text-[9px] font-black uppercase tracking-widest mb-2 px-2">Date</label>
+                       <input 
+                         type="date"
+                         required
+                         min={new Date().toISOString().split("T")[0]}
+                         value={scheduleDate}
+                         onChange={e => setScheduleDate(e.target.value)}
+                         className="block w-full px-5 py-4 bg-[#1A1A1A] border border-white/5 rounded-[20px] text-xs font-mono font-bold outline-none text-white focus:border-[#FFD000]/50 focus:ring-1 focus:ring-[#FFD000]/50 shadow-inner transition-all hover:bg-[#1f1f1f]"
+                         style={{ colorScheme: 'dark' }}
+                       />
+                    </div>
+   
+                    <div className="flex-1">
+                       <label className="block text-white/40 text-[9px] font-black uppercase tracking-widest mb-2 px-2">Time</label>
+                       <input 
+                         type="time"
+                         required
+                         value={scheduleTime}
+                         onChange={e => setScheduleTime(e.target.value)}
+                         className="block w-full px-5 py-4 bg-[#1A1A1A] border border-white/5 rounded-[20px] text-xs font-mono font-bold outline-none text-white focus:border-[#FFD000]/50 focus:ring-1 focus:ring-[#FFD000]/50 shadow-inner transition-all hover:bg-[#1f1f1f]"
+                         style={{ colorScheme: 'dark' }}
+                       />
+                    </div>
                   </div>
  
-                  <div>
-                     <label className="block text-white/40 text-[9px] font-black uppercase tracking-widest mb-1.5 font-bold">Pick Departure Time</label>
-                     <input 
-                       type="time"
-                       required
-                       value={scheduleTime}
-                       onChange={e => setScheduleTime(e.target.value)}
-                       className="block w-full px-4 py-3 bg-[#1A1A1A] border border-white/10 rounded-xl text-xs font-mono font-bold outline-none text-white focus:border-[#FFD000]"
-                       style={{ colorScheme: 'dark' }}
-                     />
-                  </div>
- 
-                  <div className="pt-4 flex gap-3">
-                     <button 
-                       type="button" 
-                       onClick={() => setShowScheduleModal(false)}
-                       className="flex-1 py-4 bg-[#1A1A1A] border border-white/10 rounded-xl text-white/60 font-black text-[10px] uppercase tracking-widest active:scale-95 transition-transform"
-                     >
-                        Cancel
-                     </button>
+                  <div className="pt-6">
                      <button 
                        type="submit"
                        disabled={isScheduling}
-                       className="flex-[2] py-4 bg-gradient-to-r from-[#FFD000] to-[#F5B700] text-black font-black text-[10px] uppercase tracking-widest rounded-xl transition-all shadow-[0_5px_15px_rgba(255,208,0,0.3)] hover:scale-[1.01] active:scale-95 flex items-center justify-center gap-1"
+                       className="w-full py-5 bg-gradient-to-r from-[#FFD000] to-[#F5B700] text-black font-black text-[11px] uppercase tracking-widest rounded-[20px] transition-all shadow-[0_15px_30px_rgba(255,208,0,0.2)] hover:shadow-[0_20px_40px_rgba(255,208,0,0.4)] hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 group overflow-hidden relative"
                      >
-                        Confirm Booking
+                        <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out skew-x-12" />
+                        <Calendar className="w-4 h-4" /> Finalize Schedule
                      </button>
                   </div>
                </form>

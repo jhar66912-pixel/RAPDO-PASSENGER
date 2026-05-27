@@ -45,7 +45,7 @@ export default function Navbar() {
     { name: "Book Ride", path: "/book" },
     { name: "Send Parcel", path: "/parcel" },
     { name: "Pricing System", path: "/pricing" },
-    { name: "Help AI", path: "/support" },
+    { name: "Help AI", path: "/ai-help" },
     { name: "Safety", path: "/#safety" },
   ];
 

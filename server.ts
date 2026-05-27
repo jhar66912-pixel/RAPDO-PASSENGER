@@ -92,85 +92,37 @@ app.post("/api/rahi-ai/chat", async (req, res): Promise<any> => {
     // Update in-memory session cache
     sessionHistoryCache[sessionId] = currentHistory;
 
-    // Build DeepSeek messages payloads combining Master System Prompt
-    const apiMessages = [
-      { role: "system", content: MASTER_SYSTEM_PROMPT },
-      ...currentHistory
-    ];
+    // Executing Google Gemini generation for session
+    console.log("Executing Google Gemini generation for session:", sessionId);
+    const mappedContents = currentHistory.map(msg => ({
+      role: msg.role === "assistant" ? "model" as const : "user" as const,
+      parts: [{ text: msg.content }]
+    }));
 
-    let useFallback = false;
-
-    try {
-      // Trigger POST request to DeepSeek API endpoint
-      const response = await fetch("https://api.deepseek.com/v1/chat/completions", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${DEEPSEEK_API_KEY}`
-        },
-        body: JSON.stringify({
-          model: "deepseek-chat",
-          messages: apiMessages,
-          temperature: 0.6,
-          max_tokens: 450,
-          stream: false
-        })
-      });
-
-      if (!response.ok) {
-        const errorText = await response.text();
-        console.warn(`DeepSeek API status ${response.status}: ${errorText}. Falling back to Google Gemini.`);
-        useFallback = true;
-      } else {
-        const responsePayload = await response.json();
-        
-        // Save AI reply to cache for conversational continuum
-        if (responsePayload.choices && responsePayload.choices[0]) {
-          const assistantReply = responsePayload.choices[0].message.content;
-          currentHistory.push({ role: "assistant", content: assistantReply });
-          sessionHistoryCache[sessionId] = currentHistory;
-        }
-
-        // Stream/Pass JSON payload directly back to RAHI helper UI clients
-        return res.status(200).json(responsePayload);
+    const geminiResponse = await ai.models.generateContent({
+      model: "gemini-3.5-flash",
+      contents: mappedContents,
+      config: {
+        systemInstruction: MASTER_SYSTEM_PROMPT,
+        temperature: 0.6,
       }
-    } catch (deepseekError: any) {
-      console.warn("DeepSeek API call encountered unexpected error. Falling back to Google Gemini:", deepseekError.message);
-      useFallback = true;
-    }
+    });
 
-    if (useFallback) {
-      console.log("Executing Google Gemini fallback generation for session:", sessionId);
-      const mappedContents = currentHistory.map(msg => ({
-        role: msg.role === "assistant" ? "model" as const : "user" as const,
-        parts: [{ text: msg.content }]
-      }));
+    const assistantReply = geminiResponse.text || "Namaste bhaiya! Server slow chal raha hai ya network issue hai. Aap direct call karke ya WhatsApp group se booking status confirm kar sakte hain: +91 8252988672.";
+    
+    // Update historical cache
+    currentHistory.push({ role: "assistant", content: assistantReply });
+    sessionHistoryCache[sessionId] = currentHistory;
 
-      const geminiResponse = await ai.models.generateContent({
-        model: "gemini-3.5-flash",
-        contents: mappedContents,
-        config: {
-          systemInstruction: MASTER_SYSTEM_PROMPT,
-          temperature: 0.6,
+    // Standardize payload back into typical client response stream
+    return res.status(200).json({
+      choices: [{
+        message: {
+          role: "assistant",
+          content: assistantReply
         }
-      });
-
-      const assistantReply = geminiResponse.text || "Namaste bhaiya! Server slow chal raha hai ya network issue hai. Aap direct call karke ya WhatsApp group se booking status confirm kar sakte hain: +91 8252988672.";
-      
-      // Update historical cache
-      currentHistory.push({ role: "assistant", content: assistantReply });
-      sessionHistoryCache[sessionId] = currentHistory;
-
-      // Standardize payload back into typical client response stream
-      return res.status(200).json({
-        choices: [{
-          message: {
-            role: "assistant",
-            content: assistantReply
-          }
-        }]
-      });
-    }
+      }]
+    });
 
   } catch (error: any) {
     console.error("Failed executing secure chat completing:", error);

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { 
   Clock, Navigation, Package, IndianRupee, MapPin, Calendar, Star, 
   ChevronRight, CheckCircle2, History, Search, ArrowLeft, Loader2, X, Download, ShieldAlert
@@ -21,6 +22,7 @@ type ActivityItem = {
 };
 
 export default function Activity() {
+  const navigate = useNavigate();
   const { currentUser } = useAuth();
   const [tab, setTab] = useState('all');
   const [searchTerm, setSearchTerm] = useState('');
@@ -119,7 +121,7 @@ export default function Activity() {
   // Handle rebooking
   const handleRebook = (item: ActivityItem) => {
     alert(`Bhaiya! Rebooking ride from "${item.pickup}" to "${item.drop}". Directing you to map checkout...`);
-    window.location.href = '#/booking';
+    navigate('/book');
   };
 
   // Search filter

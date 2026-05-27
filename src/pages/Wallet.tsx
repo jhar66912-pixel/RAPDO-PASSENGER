@@ -183,6 +183,18 @@ export default function Wallet() {
   return (
     <div className="flex-1 bg-[#0A0A0A] min-h-screen pt-4 pb-24 px-4 sm:px-6 lg:px-8 font-sans text-left">
       <div className="max-w-md mx-auto min-h-[85vh] bg-[#121212] rounded-[48px] shadow-2xl border border-white/5 overflow-hidden relative flex flex-col mt-4">
+        
+        {/* Fintech Premium Background Image */}
+        <div className="absolute inset-0 z-0 select-none pointer-events-none">
+          <img 
+            src="https://images.unsplash.com/photo-1634973357973-f2ed255753e1?auto=format&fit=crop&q=80&w=800" 
+            alt="Fintech Dark Gold Premium Background" 
+            className="w-full h-full object-cover opacity-[0.08] mix-blend-screen scale-105 pointer-events-none"
+            referrerPolicy="no-referrer"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#121212]/80 via-[#121212]/95 to-[#121212] pointer-events-none" />
+        </div>
+
         {/* Holographic Glowing Orbs background effect */}
         <div className="absolute top-[-50px] left-[-50px] w-[250px] h-[250px] bg-purple-600/10 rounded-full blur-[80px] pointer-events-none mix-blend-screen" />
 

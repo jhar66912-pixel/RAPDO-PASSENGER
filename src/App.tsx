@@ -15,6 +15,8 @@ import Wallet from './pages/Wallet';
 import Pricing from './pages/Pricing';
 import AiHelp from './pages/AiHelp';
 import CaptainDashboard from './pages/CaptainDashboard';
+import PremiumPayment from './pages/PremiumPayment';
+import DesignSystem from './pages/DesignSystem';
 
 function ProtectedRoute({ children, role }: { children: ReactNode; role: string }) {
   const { currentUser, loading } = useAuth();
@@ -64,12 +66,14 @@ export default function App() {
                     <Wallet />
                   </ProtectedRoute>
                 } />
-                <Route path="/support" element={
+                <Route path="/ai-help" element={
                   <ProtectedRoute role="customer">
                     <AiHelp />
                   </ProtectedRoute>
                 } />
                 <Route path="/pricing" element={<Pricing />} />
+                <Route path="/premium-checkout" element={<PremiumPayment />} />
+                <Route path="/design-system" element={<DesignSystem />} />
                 <Route path="/captain" element={
                   <ProtectedRoute role="captain">
                     <CaptainDashboard />

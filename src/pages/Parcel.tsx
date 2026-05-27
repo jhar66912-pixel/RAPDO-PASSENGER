@@ -44,17 +44,17 @@ export default function Parcel() {
 
           {isB2bMode ? (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out space-y-6">
-               <div className="bg-[#1A1A1A] rounded-[24px] border border-[#FFD000]/20 p-5 shadow-lg relative overflow-hidden">
-                 <div className="absolute top-0 right-0 w-24 h-24 bg-[#FFD000]/10 blur-[30px]"></div>
+               <div className="bg-[#1A1A1A] rounded-[24px] border border-[#FFD000]/20 p-5 shadow-[0_20px_40px_rgba(250,204,21,0.05)] relative overflow-hidden transform-gpu hover:scale-[1.02] transition-transform">
+                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFD000]/10 blur-[40px]"></div>
                  <h2 className="text-[#FFD000] font-black text-xs tracking-widest uppercase mb-1">Active SLA</h2>
-                 <p className="text-white text-2xl font-black">Patna Pharma Dist.</p>
+                 <p className="text-white text-2xl font-black drop-shadow-md">Patna Pharma Dist.</p>
                  <div className="flex gap-4 mt-4 text-[10px] uppercase font-bold text-white/50 tracking-widest">
                    <div><span className="text-white">14</span> Ongoing</div>
                    <div><span className="text-white">102</span> Today</div>
                  </div>
                </div>
 
-               <button className="w-full py-4 bg-[#FFD000]/10 border border-[#FFD000]/30 hover:bg-[#FFD000]/20 text-[#FFD000] rounded-[20px] font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2">
+               <button className="w-full py-4 bg-[#FFD000]/10 border border-[#FFD000]/30 hover:bg-[#FFD000]/20 text-[#FFD000] rounded-[20px] font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(250,204,21,0.2)]">
                  <Zap className="w-4 h-4" /> Bulk Dispatch (Excel Upload)
                </button>
 
@@ -62,19 +62,20 @@ export default function Parcel() {
                  <h3 className="text-white/40 text-[10px] font-black tracking-widest uppercase mb-4 px-2">Live B2B Connects</h3>
                  {[
                    { id: 'ORD-8821', dest: 'Kankarbagh Medico', status: 'Captain En Route', time: '12 MIN ETA' },
-                   { id: 'ORD-8822', dest: 'Boring Rd Diagnostics', status: 'Searching Rider', time: '--' }
+                   { id: 'ORD-8822', dest: 'Boring Rd Diagnostics', status: 'Searching Rider', time: '--' },
+                   { id: 'ORD-8823', dest: 'Patna Super Specialty', status: 'Processing', time: 'Pending' }
                  ].map((order, i) => (
-                    <div key={i} className="bg-[#121212] border border-white/5 p-4 rounded-[20px] flex items-center justify-between hover:bg-white/[0.02] transition-colors cursor-pointer">
+                    <div key={i} className="bg-[#121212] border border-white/5 p-4 rounded-[20px] flex items-center justify-between hover:bg-white/[0.04] hover:border-white/20 transition-all cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1">
                       <div className="flex items-center gap-3">
-                        <div className={`w-8 h-8 rounded-full flex items-center justify-center border ${order.status === 'Searching Rider' ? 'border-orange-500/20 bg-orange-500/10 text-orange-400' : 'border-green-500/20 bg-green-500/10 text-green-400'}`}>
-                           <Box className="w-4 h-4" />
+                        <div className={`w-10 h-10 rounded-[14px] flex items-center justify-center border shadow-inner ${order.status === 'Searching Rider' || order.status === 'Processing' ? 'border-orange-500/20 bg-orange-500/10 text-orange-400' : 'border-green-500/20 bg-green-500/10 text-green-400'}`}>
+                           <Box className="w-5 h-5" />
                         </div>
                         <div>
                            <p className="text-white font-bold text-sm tracking-wide">{order.dest}</p>
-                           <p className="text-white/40 text-[10px] font-bold mt-0.5 tracking-wider">{order.status} • {order.id}</p>
+                           <p className="text-white/40 text-[10px] font-bold mt-0.5 tracking-wider uppercase">{order.status} • <span className="text-[#FFD000]">{order.id}</span></p>
                         </div>
                       </div>
-                      <span className="text-white/30 text-[10px] font-black uppercase tracking-widest bg-white/5 px-2 py-1 rounded-md">{order.time}</span>
+                      <span className="text-white/30 text-[9px] font-black uppercase tracking-widest bg-white/5 border border-white/5 px-2 py-1.5 rounded-lg shadow-sm">{order.time}</span>
                     </div>
                  ))}
                </div>
@@ -141,13 +142,13 @@ export default function Parcel() {
                      </div>
                   </div>
 
-                  <div className="pt-6">
+                   <div className="pt-6">
                      <button
                        onClick={() => setStep(2)}
                        disabled={!pickup || !drop}
-                       className="group relative w-full py-5 overflow-hidden bg-white text-black font-black text-sm uppercase tracking-widest rounded-[20px] shadow-[0_0_30px_rgba(255,255,255,0.1)] hover:shadow-[0_0_40px_rgba(255,255,255,0.2)] hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all flex items-center justify-center gap-3"
+                       className="group relative w-full py-5 overflow-hidden bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-black text-sm uppercase tracking-widest rounded-[20px] shadow-[0_0_30px_rgba(59,130,246,0.3)] hover:shadow-[0_0_40px_rgba(59,130,246,0.5)] hover:scale-[1.02] active:scale-95 disabled:opacity-50 disabled:hover:scale-100 transition-all flex items-center justify-center gap-3"
                      >
-                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-black/5 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+                       <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out skew-x-12" />
                        Proceed to Booking <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
                      </button>
                   </div>

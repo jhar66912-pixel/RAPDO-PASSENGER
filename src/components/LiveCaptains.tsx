@@ -1,11 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Marker } from './SmartMapView';
 
+// Coordinates centered around Patna, BR (25.5941, 85.1376)
 const INITIAL_CAPTAINS = [
-   { id: 1, lat: 25.7796, lng: 84.7499, heading: 0, status: 'online' },
-   { id: 2, lat: 25.7820, lng: 84.7550, heading: 90, status: 'busy' },
-   { id: 3, lat: 25.7750, lng: 84.7400, heading: 45, status: 'online' },
-   { id: 4, lat: 25.7710, lng: 84.7450, heading: 180, status: 'offline' },
+   { id: 1, lat: 25.5950, lng: 85.1380, heading: 45, status: 'online', type: 'bike', eta: '2 min' },
+   { id: 2, lat: 25.5930, lng: 85.1370, heading: 120, status: 'busy', type: 'car' },
+   { id: 3, lat: 25.5965, lng: 85.1395, heading: -30, status: 'online', type: 'bike', eta: '4 min' },
+   { id: 4, lat: 25.5925, lng: 85.1400, heading: 180, status: 'online', type: 'auto', eta: '1 min' },
 ];
 
 export function LiveCaptains() {
@@ -17,7 +18,7 @@ export function LiveCaptains() {
                 if (cap.status === 'offline') return cap;
 
                 // Randomly change heading
-                const headingChange = (Math.random() - 0.5) * 30; // -15 to +15 deg
+                const headingChange = (Math.random() - 0.5) * 20; // smoother turns
                 const newHeading = (cap.heading + headingChange) % 360;
                 
                 // Move forward by small delta based on heading
@@ -42,14 +43,43 @@ export function LiveCaptains() {
            {captains.map(cap => {
               if (cap.status === 'offline') return null;
               
-              const strokeColor = cap.status === 'online' ? '#FFD000' : '#3B82F6';
-              // Determine size based on status to simulate "pulse" visually or just glowing feel via static SVG
+              const strokeColor = cap.status === 'online' ? '#FFD000' : '#10B981';
+              const iconEmoji = cap.type === 'bike' ? '🏍️' : cap.type === 'auto' ? '🛺' : '🚘';
+              const etaBadge = cap.eta ? `
+                 <g transform="translate(18, -12)">
+                   <rect x="0" y="0" width="46" height="20" rx="10" fill="#0A0A0A" stroke="${strokeColor}" stroke-width="1.5" />
+                   <text x="23" y="14" font-family="sans-serif" font-weight="bold" font-size="10" fill="white" text-anchor="middle">${cap.eta}</text>
+                 </g>
+              ` : '';
+
+              // Futuristic glowing marker styling
               const svg = `
-                 <svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg">
-                   <circle cx="24" cy="24" r="22" fill="#121212" stroke="${strokeColor}" stroke-width="4"/>
+                 <svg width="100" height="100" viewBox="-20 -20 100 100" xmlns="http://www.w3.org/2000/svg">
+                   <defs>
+                     <filter id="glow-${cap.id}" x="-50%" y="-50%" width="200%" height="200%">
+                       <feGaussianBlur stdDeviation="8" result="coloredBlur"/>
+                       <feMerge>
+                         <feMergeNode in="coloredBlur"/>
+                         <feMergeNode in="SourceGraphic"/>
+                       </feMerge>
+                     </filter>
+                   </defs>
+                   
+                   <!-- Glowing base aura -->
+                   <circle cx="24" cy="24" r="16" fill="${strokeColor}" opacity="0.3" filter="url(#glow-${cap.id})" />
+                   <circle cx="24" cy="24" r="22" fill="none" stroke="${strokeColor}" stroke-opacity="0.4" stroke-width="1" />
+                   
+                   <!-- Main vessel body -->
+                   <circle cx="24" cy="24" r="14" fill="#121212" stroke="${strokeColor}" stroke-width="2"/>
+                   
+                   <!-- Rotation layer for heading -->
                    <g transform="rotate(${cap.heading} 24 24)">
-                     <text x="24" y="32" font-size="24" text-anchor="middle">🏍️</text>
+                     <circle cx="24" cy="10" r="3" fill="#FFFFFF" /> <!-- Headlight indicator -->
+                     <text x="24" y="30" font-size="16" text-anchor="middle">${iconEmoji}</text>
                    </g>
+                   
+                   <!-- ETA Badge -->
+                   ${etaBadge}
                  </svg>
               `;
               const iconUrl = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(svg)}`;
