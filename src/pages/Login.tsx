@@ -17,7 +17,12 @@ export default function Login() {
       await login('customer');
       navigate('/book');
     } catch (err: any) {
-       setError(err.message || 'Login failed due to unexpected error.');
+       const errMsg = err.message || '';
+       if (errMsg.includes('unauthorized-domain') || errMsg.includes('auth/unauthorized-domain')) {
+         setError('FIREBASE_UNAUTHORIZED_DOMAIN: This development or preview URL is not authorized in your Firebase console. Please add "' + window.location.hostname + '" to your Firebase Console (Authentication > Settings > Authorized Domains), or click the "Demo Bihar-Local Bypass" below to explore RAHI immediately!');
+       } else {
+         setError(errMsg || 'Login failed due to unexpected error.');
+       }
     } finally {
        setIsLoading(false);
     }
