@@ -19,7 +19,8 @@ import {
   AlertTriangle,
   User,
   MessagesSquare,
-  BadgeAlert
+  BadgeAlert,
+  Mic
 } from "lucide-react";
 import BottomNav from "../components/BottomNav";
 
@@ -316,6 +317,20 @@ export default function AiHelp() {
     }
   };
 
+  const [isRecording, setIsRecording] = useState(false);
+
+  const simulateSpeechToText = () => {
+    setIsRecording(true);
+    playSynthesizedChime("send"); // Just a sound to indicate recording started
+    
+    // Simulate recording delay and then speech converted to text
+    setTimeout(() => {
+      setInputValue("Patna Junction jane me kitna time lagega?");
+      setIsRecording(false);
+      playSynthesizedChime("receive");
+    }, 2500);
+  };
+
   return (
     <div id="ai-help-screen" className="flex flex-col flex-1 bg-[#0A0A0A] overflow-hidden min-h-screen text-white relative font-sans">
       
@@ -578,6 +593,14 @@ export default function AiHelp() {
             title="Escalate issue to human operator"
           >
             <BadgeAlert className="w-5 h-5" />
+          </button>
+
+          <button
+            onClick={isRecording ? undefined : simulateSpeechToText}
+            className={`p-3 rounded-full shrink-0 transition-all ${isRecording ? "bg-blue-500/20 text-blue-400 border border-blue-500/30 animate-pulse" : "bg-white/5 border border-white/5 hover:bg-white/10 text-white/60 hover:text-white"}`}
+            title="Voice Assistant"
+          >
+            <Mic className="w-5 h-5" />
           </button>
 
           <input

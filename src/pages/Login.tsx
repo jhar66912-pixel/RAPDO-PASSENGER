@@ -42,6 +42,20 @@ export default function Login() {
     }
   };
 
+  const handleCaptainBypassLogin = async () => {
+    if (isLoading) return;
+    try {
+      setIsLoading(true);
+      setError('');
+      await loginDemo('captain');
+      navigate('/captain');
+    } catch (err: any) {
+       setError(err.message || 'Bypass failed.');
+    } finally {
+       setIsLoading(false);
+    }
+  };
+
   return (
     <div className="flex-1 flex flex-col items-center justify-center bg-[#0A0A0A] p-4 relative overflow-hidden min-h-screen z-0">
       {/* Premium Background Decor */}
@@ -114,6 +128,14 @@ export default function Login() {
               className={`w-full py-4 px-6 bg-[#161616] hover:bg-[#1E1E1E] border border-white/5 hover:border-[#FFD000]/20 text-[#FFD000] font-black text-xs uppercase tracking-widest rounded-[24px] shadow-sm transition-all flex justify-center items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'active:scale-95'}`}
             >
               <Sparkles className="w-4 h-4 text-[#FFD000] animate-pulse" /> Demo Bihar-Local Bypass
+            </button>
+            <button
+              type="button"
+              onClick={handleCaptainBypassLogin}
+              disabled={isLoading}
+              className={`w-full mt-2 py-4 px-6 bg-[#161616] hover:bg-[#1E1E1E] border border-white/5 hover:border-[#3B82F6]/20 text-[#3B82F6] font-black text-xs uppercase tracking-widest rounded-[24px] shadow-sm transition-all flex justify-center items-center gap-2 ${isLoading ? 'opacity-50 cursor-not-allowed' : 'active:scale-95'}`}
+            >
+              <Sparkles className="w-4 h-4 text-[#3B82F6] animate-pulse" /> Demo Captain Dashboard
             </button>
             
             <p className="text-center text-[10px] text-white/30 uppercase tracking-widest font-bold flex justify-center items-center gap-2 mt-8">

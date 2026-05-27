@@ -14,6 +14,7 @@ import Activity from './pages/Activity';
 import Wallet from './pages/Wallet';
 import Pricing from './pages/Pricing';
 import AiHelp from './pages/AiHelp';
+import CaptainDashboard from './pages/CaptainDashboard';
 
 function ProtectedRoute({ children, role }: { children: ReactNode; role: string }) {
   const { currentUser, loading } = useAuth();
@@ -69,6 +70,11 @@ export default function App() {
                   </ProtectedRoute>
                 } />
                 <Route path="/pricing" element={<Pricing />} />
+                <Route path="/captain" element={
+                  <ProtectedRoute role="captain">
+                    <CaptainDashboard />
+                  </ProtectedRoute>
+                } />
               </Routes>
             </main>
           </div>

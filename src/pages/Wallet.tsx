@@ -90,13 +90,21 @@ export default function Wallet() {
        return;
     }
 
-    try {
+       try {
        setLoading(true);
-       const doubleNewBalance = balance + amt;
+       
+       const isWithdrawal = currentUser?.role === 'captain';
+       if (isWithdrawal && balance < amt) {
+          alert("Insufficient balance for withdrawal!");
+          setLoading(false);
+          return;
+       }
+
+       const newBalance = isWithdrawal ? balance - amt : balance + amt;
        
        // Update User balance in Firestore
        await updateDoc(doc(db, 'users', currentUser.uid), {
-          walletBalance: doubleNewBalance
+          walletBalance: newBalance
        });
 
        // Create transactional trace log
@@ -104,14 +112,14 @@ export default function Wallet() {
        await setDoc(doc(db, 'transactions', txnId), {
           transactionId: txnId,
           customerId: currentUser.uid,
-          title: 'UPI Vault Top-up',
-          amount: `+₹${amt}`,
-          type: 'credit',
+          title: isWithdrawal ? 'Bank IMPS Payout' : 'UPI Vault Top-up',
+          amount: isWithdrawal ? `-₹${amt}` : `+₹${amt}`,
+          type: isWithdrawal ? 'debit' : 'credit',
           date: 'Just Now',
           createdAt: Date.now()
        });
 
-       alert(`🎉 Shabaash! ₹${amt} successfully top-up is completed via digital gateways! Available Balance is now updated.`);
+       alert(`🎉 Shabaash! ₹${amt} successfully ${isWithdrawal ? 'withdrawn to bank' : 'added'} via digital gateways! Available Balance is now updated.`);
        setShowAddFunds(false);
     } catch (err) {
        console.error("topup fails", err);
@@ -219,8 +227,9 @@ export default function Wallet() {
 
           {/* Quick Action Buttons */}
           <div className="flex gap-4 mb-10 shrink-0">
-             <button onClick={() => setShowAddFunds(true)} className="flex-grow py-5 bg-[#FFD000] text-black text-[11px] uppercase tracking-widest font-black rounded-[24px] shadow-lg shadow-[#FFD000]/15 hover:scale-[1.02] active:scale-95 transition-all flex flex-col items-center justify-center gap-2">
-                <PlusCircle className="w-5 h-5" /> Add Funds
+             <button onClick={() => setShowAddFunds(true)} className={`flex-grow py-5 text-black text-[11px] uppercase tracking-widest font-black rounded-[24px] shadow-lg hover:scale-[1.02] active:scale-95 transition-all flex flex-col items-center justify-center gap-2 ${currentUser?.role === 'captain' ? 'bg-[#00DF89] shadow-[#00DF89]/15' : 'bg-[#FFD000] shadow-[#FFD000]/15'}`}>
+                {currentUser?.role === 'captain' ? <ArrowUpRight className="w-5 h-5" /> : <PlusCircle className="w-5 h-5" />} 
+                {currentUser?.role === 'captain' ? 'Withdraw Funds' : 'Add Funds'}
              </button>
              <button onClick={() => setShowAddMethod(true)} className="flex-grow py-5 bg-[#1A1A1A] border border-white/5 text-white text-[11px] uppercase tracking-widest font-black rounded-[24px] hover:bg-white/10 active:scale-95 transition-all flex flex-col items-center justify-center gap-2">
                 <CreditCard className="w-5 h-5 text-white/50" /> Add Method
@@ -292,12 +301,12 @@ export default function Wallet() {
                   <X className="w-4 h-4" />
                </button>
                
-               <h3 className="text-2xl font-black text-white mt-4 mb-2 tracking-tight">Top-up Vault Balance</h3>
+               <h3 className="text-2xl font-black text-white mt-4 mb-2 tracking-tight">{currentUser?.role === 'captain' ? 'Withdraw to Bank' : 'Top-up Vault Balance'}</h3>
                <p className="text-purple-400 text-[10px] font-black uppercase tracking-widest mb-6">Secured Instant Settlement</p>
 
                <form onSubmit={handleAddFundsSubmit} className="space-y-5 text-left">
                   <div>
-                     <label className="block text-white/40 text-[9px] font-black uppercase tracking-widest mb-2">Deposit Amount</label>
+                     <label className="block text-white/40 text-[9px] font-black uppercase tracking-widest mb-2">{currentUser?.role === 'captain' ? 'Withdraw Amount' : 'Deposit Amount'}</label>
                      <div className="relative">
                         <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-black text-[#FFD000]">₹</span>
                         <input 

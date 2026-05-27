@@ -242,8 +242,8 @@ export default function Home() {
                whileTap={{ scale: 0.98 }}
                className="relative group p-[1px] rounded-3xl bg-gradient-to-b from-white/10 to-transparent hover:from-purple-500/40 transition-colors duration-500"
             >
-              <Link
-                to="/contact"
+              <a
+                href="#contact"
                 className="flex flex-col h-full bg-[#1A1A1A] rounded-[23px] p-6 items-start justify-between relative overflow-hidden transition-all duration-300"
               >
                 <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/10 rounded-full blur-[40px] group-hover:bg-purple-500/20 group-hover:scale-150 transition-all duration-700"></div>
@@ -260,7 +260,7 @@ export default function Home() {
                     </p>
                   </div>
                 </div>
-              </Link>
+              </a>
             </motion.div>
           </div>
 

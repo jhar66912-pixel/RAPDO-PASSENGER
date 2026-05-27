@@ -11,6 +11,8 @@ export default function Parcel() {
   const [drop, setDrop] = useState('');
   const [weight, setWeight] = useState('0-5kg');
 
+  const [isB2bMode, setIsB2bMode] = useState(false);
+
   return (
     <div className="flex-1 bg-[#0A0A0A] min-h-screen pt-4 pb-24 px-4 sm:px-6 lg:px-8 font-sans">
       <div className="max-w-md mx-auto min-h-[85vh] bg-[#121212] rounded-[48px] shadow-2xl border border-white/5 overflow-hidden relative flex flex-col mt-4">
@@ -22,19 +24,62 @@ export default function Parcel() {
 
         <div className="p-8 relative z-10 flex-1 overflow-y-auto no-scrollbar">
           {/* Header */}
-          <div className="flex justify-between items-center mb-10">
+          <div className="flex justify-between items-center mb-8">
              <div>
                 <h1 className="text-2xl font-black text-white tracking-widest flex items-center gap-3 uppercase">
-                   RAHI Parcel <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                   {isB2bMode ? 'RAHI B2B' : 'RAHI Parcel'} <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
                 </h1>
-                <p className="text-white/40 text-[11px] font-bold tracking-widest uppercase mt-1">Hyperlocal delivery network</p>
+                <p className="text-white/40 text-[11px] font-bold tracking-widest uppercase mt-1">
+                   {isB2bMode ? 'Merchant Logistics Console' : 'Hyperlocal delivery network'}
+                </p>
              </div>
-             <div className="w-12 h-12 bg-white/5 border border-white/10 rounded-[18px] flex items-center justify-center shadow-inner">
-                <PackageSearch className="text-blue-400 w-6 h-6" />
-             </div>
+             <button 
+               onClick={() => setIsB2bMode(!isB2bMode)}
+               className={`w-12 h-12 rounded-[18px] flex items-center justify-center transition-all ${isB2bMode ? 'bg-[#FFD000]/10 border border-[#FFD000]/20 text-[#FFD000]' : 'bg-white/5 border border-white/10 text-blue-400 opacity-80 hover:opacity-100'}`}
+               title="Toggle Merchant Mode"
+              >
+                {isB2bMode ? <Box className="w-6 h-6" /> : <PackageSearch className="w-6 h-6" />}
+             </button>
           </div>
 
-          {step === 1 ? (
+          {isB2bMode ? (
+            <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out space-y-6">
+               <div className="bg-[#1A1A1A] rounded-[24px] border border-[#FFD000]/20 p-5 shadow-lg relative overflow-hidden">
+                 <div className="absolute top-0 right-0 w-24 h-24 bg-[#FFD000]/10 blur-[30px]"></div>
+                 <h2 className="text-[#FFD000] font-black text-xs tracking-widest uppercase mb-1">Active SLA</h2>
+                 <p className="text-white text-2xl font-black">Patna Pharma Dist.</p>
+                 <div className="flex gap-4 mt-4 text-[10px] uppercase font-bold text-white/50 tracking-widest">
+                   <div><span className="text-white">14</span> Ongoing</div>
+                   <div><span className="text-white">102</span> Today</div>
+                 </div>
+               </div>
+
+               <button className="w-full py-4 bg-[#FFD000]/10 border border-[#FFD000]/30 hover:bg-[#FFD000]/20 text-[#FFD000] rounded-[20px] font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2">
+                 <Zap className="w-4 h-4" /> Bulk Dispatch (Excel Upload)
+               </button>
+
+               <div className="space-y-3 mt-8">
+                 <h3 className="text-white/40 text-[10px] font-black tracking-widest uppercase mb-4 px-2">Live B2B Connects</h3>
+                 {[
+                   { id: 'ORD-8821', dest: 'Kankarbagh Medico', status: 'Captain En Route', time: '12 MIN ETA' },
+                   { id: 'ORD-8822', dest: 'Boring Rd Diagnostics', status: 'Searching Rider', time: '--' }
+                 ].map((order, i) => (
+                    <div key={i} className="bg-[#121212] border border-white/5 p-4 rounded-[20px] flex items-center justify-between hover:bg-white/[0.02] transition-colors cursor-pointer">
+                      <div className="flex items-center gap-3">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center border ${order.status === 'Searching Rider' ? 'border-orange-500/20 bg-orange-500/10 text-orange-400' : 'border-green-500/20 bg-green-500/10 text-green-400'}`}>
+                           <Box className="w-4 h-4" />
+                        </div>
+                        <div>
+                           <p className="text-white font-bold text-sm tracking-wide">{order.dest}</p>
+                           <p className="text-white/40 text-[10px] font-bold mt-0.5 tracking-wider">{order.status} • {order.id}</p>
+                        </div>
+                      </div>
+                      <span className="text-white/30 text-[10px] font-black uppercase tracking-widest bg-white/5 px-2 py-1 rounded-md">{order.time}</span>
+                    </div>
+                 ))}
+               </div>
+            </div>
+          ) : step === 1 ? (
             <div className="animate-in fade-in zoom-in-95 duration-500 ease-out">
                {/* Real Live Map */}
                <div className="relative h-48 w-full rounded-[32px] overflow-hidden border border-white/5 mb-8 flex flex-col items-center justify-center cursor-pointer shadow-lg">

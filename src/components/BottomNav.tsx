@@ -1,13 +1,16 @@
 import React from 'react';
 import { Home, Package, Activity, Wallet, User, History } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
+import { useAuth } from '../lib/auth';
 
 export default function BottomNav() {
   const location = useLocation();
+  const { currentUser } = useAuth();
+  const isCaptain = currentUser?.role === 'captain';
 
   return (
     <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[90%] max-w-[380px] h-16 bg-[#0f0f0f]/90 backdrop-blur-xl border border-white/10 rounded-full shadow-2xl flex items-center justify-between px-6 z-50">
-      <NavItem to="/" current={location.pathname} icon={<Home className="w-5 h-5" />} label="Home" activeColor="text-[#FACC15]" />
+      <NavItem to={isCaptain ? "/captain" : "/"} current={location.pathname} icon={<Home className="w-5 h-5" />} label="Home" activeColor="text-[#FACC15]" />
       <NavItem to="/book" current={location.pathname} icon={<Activity className="w-5 h-5" />} label="Ride" activeColor="text-blue-400" />
       <NavItem to="/parcel" current={location.pathname} icon={<Package className="w-5 h-5" />} label="Parcel" activeColor="text-green-400" />
       <NavItem to="/activity" current={location.pathname} icon={<History className="w-5 h-5" />} label="Activity" activeColor="text-orange-400" />
