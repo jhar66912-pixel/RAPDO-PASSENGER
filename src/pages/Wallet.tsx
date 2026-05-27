@@ -8,6 +8,7 @@ import { useAuth } from '../lib/auth';
 import { db } from '../lib/firebase';
 import { doc, updateDoc, setDoc, collection, query, where, onSnapshot } from 'firebase/firestore';
 import { PaymentMethod } from '../types';
+import { motion, AnimatePresence } from 'motion/react';
 
 export default function Wallet() {
   const { currentUser } = useAuth();
@@ -17,6 +18,16 @@ export default function Wallet() {
   const [methods, setMethods] = useState<PaymentMethod[]>([]);
   const [transactions, setTransactions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Custom Toast State
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' | null }>({ message: '', type: null });
+
+  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+    setToast({ message, type });
+    setTimeout(() => {
+      setToast({ message: '', type: null });
+    }, 4500);
+  };
 
   // Modal controls
   const [showAddFunds, setShowAddFunds] = useState(false);
@@ -86,7 +97,7 @@ export default function Wallet() {
 
     const amt = parseFloat(depositAmount);
     if (isNaN(amt) || amt <= 0) {
-       alert("Sahi amount daliye bhaiya!");
+       showToast("Sahi amount daliye bhaiya!", "error");
        return;
     }
 
@@ -95,7 +106,7 @@ export default function Wallet() {
        
        const isWithdrawal = currentUser?.role === 'captain';
        if (isWithdrawal && balance < amt) {
-          alert("Insufficient balance for withdrawal!");
+          showToast("Insufficient balance for withdrawal!", "error");
           setLoading(false);
           return;
        }
@@ -119,11 +130,11 @@ export default function Wallet() {
           createdAt: Date.now()
        });
 
-       alert(`🎉 Shabaash! ₹${amt} successfully ${isWithdrawal ? 'withdrawn to bank' : 'added'} via digital gateways! Available Balance is now updated.`);
+       showToast(`🎉 Shabaash! ₹${amt} successfully ${isWithdrawal ? 'withdrawn to bank' : 'added'} via digital gateways! Available Balance is now updated.`, "success");
        setShowAddFunds(false);
     } catch (err) {
        console.error("topup fails", err);
-       alert("Funding topup gateway is offline or network error occurred.");
+       showToast("Funding topup gateway is offline or network error occurred.", "error");
     } finally {
        setLoading(false);
     }
@@ -137,13 +148,13 @@ export default function Wallet() {
      let detailsStr = '';
      if (methodType === 'card') {
         if (cardNo.length < 12) {
-           alert("Sahi Card number enter kijiye!");
+           showToast("Sahi Card number enter kijiye!", "error");
            return;
         }
         detailsStr = `Card •••• ${cardNo.slice(-4)}`;
      } else {
         if (!upiVpa.includes('@')) {
-           alert("UPI ID me '@' hona jaruri hai!");
+           showToast("UPI ID me '@' hona jaruri hai!", "error");
            return;
         }
         detailsStr = upiVpa;
@@ -163,11 +174,11 @@ export default function Wallet() {
            paymentMethods: updatedMethods
         });
 
-        alert("🎉 Naya payment method successfully register ho gaya hai!");
+        showToast("🎉 Naya payment method successfully register ho gaya hai!", "success");
         _resetAddMethodForm();
      } catch (err) {
         console.error(err);
-        alert("Firestore write permissions missing/restricted.");
+        showToast("Firestore write permissions missing/restricted.", "error");
      } finally {
         setLoading(false);
      }
@@ -184,6 +195,23 @@ export default function Wallet() {
     <div className="flex-1 bg-[#0A0A0A] min-h-screen font-sans text-left">
       <div className="w-full max-w-md mx-auto min-h-screen bg-[#121212] shadow-2xl relative flex flex-col overflow-x-hidden">
         
+        {/* Custom Glassmorphic Toast banner */}
+        <AnimatePresence>
+          {toast.type && (
+            <motion.div
+              initial={{ opacity: 0, y: -40, scale: 0.9 }}
+              animate={{ opacity: 1, y: 16, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9, y: -20 }}
+              className="absolute top-20 left-4 right-4 z-50 p-4 rounded-2xl bg-[#121212]/95 backdrop-blur-2xl border border-[#FFD000]/20 shadow-[0_15px_35px_rgba(0,0,0,0.6)] flex items-center gap-3"
+            >
+              <div className="w-8 h-8 rounded-full bg-[#FFD000]/10 border border-[#FFD000]/30 flex items-center justify-center text-[#FFD000] shrink-0">
+                <Sparkles className="w-4 h-4" />
+              </div>
+              <p className="text-white text-xs font-bold leading-snug">{toast.message}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Fintech Premium Background Image */}
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
           <img 

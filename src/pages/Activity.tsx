@@ -2,12 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Clock, Navigation, Package, IndianRupee, MapPin, Calendar, Star, 
-  ChevronRight, CheckCircle2, History, Search, ArrowLeft, Loader2, X, Download, ShieldAlert
+  ChevronRight, CheckCircle2, History, Search, ArrowLeft, Loader2, X, Download, ShieldAlert, Sparkles
 } from 'lucide-react';
 import BottomNav from '../components/BottomNav';
 import { useAuth } from '../lib/auth';
 import { db } from '../lib/firebase';
 import { collection, query, where, onSnapshot } from 'firebase/firestore';
+import { motion, AnimatePresence } from 'motion/react';
 
 type ActivityItem = {
   id: string;
@@ -31,6 +32,16 @@ export default function Activity() {
   // Loaded database items
   const [dbItems, setDbItems] = useState<ActivityItem[]>([]);
   const [loading, setLoading] = useState(true);
+
+  // Custom Toast State
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' | null }>({ message: '', type: null });
+
+  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+    setToast({ message, type });
+    setTimeout(() => {
+      setToast({ message: '', type: null });
+    }, 4500);
+  };
 
   useEffect(() => {
     if (!currentUser) {
@@ -120,8 +131,10 @@ export default function Activity() {
 
   // Handle rebooking
   const handleRebook = (item: ActivityItem) => {
-    alert(`Bhaiya! Rebooking ride from "${item.pickup}" to "${item.drop}". Directing you to map checkout...`);
-    navigate('/book');
+    showToast(`Bhaiya! Rebooking ride from "${item.pickup}" to "${item.drop}". Directing you to map...`, "info");
+    setTimeout(() => {
+      navigate('/book');
+    }, 1200);
   };
 
   // Search filter
@@ -141,6 +154,23 @@ export default function Activity() {
     <div className="flex-1 bg-[#0A0A0A] min-h-screen font-sans">
       <div className="w-full max-w-md mx-auto min-h-screen bg-[#121212] shadow-2xl relative flex flex-col pb-24 overflow-x-hidden min-h-screen">
         
+        {/* Custom Glassmorphic Toast banner */}
+        <AnimatePresence>
+          {toast.type && (
+            <motion.div
+              initial={{ opacity: 0, y: -40, scale: 0.9 }}
+              animate={{ opacity: 1, y: 16, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9, y: -20 }}
+              className="absolute top-20 left-4 right-4 z-[99] p-4 rounded-2xl bg-[#121212]/95 backdrop-blur-2xl border border-[#FFD000]/20 shadow-[0_15px_35px_rgba(0,0,0,0.6)] flex items-center gap-3 animate-in fade-in"
+            >
+              <div className="w-8 h-8 rounded-full bg-[#FFD000]/10 border border-[#FFD000]/30 flex items-center justify-center text-[#FFD000] shrink-0">
+                <Sparkles className="w-4 h-4" />
+              </div>
+              <p className="text-white text-xs font-bold leading-snug">{toast.message}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Glowing holographic orb */}
         <div className="absolute top-[-50px] right-[-50px] w-[250px] h-[250px] bg-amber-500/10 rounded-full blur-[80px] pointer-events-none mix-blend-screen" />
         <div className="absolute top-[30%] left-[-50px] w-[200px] h-[200px] bg-red-500/10 rounded-full blur-[80px] pointer-events-none mix-blend-screen" />
@@ -331,7 +361,7 @@ export default function Activity() {
                
                <button 
                  onClick={() => {
-                   alert("Bhaiya, PDF invoice has been generated and cached offline. Sharing successfully!");
+                   showToast("PDF invoice has been generated & cached offline. Sharing successfully!", "success");
                    setActiveReceipt(null);
                  }}
                  className="mt-6 w-full py-4 bg-white text-black font-black text-[10px] uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 hover:bg-neutral-200"

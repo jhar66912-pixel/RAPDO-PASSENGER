@@ -21,6 +21,16 @@ export default function BookingPage() {
   const [scheduleTime, setScheduleTime] = useState('');
   const [scheduleServiceType, setScheduleServiceType] = useState<'bike' | 'parcel'>('bike');
 
+  // Custom Toast State
+  const [toast, setToast] = useState<{ message: string; type: 'success' | 'error' | 'info' | null }>({ message: '', type: null });
+
+  const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+    setToast({ message, type });
+    setTimeout(() => {
+      setToast({ message: '', type: null });
+    }, 4500);
+  };
+
   useEffect(() => {
     const timer = setTimeout(() => {
       if (!authLoading) setIsInitializing(false);
@@ -213,7 +223,7 @@ export default function BookingPage() {
     const distanceKm = customDrop.toLowerCase().includes('far') ? 40 : 15;
     
     if (distanceKm > 30) {
-       alert("RAHI service abhi sirf 30km locality tak available hai.");
+       showToast("RAHI service abhi sirf 30km locality tak available hai.", "error");
        return;
     }
     
@@ -239,12 +249,12 @@ export default function BookingPage() {
     e.preventDefault();
     if (mode === 'fixed') {
       if (!selectedRouteId || !selectedRoute) {
-        alert("Bhaiya, pehle destination route select kijiye!");
+        showToast("Bhaiya, pehle destination route select kijiye!", "error");
         return;
       }
     } else {
       if (!customPickup || !customDrop) {
-        alert("Bhaiya, pehle pickup aur drop coordinates click karke add kijiye!");
+        showToast("Bhaiya, pehle pickup aur drop coordinates click karke add kijiye!", "error");
         return;
       }
     }
@@ -259,7 +269,7 @@ export default function BookingPage() {
   const handleNativeSchedule = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!scheduleDate || !scheduleTime) {
-      alert("Kripa karke valid date aur time chunien!");
+      showToast("Kripa karke valid date aur time chunien!", "error");
       return;
     }
 
@@ -274,7 +284,7 @@ export default function BookingPage() {
         estFare = selectedRoute.fare;
       } else {
         if (!customPickup || !customDrop) {
-          alert("Coordinates entry incomplete!");
+          showToast("Coordinates entry incomplete!", "error");
           return;
         }
         pickupStr = customPickup;
@@ -342,18 +352,18 @@ export default function BookingPage() {
         }
       }
 
-      alert(`🎉 Waah bhaiya! Aapka ${scheduleServiceType === 'bike' ? 'Ride' : 'Parcel Delivery'} safaltapoorvak schedule ho gaya hai!\n\n📅 Date: ${scheduleDate}\n⏰ Time: ${scheduleTime}\n💵 Est Fare: ₹${estFare}\n\nAap details 'Activity' tab me check kar sakte hain.`);
+      showToast(`🎉 Waah bhaiya! Aapka ${scheduleServiceType === 'bike' ? 'Ride' : 'Parcel'}-taxi safaltapoorvak schedule ho gaya hai! check 'Activity' tab.`, "success");
       setShowScheduleModal(false);
     } catch (err) {
       console.error(err);
-      alert("Error writing schedule to Firestore");
+      showToast("Error writing schedule to Firestore", "error");
     } finally {
       setIsScheduling(false);
     }
   };
 
   const submitRating = () => {
-     alert(`Rating submitted! Stars: ${ratingVal}, Comment: ${comment}`);
+     showToast(`Dhanyawad bhaiya! Rating submitted: ${ratingVal} Stars`, "success");
      setShowRating(false);
      setBookingStatus(null);
      setActiveBookingId(null);
@@ -423,6 +433,23 @@ export default function BookingPage() {
     <div className="flex-1 bg-[#050505] min-h-screen font-sans">
       <div className="w-full max-w-md mx-auto min-h-screen bg-[#0A0A0A] shadow-[0_40px_80px_rgba(0,0,0,0.8)] relative flex flex-col pb-24 overflow-x-hidden">
         
+        {/* Custom Glassmorphic Toast banner */}
+        <AnimatePresence>
+          {toast.type && (
+            <motion.div
+              initial={{ opacity: 0, y: -40, scale: 0.9 }}
+              animate={{ opacity: 1, y: 16, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.9, y: -20 }}
+              className="absolute top-20 left-4 right-4 z-[99] p-4 rounded-2xl bg-[#121212]/95 backdrop-blur-2xl border border-[#FFD000]/20 shadow-[0_15px_35px_rgba(0,0,0,0.6)] flex items-center gap-3 animate-in fade-in"
+            >
+              <div className="w-8 h-8 rounded-full bg-[#FFD000]/10 border border-[#FFD000]/30 flex items-center justify-center text-[#FFD000] shrink-0">
+                <Sparkles className="w-4 h-4" />
+              </div>
+              <p className="text-white text-xs font-bold leading-snug">{toast.message}</p>
+            </motion.div>
+          )}
+        </AnimatePresence>
+
         {/* Dynamic Cinematic Background Layer */}
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
           <img 
