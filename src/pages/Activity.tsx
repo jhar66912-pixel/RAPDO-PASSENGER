@@ -138,8 +138,8 @@ export default function Activity() {
   });
 
   return (
-    <div className="flex-1 bg-[#0A0A0A] min-h-screen pt-4 pb-24 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-md mx-auto min-h-[85vh] bg-[#121212] rounded-[48px] shadow-2xl border border-white/5 overflow-hidden relative flex flex-col mt-4">
+    <div className="flex-1 bg-[#0A0A0A] min-h-screen font-sans">
+      <div className="w-full max-w-md mx-auto min-h-screen bg-[#121212] shadow-2xl relative flex flex-col pb-24 overflow-x-hidden min-h-screen">
         
         {/* Glowing holographic orb */}
         <div className="absolute top-[-50px] right-[-50px] w-[250px] h-[250px] bg-amber-500/10 rounded-full blur-[80px] pointer-events-none mix-blend-screen" />

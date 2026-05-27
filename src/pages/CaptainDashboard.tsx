@@ -86,8 +86,8 @@ export default function CaptainDashboard() {
   };
 
   return (
-    <div className="flex-1 bg-[#050505] min-h-screen pt-4 pb-24 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-md mx-auto min-h-[85vh] bg-[#0A0A0A] rounded-[48px] shadow-[0_40px_80px_rgba(0,0,0,0.8)] border border-white/5 overflow-hidden relative flex flex-col mt-4">
+    <div className="flex-1 bg-[#050505] min-h-screen font-sans">
+      <div className="w-full max-w-md mx-auto min-h-screen bg-[#0A0A0A] shadow-[0_40px_80px_rgba(0,0,0,0.8)] relative flex flex-col pb-24 overflow-x-hidden">
       {/* Dynamic Backgrounds */}
       <div className="absolute top-0 right-[-100px] w-[350px] h-[350px] bg-green-500/10 rounded-full blur-[80px] pointer-events-none mix-blend-screen" />
       <div className="absolute bottom-0 left-[-100px] w-[300px] h-[300px] bg-blue-500/5 rounded-full blur-[80px] pointer-events-none mix-blend-screen" />
@@ -97,7 +97,7 @@ export default function CaptainDashboard() {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="w-14 h-14 bg-[#121212] rounded-[20px] flex items-center justify-center border border-white/10 relative overflow-hidden shadow-inner">
-               <img src="https://i.ibb.co/ZzL02NFj/c3e39448-0850-4dca-9c25-f6dd3b1bba6a.png" alt="Profile" referrerPolicy="no-referrer" className="w-10 h-10 opacity-90" />
+               <img src="/favicon.svg" alt="Profile" className="w-10 h-10 opacity-90 rounded-full" />
                <motion.div 
                  animate={isOnline ? { scale: [1, 1.2, 1] } : {}}
                  transition={{ repeat: Infinity, duration: 2 }}

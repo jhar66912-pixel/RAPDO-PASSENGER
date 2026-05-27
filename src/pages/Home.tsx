@@ -28,8 +28,8 @@ export default function Home() {
   // Loading shimmer state
   if (authLoading || isInitializing) {
      return (
-        <div className="flex-1 bg-[#050505] min-h-screen pt-4 pb-24 px-4 sm:px-6 lg:px-8 font-sans">
-           <div className="max-w-md mx-auto min-h-[85vh] bg-[#0A0A0A] rounded-[48px] shadow-[0_40px_80px_rgba(0,0,0,0.8)] border border-white/5 overflow-hidden relative flex flex-col mt-4">
+        <div className="flex-1 bg-[#050505] min-h-screen font-sans">
+           <div className="w-full max-w-md mx-auto min-h-screen bg-[#0A0A0A] shadow-[0_40px_80px_rgba(0,0,0,0.8)] relative flex flex-col pb-24">
              <div className="flex-1 p-6 flex flex-col gap-6 animate-pulse mt-8">
                <div className="flex justify-between items-center mb-4">
                  <div className="w-14 h-14 bg-white/5 rounded-[20px]" />
@@ -49,8 +49,8 @@ export default function Home() {
   }
 
   return (
-    <div className="flex-1 bg-[#050505] min-h-screen pt-4 pb-24 px-4 sm:px-6 lg:px-8 font-sans">
-      <div className="max-w-md mx-auto min-h-[85vh] bg-[#0A0A0A] rounded-[48px] shadow-[0_40px_80px_rgba(0,0,0,0.8)] border border-white/5 overflow-hidden relative flex flex-col mt-4">
+    <div className="flex-1 bg-[#050505] min-h-screen font-sans">
+      <div className="w-full max-w-md mx-auto min-h-screen bg-[#0A0A0A] shadow-[0_40px_80px_rgba(0,0,0,0.8)] relative flex flex-col pb-24 overflow-x-hidden">
         
         {/* Cinematic Live Map Background Header */}
         <div className="absolute top-0 left-0 w-full h-[350px] z-0 pointer-events-none" style={{ maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)', WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)' }}>

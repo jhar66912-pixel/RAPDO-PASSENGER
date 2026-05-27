@@ -32,7 +32,7 @@ export default function Pricing() {
   // Interactive Live ETA Simulation States
   const [isSimulating, setIsSimulating] = useState<boolean>(false);
   const [simSteps, setSimSteps] = useState<number>(4); // countdown 4min -> 3min -> 2min -> Arrived
-  const [simStepText, setSimStepText] = useState<string>("Captain Assigned • Swastik Chowk");
+  const [simStepText, setSimStepText] = useState<string>("Captain Assigned • RAHI Hub");
   const [simProgressPercent, setSimProgressPercent] = useState<number>(10);
   const [audioFeedback, setAudioFeedback] = useState<boolean>(true);
   const simIntervalRef = useRef<any>(null);
@@ -122,7 +122,7 @@ export default function Pricing() {
         } else if (stepCount === 1) {
           setSimSteps(1);
           setSimProgressPercent(90);
-          setSimStepText("🔔 Captain adjacent to Swastik Chowk Hub!");
+          setSimStepText("🔔 Captain adjacent to RAHI Hub!");
           playSorenChime([783, 880], 0.25, 'triangle');
         } else if (stepCount <= 0) {
           setSimSteps(0);
@@ -259,7 +259,7 @@ export default function Pricing() {
           route: detectedRoute,
           service: serviceModule,
           fare: breakdown.finalCustomerFare,
-          captain: "Swastik Kumar Mandal",
+          captain: "Rahul Kumar Mandal",
           vehicle: "TVS Apache (BR-33-Y-7782)",
           eta: Math.max(3, Math.round(detectedRoute.etaMinutes / 3))
         });
@@ -455,8 +455,8 @@ class RahiRouteCard extends StatelessWidget {
 }`;
 
   return (
-    <div className="flex-1 bg-[#0A0A0A] min-h-screen pt-4 pb-24 px-4 sm:px-6 lg:px-8 font-sans text-left selection:bg-[#FFD000]/20 selection:text-white relative">
-      <div className="max-w-5xl mx-auto">
+    <div className="flex-1 bg-[#0A0A0A] min-h-screen font-sans text-left selection:bg-[#FFD000]/20 selection:text-white relative">
+      <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
         {/* Upper Corporate Jumbotron Banner */}
         <div className="relative bg-[#121212] rounded-[48px] border border-white/5 p-8 sm:p-12 overflow-hidden shadow-2xl mb-8">

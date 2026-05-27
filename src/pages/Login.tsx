@@ -74,7 +74,7 @@ export default function Login() {
                <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-black/60 to-transparent rounded-full pointer-events-none" />
                <div className="w-full h-full rounded-full bg-[#0A0A0A] flex items-center justify-center relative overflow-hidden shadow-inner">
                    <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_var(--tw-gradient-stops))] from-white/10 via-transparent to-transparent opacity-50 pointer-events-none" />
-                   <img src="https://i.ibb.co/ZzL02NFj/c3e39448-0850-4dca-9c25-f6dd3b1bba6a.png" alt="RAHI Logo" referrerPolicy="no-referrer" className="w-[130%] h-[130%] object-contain drop-shadow-[0_4px_10px_rgba(255,208,0,0.4)] scale-[1.25] relative z-10" />
+                   <img src="/logo.svg" alt="RAHI Logo" className="w-[150%] h-[150%] object-contain drop-shadow-[0_4px_10px_rgba(255,208,0,0.4)] scale-[1.25] relative z-10" />
                </div>
              </div>
              

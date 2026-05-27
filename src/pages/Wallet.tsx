@@ -181,8 +181,8 @@ export default function Wallet() {
   };
 
   return (
-    <div className="flex-1 bg-[#0A0A0A] min-h-screen pt-4 pb-24 px-4 sm:px-6 lg:px-8 font-sans text-left">
-      <div className="max-w-md mx-auto min-h-[85vh] bg-[#121212] rounded-[48px] shadow-2xl border border-white/5 overflow-hidden relative flex flex-col mt-4">
+    <div className="flex-1 bg-[#0A0A0A] min-h-screen font-sans text-left">
+      <div className="w-full max-w-md mx-auto min-h-screen bg-[#121212] shadow-2xl relative flex flex-col overflow-x-hidden">
         
         {/* Fintech Premium Background Image */}
         <div className="absolute inset-0 z-0 select-none pointer-events-none">

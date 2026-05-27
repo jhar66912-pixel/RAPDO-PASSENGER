@@ -131,7 +131,7 @@ app.post("/api/rahi-ai/chat", async (req, res): Promise<any> => {
       choices: [{
         message: {
           role: "assistant",
-          content: "Namaste bhaiya! Server slow chal raha hai ya network issue hai. Aap direct call karke ya WhatsApp group se booking status confirm kar sakte hain: +91 8252988672 (Swastik Store, Mahaveer Chowk Office)."
+          content: "Namaste bhaiya! Server slow chal raha hai ya network issue hai. Aap direct call karke ya WhatsApp group se booking status confirm kar sakte hain: +91 8252988672 (RAHI Office)."
         }
       }]
     });

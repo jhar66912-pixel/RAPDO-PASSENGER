@@ -85,7 +85,7 @@ class AiApiService {
       } catch (error) {
         attempt++;
         if (attempt > maximumRetries) {
-          return '👋 Namaste. Hamari AI systems me connectivity issue hai. Par chinta mat karein, Swastik Store Headquarters pe log ready hain. Call karein ya WhatsApp pe automatic booking ke liye niche link tap karein.';
+          return '👋 Namaste. Hamari AI systems me connectivity issue hai. Par chinta mat karein, RAHI Headquarters pe log ready hain. Call karein ya WhatsApp pe automatic booking ke liye niche link tap karein.';
         }
         await Future.delayed(Duration(seconds: 1 * attempt));
       }

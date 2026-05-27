@@ -363,7 +363,7 @@ export default function BookingPage() {
 
   if (showSkeleton) {
     return (
-      <div className="flex-1 bg-[#0A0A0A] min-h-screen pt-4 pb-12 px-4 sm:px-6 lg:px-8 font-sans">
+      <div className="flex-1 bg-[#0A0A0A] min-h-screen font-sans">
         <style>{`
           @keyframes shimmer {
             0% { transform: translateX(-100%); }
@@ -373,7 +373,7 @@ export default function BookingPage() {
             animation: shimmer 2s infinite linear;
           }
         `}</style>
-        <div className="max-w-md mx-auto min-h-[85vh] bg-[#121212] rounded-[48px] shadow-[0_30px_60px_rgba(0,0,0,0.5)] border border-white/5 overflow-hidden relative flex flex-col mt-4">
+        <div className="w-full max-w-md mx-auto min-h-screen bg-[#121212] shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative flex flex-col">
           <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-[#FFD000]/10 rounded-full blur-[80px] pointer-events-none mix-blend-screen" />
           
           <div className="p-8 relative z-10 flex-1 overflow-y-auto no-scrollbar flex flex-col">
@@ -420,9 +420,8 @@ export default function BookingPage() {
   }
 
   return (
-    <div className="flex-1 bg-[#050505] min-h-screen pt-4 pb-24 px-4 sm:px-6 lg:px-8 font-sans">
-      {/* Mobile Frame Simulation for Web */}
-      <div className="max-w-md mx-auto min-h-[85vh] bg-[#0A0A0A] rounded-[48px] shadow-[0_40px_80px_rgba(0,0,0,0.8)] border border-white/5 overflow-hidden relative flex flex-col mt-4">
+    <div className="flex-1 bg-[#050505] min-h-screen font-sans">
+      <div className="w-full max-w-md mx-auto min-h-screen bg-[#0A0A0A] shadow-[0_40px_80px_rgba(0,0,0,0.8)] relative flex flex-col pb-24 overflow-x-hidden">
         
         {/* Dynamic Cinematic Background Layer */}
         <div className="absolute inset-0 z-0 select-none pointer-events-none">

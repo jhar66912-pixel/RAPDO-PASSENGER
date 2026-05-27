@@ -197,7 +197,7 @@ export default function AiHelp() {
         customCard = {
           type: "escalation",
           title: "Support Dispatch Desk",
-          details: "Swastik Store, Mahaveer Chowk HQ is online.",
+          details: "RAHI Headquarters is online.",
           actionLabel: "SOS Hotline: +91 8252988672",
           actionUrl: "tel:8252988672"
         };
@@ -225,7 +225,7 @@ export default function AiHelp() {
       setMessages((prev) => 
         prev.map((m) => (m.id === userMessage.id ? { ...m, status: "failed" } : m)).concat({
           id: `reply_err_${Date.now()}`,
-          text: "Pranam bhai! Swastik Store network me thoda interruption hai. Par aap direct SOS call pe humari emergency support team se baat kar sakte hain: +91 8252988672.",
+          text: "Pranam bhai! RAHI network me thoda interruption hai. Par aap direct SOS call pe humari emergency support team se baat kar sakte hain: +91 8252988672.",
           role: "assistant",
           timestamp: Date.now(),
           customCard: {
@@ -294,7 +294,7 @@ export default function AiHelp() {
       // Append success indicator message into chat stream instantly
       setMessages(prev => [...prev, {
         id: `ticket_ack_${Date.now()}`,
-        text: `✅ Ticket create ho chuka hai! Ticket ID: ${ticketRef.id}. Hamara Support Specialist (Swastik Store, Mahaveer Chowk team) aapse jaldi hi call pe contact karega. Chinta mat kijiye bhaiya, sab secure hai.`,
+        text: `✅ Ticket create ho chuka hai! Ticket ID: ${ticketRef.id}. Hamara Support Specialist (RAHI team) aapse jaldi hi call pe contact karega. Chinta mat kijiye bhaiya, sab secure hai.`,
         role: "assistant",
         timestamp: Date.now()
       }]);
@@ -508,7 +508,7 @@ export default function AiHelp() {
               <div className="absolute top-0 right-0 w-24 h-24 bg-red-500/5 rounded-full blur-[40px]" />
               <div className="flex justify-between items-center mb-3">
                 <h3 className="text-white text-xs font-black uppercase tracking-wider flex items-center gap-1.5 text-red-400">
-                  <BadgeAlert className="w-4 h-4" /> Connect to Swastik HQ Specialist
+                  <BadgeAlert className="w-4 h-4" /> Connect to RAHI HQ Specialist
                 </h3>
                 <button
                   onClick={() => setTicketState(prev => ({ ...prev, showForm: false }))}

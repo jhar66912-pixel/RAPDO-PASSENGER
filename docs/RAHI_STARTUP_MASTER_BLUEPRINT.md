@@ -33,7 +33,7 @@ RAHI operates on a localized, multi-tenant asset-light revenue generation matrix
    * **Base tier:** ₹35 for first 3 km, ₹7 per km thereafter.
 3. **B2B Merchant Delivery Contracts:** Tailored delivery SLAs for Bihar’s high-density trade items — local pharmaceutical distributors, retail outlets in Hathwa Market or Maurya Lok, and local cloud kitchens.
 4. **Subscription "Captain Passes" (Flat Fee model):** To maximize retention, Captains can opt-out of commission models by purchasing a daily "RAHI Swadeshi Captain Pass" of ₹50 or a weekly pass of ₹300, granting 100% of their earnings for that time window back to them. This generates immediate, predictable cash flow for RAHI.
-5. **Hyperlocal Advertising Engine:** Highly localized B2C banners inside the Passenger App allowing local stores (e.g., "Swastik Store, Mahaveer Chowk") to bid for banner space when a passenger is either dropped off or booking a ride within a 500-meter radius of their shop.
+5. **Hyperlocal Advertising Engine:** Highly localized B2C banners inside the Passenger App allowing local stores (e.g., "RAHI Store, Mahaveer Chowk") to bid for banner space when a passenger is either dropped off or booking a ride within a 500-meter radius of their shop.
 6. **Fintech Integrations & Cash Collection Points:** Leveraging RAHI micro-franchises as offline payment collection hubs where cash can be directly converted into RAHI digital wallet balances for zero-digit onboarding (lowering digital entry barrier in Tier-3 townships).
 
 ---
