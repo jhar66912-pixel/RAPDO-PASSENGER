@@ -199,7 +199,7 @@ export default function Home() {
                  className="bg-[#121212] border border-blue-500/20 rounded-[32px] overflow-hidden shadow-lg relative group cursor-pointer min-h-[200px]"
                >
                  <div className="absolute inset-0 bg-black/40 z-10 group-hover:bg-black/20 transition-all duration-500"></div>
-                 <img src="https://images.unsplash.com/photo-1566576912321-d58edd7a28fa?auto=format&fit=crop&q=80&w=600" alt="Parcel Delivery" referrerPolicy="no-referrer" className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-luminosity group-hover:mix-blend-normal group-hover:scale-105 transition-all duration-700 ease-out" />
+                 <img src="https://images.unsplash.com/photo-1534088568595-a066f410bcda?auto=format&fit=crop&q=80&w=600" alt="Parcel Delivery" referrerPolicy="no-referrer" className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-luminosity group-hover:mix-blend-normal group-hover:scale-105 transition-all duration-700 ease-out" />
                  <div className="absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent z-10 pointer-events-none"></div>
 
                  <div className="relative z-20 p-5 flex flex-col justify-end h-full">

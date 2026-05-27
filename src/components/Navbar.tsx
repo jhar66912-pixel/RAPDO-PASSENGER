@@ -61,7 +61,7 @@ export default function Navbar() {
               <div className="relative w-10 h-10 rounded-full bg-gradient-to-br from-[#1A1A1A] to-[#050505] p-[1px] shadow-[0_0_15px_rgba(255,208,0,0.2)] border border-white/10 flex items-center justify-center overflow-hidden group-hover:shadow-[0_0_20px_rgba(255,208,0,0.4)] group-hover:border-white/20 transition-all">
                 <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-[#FFD000]/10 rounded-full pointer-events-none" />
                 <div className="w-full h-full rounded-full bg-[#0A0A0A] flex items-center justify-center relative overflow-hidden shadow-inner">
-                  <img src="https://i.ibb.co/ZzL02NFj/c3e39448-0850-4dca-9c25-f6dd3b1bba6a.png" alt="RAHI Premium" className="w-[130%] h-[130%] object-contain drop-shadow-[0_2px_4px_rgba(255,208,0,0.3)] scale-[1.25] relative z-10" />
+                  <img src="https://i.ibb.co/ZzL02NFj/c3e39448-0850-4dca-9c25-f6dd3b1bba6a.png" alt="RAHI Premium" referrerPolicy="no-referrer" className="w-[130%] h-[130%] object-contain drop-shadow-[0_2px_4px_rgba(255,208,0,0.3)] scale-[1.25] relative z-10" />
                 </div>
               </div>
             </Link>

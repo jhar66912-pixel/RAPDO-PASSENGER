@@ -123,8 +123,38 @@ export default function BookingPage() {
   const bikeIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="22" fill="#121212" stroke="#FFD000" stroke-width="4"/><text x="24" y="32" font-size="24" text-anchor="middle">🏍️</text></svg>`)}`;
 
   const handleMapClick = (e: any) => {
-     if (!geocodingLib || !e.detail.latLng) return;
-     const latLng = e.detail.latLng;
+     if (!geocodingLib || !e) return;
+     
+     // Robust extraction of coordinates supporting both real Google maps (detail.latLng)
+     // and custom simulated maps (latLng) structures, handling functions vs raw values
+     let rawLatLng = null;
+     if (e.detail && e.detail.latLng) {
+        rawLatLng = e.detail.latLng;
+     } else if (e.latLng) {
+        rawLatLng = e.latLng;
+     }
+     
+     if (!rawLatLng) return;
+
+     let latVal = 0;
+     if (typeof rawLatLng.lat === 'function') {
+        latVal = rawLatLng.lat();
+     } else if (typeof rawLatLng.lat === 'number') {
+        latVal = rawLatLng.lat;
+     } else {
+        return;
+     }
+
+     let lngVal = 0;
+     if (typeof rawLatLng.lng === 'function') {
+        lngVal = rawLatLng.lng();
+     } else if (typeof rawLatLng.lng === 'number') {
+        lngVal = rawLatLng.lng;
+     } else {
+        return;
+     }
+
+     const latLng = { lat: latVal, lng: lngVal };
      
      const geocoder = new geocodingLib.Geocoder();
      geocoder.geocode({ location: latLng }).then(res => {
@@ -140,8 +170,14 @@ export default function BookingPage() {
      }).catch(err => {
          console.warn("Geocode failed", err);
          const addr = `${latLng.lat.toFixed(4)}, ${latLng.lng.toFixed(4)}`;
-         if (selectionMode === 'pickup') { setPickupCoords(latLng); setCustomPickup(addr); setSelectionMode('drop'); }
-         else { setDropCoords(latLng); setCustomDrop(addr); }
+         if (selectionMode === 'pickup') { 
+             setPickupCoords(latLng); 
+             setCustomPickup(addr); 
+             setSelectionMode('drop'); 
+         } else { 
+             setDropCoords(latLng); 
+             setCustomDrop(addr); 
+         }
      });
   };
 
