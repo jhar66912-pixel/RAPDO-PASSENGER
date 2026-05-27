@@ -1,0 +1,49 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "A user profile in the RAHI app.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string" },
+        "name": { "type": "string" },
+        "mobile": { "type": "string" },
+        "role": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["uid", "name", "mobile", "role", "createdAt"]
+    },
+    "Booking": {
+      "title": "Booking",
+      "description": "A ride booking record.",
+      "type": "object",
+      "properties": {
+        "bookingId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "customerMobile": { "type": "string" },
+        "bookingType": { "type": "string" },
+        "selectedRouteId": { "type": "string" },
+        "pickupName": { "type": "string" },
+        "dropName": { "type": "string" },
+        "fare": { "type": "number" },
+        "distanceKm": { "type": "number" },
+        "status": { "type": "string" },
+        "assignedRiderId": { "type": "string" },
+        "rideOtp": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["bookingId", "customerId", "customerName", "customerMobile", "bookingType", "pickupName", "dropName", "status", "rideOtp", "createdAt"]
+    }
+  },
+  "firestore": {
+    "users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profiles"
+    },
+    "bookings/{bookingId}": {
+      "schema": { "$ref": "#/entities/Booking" },
+      "description": "Ride bookings"
+    }
+  }
+}
