@@ -44,7 +44,7 @@ export function LocationSearchInput({
         service.getPlacePredictions({ 
           input: value, 
           componentRestrictions: { country: 'in' },
-          locationBias: new google.maps.LatLng(25.5941, 85.1376) // Bias around Patna
+          locationBias: typeof google !== 'undefined' ? new google.maps.LatLng(25.5941, 85.1376) : { lat: 25.5941, lng: 85.1376 } // Bias around Patna
         })
         .then((response: any) => {
           const googlePreds = response.predictions || [];

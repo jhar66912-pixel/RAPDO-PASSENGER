@@ -49,6 +49,30 @@ export default function Activity() {
        return;
     }
 
+    let bookingsList: ActivityItem[] = [];
+    let transList: ActivityItem[] = [];
+
+    // Seed with premium high-quality mock data if database has limited records
+    const seedData: ActivityItem[] = [
+      { id: 'TRP-8492', type: 'ride', title: 'Route Commute', date: 'Yesterday, 2:30 PM', price: '₹45', pickup: 'Station Road, Patna', drop: 'City Center Mall, Patna', status: 'completed', createdAt: Date.now() - 86400000 },
+      { id: 'TRP-8491', type: 'parcel', title: 'Parcel Delivery', date: 'Mon, 11:15 AM', price: '₹30', pickup: 'Boring Road Chowk', drop: 'Post Office, Kankarbagh', status: 'completed', createdAt: Date.now() - 172800000 },
+      { id: 'TRP-8488', type: 'ride', title: 'Special Express Commute', date: 'Last Saturday, 10:00 AM', price: '₹55', pickup: 'Aakash Institute, Muzaffarpur', drop: 'Mithanpura', status: 'cancelled', createdAt: Date.now() - 259200000 }
+    ];
+
+    const updateMergedItems = () => {
+      // Merge, avoid duplicates, and order descending by createdAt
+      const merged: ActivityItem[] = [...bookingsList, ...transList];
+      seedData.forEach(seed => {
+        if (!merged.find(m => m.id === seed.id)) {
+          merged.push(seed);
+        }
+      });
+
+      merged.sort((a, b) => b.createdAt - a.createdAt);
+      setDbItems(merged);
+      setLoading(false);
+    };
+
     // Live Snapshot for customer's bookings
     const bookingsQuery = query(
       collection(db, 'bookings'),
@@ -56,7 +80,7 @@ export default function Activity() {
     );
 
     const unsubscribeBookings = onSnapshot(bookingsQuery, (snapshot) => {
-      const bookingsList = snapshot.docs.map(doc => {
+      bookingsList = snapshot.docs.map(doc => {
         const data = doc.data();
         const dateStr = data.createdAt ? new Date(data.createdAt).toLocaleDateString(undefined, {
           month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
@@ -74,59 +98,43 @@ export default function Activity() {
           createdAt: data.createdAt || Date.now()
         };
       });
-
-      // Fetch transactions
-      const transactionsQuery = query(
-        collection(db, 'transactions'),
-        where('customerId', '==', currentUser.uid)
-      );
-
-      const unsubscribeTransactions = onSnapshot(transactionsQuery, (transSnapshot) => {
-        const transList = transSnapshot.docs.map(doc => {
-          const data = doc.data();
-          return {
-             id: data.transactionId || doc.id,
-             type: 'transaction' as const,
-             title: data.title || 'Funds transaction',
-             date: data.date || 'Just Now',
-             price: data.amount || '₹0',
-             pickup: 'RAPDO Vault Wallet',
-             drop: data.type === 'credit' ? 'Wallet Cash Transmitted' : 'Gateway Settlement',
-             status: 'completed' as const,
-             createdAt: data.createdAt || Date.now()
-          };
-        });
-
-        // Seed with premium high-quality mock data if database has limited records
-        const seedData: ActivityItem[] = [
-          { id: 'TRP-8492', type: 'ride', title: 'Route Commute', date: 'Yesterday, 2:30 PM', price: '₹45', pickup: 'Station Road, Patna', drop: 'City Center Mall, Patna', status: 'completed', createdAt: Date.now() - 86400000 },
-          { id: 'TRP-8491', type: 'parcel', title: 'Parcel Delivery', date: 'Mon, 11:15 AM', price: '₹30', pickup: 'Boring Road Chowk', drop: 'Post Office, Kankarbagh', status: 'completed', createdAt: Date.now() - 172800000 },
-          { id: 'TRP-8488', type: 'ride', title: 'Special Express Commute', date: 'Last Saturday, 10:00 AM', price: '₹55', pickup: 'Aakash Institute, Muzaffarpur', drop: 'Mithanpura', status: 'cancelled', createdAt: Date.now() - 259200000 }
-        ];
-
-        // Merge, avoid duplicates, and order descending by createdAt
-        const merged: ActivityItem[] = [...bookingsList, ...transList];
-        seedData.forEach(seed => {
-          if (!merged.find(m => m.id === seed.id)) {
-            merged.push(seed);
-          }
-        });
-
-        merged.sort((a, b) => b.createdAt - a.createdAt);
-        setDbItems(merged);
-        setLoading(false);
-      }, (err) => {
-         console.warn("Transactions read fails/offline", err);
-         setLoading(false);
-      });
-
-      return () => unsubscribeTransactions();
+      updateMergedItems();
     }, (err) => {
-       console.warn("Bookings read fails/offline", err);
-       setLoading(false);
+      console.warn("Bookings subscribe failed or offline, fallback cleanly:", err);
+      updateMergedItems();
     });
 
-    return () => unsubscribeBookings();
+    // Fetch transactions
+    const transactionsQuery = query(
+      collection(db, 'transactions'),
+      where('customerId', '==', currentUser.uid)
+    );
+
+    const unsubscribeTransactions = onSnapshot(transactionsQuery, (transSnapshot) => {
+      transList = transSnapshot.docs.map(doc => {
+        const data = doc.data();
+        return {
+           id: data.transactionId || doc.id,
+           type: 'transaction' as const,
+           title: data.title || 'Funds transaction',
+           date: data.date || 'Just Now',
+           price: data.amount || '₹0',
+           pickup: 'RAPDO Vault Wallet',
+           drop: data.type === 'credit' ? 'Wallet Cash Transmitted' : 'Gateway Settlement',
+           status: 'completed' as const,
+           createdAt: data.createdAt || Date.now()
+        };
+      });
+      updateMergedItems();
+    }, (err) => {
+       console.warn("Transactions read fails/offline", err);
+       updateMergedItems();
+    });
+
+    return () => {
+      unsubscribeBookings();
+      unsubscribeTransactions();
+    };
   }, [currentUser]);
 
   // Handle rebooking

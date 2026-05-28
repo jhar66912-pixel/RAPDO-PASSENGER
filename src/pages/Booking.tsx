@@ -107,6 +107,8 @@ export default function BookingPage() {
            setShowRating(true);
         }
       }
+    }, (err) => {
+      console.warn("Bookings real-time listener restricted or offline:", err);
     });
     
     return () => unsubscribe();
@@ -377,7 +379,6 @@ export default function BookingPage() {
         customerName: currentUser?.name || 'Guest',
         customerMobile: currentUser?.mobile || '',
         bookingType: mode,
-        selectedRouteId: mode === 'fixed' ? selectedRouteId : undefined,
         pickupName: pickupStr,
         dropName: dropStr,
         fare: estFare,
@@ -386,6 +387,10 @@ export default function BookingPage() {
         createdAt: Date.now(),
         scheduledTime: `${scheduleDate} @ ${scheduleTime}` as any
       };
+
+      if (mode === 'fixed') {
+        scheduledBooking.selectedRouteId = selectedRouteId;
+      }
 
       await setDoc(doc(db, 'bookings', scheduledBooking.bookingId), scheduledBooking);
       

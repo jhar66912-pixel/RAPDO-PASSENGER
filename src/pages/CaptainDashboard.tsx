@@ -35,6 +35,9 @@ export default function CaptainDashboard() {
       } else {
         setActiveRequest(null);
       }
+    }, (err) => {
+      console.warn("Captain searching bookings request failed/offline:", err);
+      setActiveRequest(null);
     });
 
     return () => unsubscribe();
@@ -56,6 +59,9 @@ export default function CaptainDashboard() {
       } else {
         setCurrentRide(null);
       }
+    }, (err) => {
+      console.warn("Captain active ride lookups failed/offline:", err);
+      setCurrentRide(null);
     });
 
     return () => unsubscribe();

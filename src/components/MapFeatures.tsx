@@ -41,9 +41,10 @@ export function RouteDisplay({ origin, destination }: {
     directionsService.route({
       origin,
       destination,
-      travelMode: google.maps.TravelMode.DRIVING
+      travelMode: typeof google !== 'undefined' ? google.maps.TravelMode.DRIVING : 'DRIVING' as any
     }, (result: any, status: any) => {
-      if (status === google.maps.DirectionsStatus.OK && result) {
+      const isOk = typeof google !== 'undefined' ? (status === google.maps.DirectionsStatus.OK) : (status === 'OK');
+      if (isOk && result) {
         directionsRenderer.setDirections(result);
         
         // Add animated polyline glow effect by using an overlay or shadow, but DirectionsRenderer is simple
