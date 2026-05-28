@@ -1,4 +1,4 @@
-export interface RahiRoute {
+export interface RapdoRoute {
   id: string;
   routeCode: string;
   pickup: string;
@@ -14,7 +14,7 @@ export interface RahiRoute {
 }
 
 // Complete Exact 40 Routes Database provided by corporate requirements
-export const RAHI_40_ROUTES: RahiRoute[] = [
+export const RAPDO_40_ROUTES: RapdoRoute[] = [
   { id: "001", routeCode: "R-001", pickup: "Samastipur", drop: "Tajpur Road", distanceKm: 4, fare: 35, trafficStatus: "Low", trafficSurgeMult: 1.0, weatherSurgeMult: 1.0, etaMinutes: 8, captainArrivalMinutes: 3, isPopular: true },
   { id: "002", routeCode: "R-002", pickup: "Samastipur", drop: "Kashipur", distanceKm: 6, fare: 50, trafficStatus: "Medium", trafficSurgeMult: 1.05, weatherSurgeMult: 1.0, etaMinutes: 12, captainArrivalMinutes: 4, isPopular: true },
   { id: "003", routeCode: "R-003", pickup: "Samastipur", drop: "Musrigharari", distanceKm: 8, fare: 60, trafficStatus: "Medium", trafficSurgeMult: 1.05, weatherSurgeMult: 1.0, etaMinutes: 16, captainArrivalMinutes: 3, isPopular: true },
@@ -71,7 +71,7 @@ export interface DiscountTier {
   discountInr: number;
 }
 
-export const RAHI_DISCOUNT_TIERS: DiscountTier[] = [
+export const RAPDO_DISCOUNT_TIERS: DiscountTier[] = [
   { minKm: 0, maxKm: 10, discountInr: 0 },
   { minKm: 10, maxKm: 25, discountInr: 10 },
   { minKm: 25, maxKm: 50, discountInr: 20 },
@@ -80,7 +80,7 @@ export const RAHI_DISCOUNT_TIERS: DiscountTier[] = [
 ];
 
 /**
- * Calculate RAHI corporate pricing details for any arbitrary distance.
+ * Calculate RAPDO corporate pricing details for any arbitrary distance.
  * Returns the exact breakdown based on formula rules.
  */
 export function calculateBreakdown(distanceKm: number, options?: { isHeavyTraffic?: boolean; isRainyWeather?: boolean; selectedPlatformFee?: number }) {
@@ -107,7 +107,7 @@ export function calculateBreakdown(distanceKm: number, options?: { isHeavyTraffi
 
   // 3. Discount Lookup
   let discountAmount = 0;
-  const tier = RAHI_DISCOUNT_TIERS.find(t => distanceKm >= t.minKm && distanceKm <= t.maxKm);
+  const tier = RAPDO_DISCOUNT_TIERS.find(t => distanceKm >= t.minKm && distanceKm <= t.maxKm);
   if (tier) {
     discountAmount = tier.discountInr;
   }
@@ -132,7 +132,7 @@ export function calculateBreakdown(distanceKm: number, options?: { isHeavyTraffi
     surges: Math.round(surgeAddons),
     platformFee,
     discountAmount,
-    couponApplied: discountAmount > 0 ? "RAHI_VOLUME_SAVING" : null,
+    couponApplied: discountAmount > 0 ? "RAPDO_VOLUME_SAVING" : null,
     finalCustomerFare,
     captainEarnings,
     companyProfit

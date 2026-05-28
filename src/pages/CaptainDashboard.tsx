@@ -107,7 +107,7 @@ export default function CaptainDashboard() {
             <div>
               <h1 className="text-xl font-black tracking-tight text-white">{currentUser?.name?.split(' ')[0] || 'Captain'}</h1>
               <div className="flex items-center gap-1 mt-0.5 text-[10px] text-white/50 font-black tracking-widest uppercase bg-white/5 px-2 py-0.5 rounded-full border border-white/5 w-fit">
-                <Star className="w-3 h-3 text-[#FFD000] fill-[#FFD000]" /> {rating} Rating
+                <Star className="w-3 h-3 text-[#FFC107] fill-[#FFC107]" /> {rating} Rating
               </div>
             </div>
           </div>
@@ -198,7 +198,7 @@ export default function CaptainDashboard() {
                 </Map>
                 <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A0A] via-[#0A0A0A]/40 to-transparent pointer-events-none"></div>
                 <div className="absolute top-10 flex justify-center w-full pointer-events-none">
-                  <div className="bg-[#FFD000] text-black px-6 py-2 rounded-full font-black text-[10px] uppercase tracking-widest shadow-[0_10px_25px_rgba(255,208,0,0.4)] animate-bounce border border-black/10">
+                  <div className="bg-[#FFC107] text-black px-6 py-2 rounded-full font-black text-[10px] uppercase tracking-widest shadow-[0_10px_25px_rgba(255,193,7,0.4)] animate-bounce border border-black/10">
                      New Dispatch Request
                   </div>
                 </div>
@@ -207,7 +207,7 @@ export default function CaptainDashboard() {
               <div className="bg-[#0A0A0A] p-8 flex flex-col rounded-t-[48px] -mt-12 relative z-20 border-t border-white/10 shadow-[0_-20px_40px_rgba(0,0,0,0.6)]">
                 <div className="flex justify-between items-end mb-8 border-b border-white/5 pb-8">
                   <div>
-                    <h3 className="text-5xl font-black text-[#FFD000] tracking-tighter drop-shadow-md">₹{activeRequest.fare || 'TBD'}</h3>
+                    <h3 className="text-5xl font-black text-[#FFC107] tracking-tighter drop-shadow-md">₹{activeRequest.fare || 'TBD'}</h3>
                     <p className="text-white/40 text-[10px] font-black uppercase tracking-widest mt-2">Est. Payout</p>
                   </div>
                   <div className="text-right bg-[#121212] py-3 px-5 rounded-[20px] border border-white/5 shadow-inner">
@@ -217,7 +217,7 @@ export default function CaptainDashboard() {
                 </div>
 
                 <div className="space-y-8 mb-10 flex-1 relative">
-                  <div className="absolute left-4 top-8 bottom-8 w-0.5 bg-gradient-to-b from-[#00DF89] to-[#FFD000] border-dashed"></div>
+                  <div className="absolute left-4 top-8 bottom-8 w-0.5 bg-gradient-to-b from-[#00DF89] to-[#FFC107] border-dashed"></div>
                   
                   <div className="flex gap-5 items-start relative z-10">
                      <div className="w-8 h-8 rounded-full bg-[#121212] border-2 border-[#00DF89] flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(0,223,137,0.2)]">
@@ -230,11 +230,11 @@ export default function CaptainDashboard() {
                   </div>
                   
                   <div className="flex gap-5 items-start relative z-10">
-                     <div className="w-8 h-8 rounded-full bg-[#121212] border-2 border-[#FFD000] flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(255,208,0,0.2)]">
-                       <div className="w-2.5 h-2.5 bg-[#FFD000] rounded-full"></div>
+                     <div className="w-8 h-8 rounded-full bg-[#121212] border-2 border-[#FFC107] flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(255,193,7,0.2)]">
+                       <div className="w-2.5 h-2.5 bg-[#FFC107] rounded-full"></div>
                      </div>
                      <div>
-                       <p className="text-[#FFD000]/60 text-[9px] font-black uppercase tracking-widest mb-1">Drop Location</p>
+                       <p className="text-[#FFC107]/60 text-[9px] font-black uppercase tracking-widest mb-1">Drop Location</p>
                        <p className="text-white font-bold text-sm tracking-wide leading-tight">{activeRequest.dropName}</p>
                      </div>
                   </div>
@@ -249,7 +249,7 @@ export default function CaptainDashboard() {
                   </button>
                   <button 
                     onClick={() => handleAcceptRide(activeRequest.bookingId)}
-                    className="flex-[2] py-5 bg-gradient-to-r from-[#FFD000] to-[#F5B700] text-black font-black text-[11px] uppercase tracking-widest rounded-[24px] shadow-[0_15px_30px_rgba(255,208,0,0.3)] hover:scale-[1.02] active:scale-95 transition-all flex justify-center items-center gap-2 group overflow-hidden relative"
+                    className="flex-[2] py-5 bg-gradient-to-r from-[#FFC107] to-[#FFB300] text-black font-black text-[11px] uppercase tracking-widest rounded-[24px] shadow-[0_15px_30px_rgba(255,193,7,0.3)] hover:scale-[1.02] active:scale-95 transition-all flex justify-center items-center gap-2 group overflow-hidden relative"
                   >
                     <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out skew-x-12" />
                     Accept Dispatch <Navigation className="w-4 h-4 ml-1" />
@@ -294,14 +294,14 @@ export default function CaptainDashboard() {
                <div className="bg-[#0A0A0A] p-8 flex flex-col rounded-t-[48px] -mt-12 relative z-20 border-t border-white/10 shadow-[0_-20px_40px_rgba(0,0,0,0.6)]">
                   <div className="flex justify-between items-center mb-8 bg-[#121212] p-4 rounded-[28px] border border-white/5 shadow-inner">
                     <div className="flex items-center gap-4">
-                      <div className="w-14 h-14 bg-gradient-to-br from-[#FFD000] to-[#F5B700] rounded-[20px] p-[2px] shadow-[0_0_15px_rgba(255,208,0,0.3)]">
+                      <div className="w-14 h-14 bg-gradient-to-br from-[#FFC107] to-[#FFB300] rounded-[20px] p-[2px] shadow-[0_0_15px_rgba(255,193,7,0.3)]">
                          <div className="w-full h-full bg-[#1A1A1A] rounded-[18px] flex items-center justify-center border border-[#121212]">
-                            <User className="w-6 h-6 text-[#FFD000]" />
+                            <User className="w-6 h-6 text-[#FFC107]" />
                          </div>
                       </div>
                       <div>
                         <h4 className="text-white font-black text-lg">{currentRide.customerName}</h4>
-                        <p className="text-[#FFD000] text-[9px] font-black uppercase tracking-widest mt-1 bg-[#FFD000]/10 px-2 py-0.5 rounded-md inline-block">Passenger</p>
+                        <p className="text-[#FFC107] text-[9px] font-black uppercase tracking-widest mt-1 bg-[#FFC107]/10 px-2 py-0.5 rounded-md inline-block">Passenger</p>
                       </div>
                     </div>
                     <a href={`tel:${currentRide.customerMobile}`} className="w-14 h-14 bg-blue-500/10 rounded-full flex items-center justify-center border border-blue-500/30 hover:bg-blue-500/20 active:scale-95 transition-all shadow-lg group">
@@ -316,9 +316,9 @@ export default function CaptainDashboard() {
                         <p className="text-4xl font-black text-white tracking-tighter">₹{currentRide.fare}</p>
                      </div>
                      <div className="bg-gradient-to-br from-[#121212] to-[#1A1A1A] rounded-[28px] p-6 border border-white/5 shadow-[0_10px_20px_rgba(0,0,0,0.3)] text-center relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-20 h-20 bg-[#FFD000]/5 rounded-full blur-[20px]"></div>
+                        <div className="absolute top-0 right-0 w-20 h-20 bg-[#FFC107]/5 rounded-full blur-[20px]"></div>
                         <p className="text-white/40 text-[9px] font-black uppercase tracking-widest mb-2">OTP PIN</p>
-                        <p className="text-4xl font-black font-mono text-[#FFD000] drop-shadow-md">{currentRide.rideOtp}</p>
+                        <p className="text-4xl font-black font-mono text-[#FFC107] drop-shadow-md">{currentRide.rideOtp}</p>
                      </div>
                   </div>
 

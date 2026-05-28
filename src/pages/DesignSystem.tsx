@@ -10,14 +10,14 @@ export default function DesignSystem() {
   return (
     <div className="min-h-screen bg-[#050505] font-sans text-white overflow-x-hidden pb-24">
       {/* Dynamic Background */}
-      <div className="fixed top-[-100px] right-[-100px] w-[500px] h-[500px] bg-[#FFD000]/5 rounded-full blur-[150px] pointer-events-none mix-blend-screen" />
+      <div className="fixed top-[-100px] right-[-100px] w-[500px] h-[500px] bg-[#FFC107]/5 rounded-full blur-[150px] pointer-events-none mix-blend-screen" />
       <div className="fixed bottom-[-100px] left-[-100px] w-[500px] h-[500px] bg-blue-500/5 rounded-full blur-[150px] pointer-events-none mix-blend-screen" />
       
       <header className="sticky top-0 z-50 bg-[#0A0A0A]/80 backdrop-blur-3xl border-b border-white/5 p-6">
         <div className="max-w-7xl mx-auto flex items-center justify-between">
            <div>
              <h1 className="text-2xl font-black tracking-tight flex items-center gap-2">
-               <Sparkles className="w-5 h-5 text-[#FFD000]" /> RAHI UI Kit
+               <Sparkles className="w-5 h-5 text-[#FFC107]" /> RAPDO UI Kit
              </h1>
              <p className="text-white/40 text-[10px] font-black uppercase tracking-widest mt-1">Futuristic 3D Design System</p>
            </div>
@@ -37,7 +37,7 @@ export default function DesignSystem() {
               onClick={() => setActiveTab(tab)}
               className={`px-6 py-3 rounded-full text-sm font-black tracking-widest uppercase transition-all whitespace-nowrap ${
                 activeTab === tab 
-                  ? 'bg-gradient-to-r from-[#FFD000] to-[#F5B700] text-black shadow-[0_0_20px_rgba(255,208,0,0.3)]' 
+                  ? 'bg-gradient-to-r from-[#FFC107] to-[#FFB300] text-black shadow-[0_0_20px_rgba(255,193,7,0.3)]' 
                   : 'bg-white/5 text-white/50 hover:bg-white/10'
               }`}
             >
@@ -58,7 +58,7 @@ export default function DesignSystem() {
                    <motion.button
                      whileHover={{ y: -4, scale: 1.02 }}
                      whileTap={{ y: 2, scale: 0.98 }}
-                     className="w-full py-4 rounded-[20px] bg-gradient-to-r from-[#FFD000] to-[#F5B700] text-black font-black uppercase tracking-widest text-sm shadow-[0_10px_30px_rgba(255,208,0,0.3),inset_0_2px_4px_rgba(255,255,255,0.4)] flex items-center justify-center gap-2"
+                     className="w-full py-4 rounded-[20px] bg-gradient-to-r from-[#FFC107] to-[#FFB300] text-black font-black uppercase tracking-widest text-sm shadow-[0_10px_30px_rgba(255,193,7,0.3),inset_0_2px_4px_rgba(255,255,255,0.4)] flex items-center justify-center gap-2"
                    >
                      Book Ride <ArrowRight className="w-4 h-4" />
                    </motion.button>
@@ -97,7 +97,7 @@ export default function DesignSystem() {
               <h2 className="text-xl font-bold mb-6 text-white/80 border-b border-white/10 pb-4">Micro Actions (FABs)</h2>
               <div className="flex flex-wrap gap-6">
                  
-                 <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} className="w-16 h-16 rounded-[24px] bg-[#1A1A1A] border border-white/10 flex items-center justify-center shadow-lg hover:border-[#FFD000]/50 hover:shadow-[0_0_20px_rgba(255,208,0,0.2)] transition-all text-[#FFD000]">
+                 <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} className="w-16 h-16 rounded-[24px] bg-[#1A1A1A] border border-white/10 flex items-center justify-center shadow-lg hover:border-[#FFC107]/50 hover:shadow-[0_0_20px_rgba(255,193,7,0.2)] transition-all text-[#FFC107]">
                    <Search className="w-6 h-6" />
                  </motion.button>
 
@@ -120,15 +120,15 @@ export default function DesignSystem() {
                {/* Dashboard Service Card */}
                <motion.div 
                  whileHover={{ y: -8 }}
-                 className="bg-gradient-to-br from-[#1A1A1A] to-[#121212] border border-[#FFD000]/20 rounded-[36px] p-8 shadow-[0_20px_40px_rgba(255,208,0,0.05)] relative overflow-hidden group cursor-pointer"
+                 className="bg-gradient-to-br from-[#1A1A1A] to-[#121212] border border-[#FFC107]/20 rounded-[36px] p-8 shadow-[0_20px_40px_rgba(255,193,7,0.05)] relative overflow-hidden group cursor-pointer"
                >
-                 <div className="absolute top-0 right-[-30px] w-48 h-48 bg-[#FFD000]/5 rounded-full blur-[40px] group-hover:bg-[#FFD000]/10 transition-colors" />
+                 <div className="absolute top-0 right-[-30px] w-48 h-48 bg-[#FFC107]/5 rounded-full blur-[40px] group-hover:bg-[#FFC107]/10 transition-colors" />
                  <div className="absolute -bottom-8 -right-8 opacity-10 group-hover:opacity-20 transition-opacity">
-                    <Bike className="w-48 h-48 text-[#FFD000]" />
+                    <Bike className="w-48 h-48 text-[#FFC107]" />
                  </div>
                  
                  <div className="relative z-10">
-                   <div className="w-16 h-16 bg-gradient-to-br from-[#FFD000] to-[#F5B700] rounded-[24px] flex items-center justify-center mb-6 shadow-[0_10px_20px_rgba(255,208,0,0.3)] group-hover:scale-110 transition-transform duration-300 border border-[#FFD000]">
+                   <div className="w-16 h-16 bg-gradient-to-br from-[#FFC107] to-[#FFB300] rounded-[24px] flex items-center justify-center mb-6 shadow-[0_10px_20px_rgba(255,193,7,0.3)] group-hover:scale-110 transition-transform duration-300 border border-[#FFC107]">
                      <Bike className="w-8 h-8 text-black drop-shadow-sm" />
                    </div>
                    <h3 className="text-white text-3xl font-black tracking-tight mb-2">Ride</h3>
@@ -144,7 +144,7 @@ export default function DesignSystem() {
                   <div className="flex justify-between items-start mb-12">
                      <div>
                        <p className="text-emerald-400 text-[10px] font-black uppercase tracking-widest mb-1 flex items-center gap-2"><Zap className="w-3 h-3" /> EV Active</p>
-                       <h3 className="text-white text-2xl font-black tracking-tight">RAHI Electric</h3>
+                       <h3 className="text-white text-2xl font-black tracking-tight">RAPDO Electric</h3>
                      </div>
                      <div className="w-14 h-14 bg-emerald-500/10 rounded-full flex items-center justify-center border border-emerald-500/20 text-emerald-400 shadow-[inset_0_2px_10px_rgba(16,185,129,0.2)]">
                         <Battery className="w-6 h-6" />
@@ -179,15 +179,15 @@ export default function DesignSystem() {
             <div className="max-w-2xl space-y-8">
                {/* Futuristic Search Bar */}
                <div className="relative group">
-                 <div className="absolute inset-0 bg-gradient-to-r from-[#FFD000]/20 to-transparent blur-[20px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
-                 <div className="relative w-full h-20 bg-[#121212]/90 backdrop-blur-2xl border border-white/10 hover:border-[#FFD000]/50 rounded-[36px] flex items-center px-6 shadow-[0_30px_60px_rgba(0,0,0,0.8)] focus-within:border-[#FFD000] focus-within:shadow-[0_0_30px_rgba(255,208,0,0.15)] transition-all overflow-hidden">
-                    <Search className="w-8 h-8 text-[#FFD000] shrink-0" />
+                 <div className="absolute inset-0 bg-gradient-to-r from-[#FFC107]/20 to-transparent blur-[20px] rounded-full opacity-0 group-hover:opacity-100 transition-opacity" />
+                 <div className="relative w-full h-20 bg-[#121212]/90 backdrop-blur-2xl border border-white/10 hover:border-[#FFC107]/50 rounded-[36px] flex items-center px-6 shadow-[0_30px_60px_rgba(0,0,0,0.8)] focus-within:border-[#FFC107] focus-within:shadow-[0_0_30px_rgba(255,193,7,0.15)] transition-all overflow-hidden">
+                    <Search className="w-8 h-8 text-[#FFC107] shrink-0" />
                     <input 
                       type="text" 
                       placeholder="Enter destination..."
                       className="flex-1 bg-transparent border-none outline-none ml-6 h-full text-lg font-bold text-white placeholder:text-white/30"
                     />
-                    <div className="w-12 h-12 bg-white/5 rounded-[20px] flex items-center justify-center border border-white/10 hover:bg-[#FFD000] hover:text-black hover:border-transparent transition-all cursor-pointer">
+                    <div className="w-12 h-12 bg-white/5 rounded-[20px] flex items-center justify-center border border-white/10 hover:bg-[#FFC107] hover:text-black hover:border-transparent transition-all cursor-pointer">
                       <MapPin className="w-5 h-5" />
                     </div>
                  </div>
@@ -232,7 +232,7 @@ export default function DesignSystem() {
 
               <div>
                 <p className="text-white/30 text-[10px] font-black uppercase tracking-widest mb-2">Subheading / Badge</p>
-                <p className="text-[#FFD000] text-[10px] font-black tracking-widest uppercase">GPS Synced • High Accuracy</p>
+                <p className="text-[#FFC107] text-[10px] font-black tracking-widest uppercase">GPS Synced • High Accuracy</p>
               </div>
 
               <div>
@@ -289,7 +289,7 @@ export default function DesignSystem() {
                     <motion.div 
                       animate={{ rotate: 360 }}
                       transition={{ repeat: Infinity, duration: 3, ease: "linear" }}
-                      className="absolute inset-0 border-t-2 border-[#FFD000] rounded-full opacity-50"
+                      className="absolute inset-0 border-t-2 border-[#FFC107] rounded-full opacity-50"
                     />
                     <motion.div 
                       animate={{ rotate: -360 }}

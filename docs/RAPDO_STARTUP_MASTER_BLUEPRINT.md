@@ -1,10 +1,10 @@
-# RAHI (राही) — The Bihar Hyperlocal Mobility & AI Logistics Startup Master Blueprint
+# RAPDO (राही) — The Bihar Hyperlocal Mobility & AI Logistics Startup Master Blueprint
 > **A Comprehensive, Investor-Grade Technical & Operational Blueprint for Scaling Bihar's Largest Bike-Taxi, Parcel Delivery, and Hyperlocal Logistics Network.**
 
 ---
 
 ## EXECUTIVE FOUNDATIONAL VALUES
-* **Startup Name:** RAHI (राही)
+* **Startup Name:** RAPDO (राही)
 * **Tagline:** Fast • Fair • Local (तेज़, सही, बिहार का अपना)
 * **Visual Identity:** Matte Black (Carbon Luxury), Luxury Yellow (Hyper-visibility), Crisp Off-White
 * **Target Territories:** Patna (HQ), Samastipur, Muzaffarpur, Darbhanga, Begusarai, Hajipur, Gaya, Bhagalpur, Bihar Sharif, and Tier-2/Tier-3 hubs
@@ -12,17 +12,17 @@
 ---
 
 ## 1. COMPLETE BUSINESS MODEL & MONETIZATION MATRIX
-RAHI operates on a localized, multi-tenant asset-light revenue generation matrix structured explicitly for the unique financial profiles and payment behaviors of North and South Bihar.
+RAPDO operates on a localized, multi-tenant asset-light revenue generation matrix structured explicitly for the unique financial profiles and payment behaviors of North and South Bihar.
 
 ```
        ┌────────────────────────────────────────────────────────┐
-       │             RAHI HYPERLOCAL REVENUE ENGINE             │
+       │             RAPDO HYPERLOCAL REVENUE ENGINE             │
        └───────────────────────────┬────────────────────────────┘
                                    │
          ┌─────────────────────────┼─────────────────────────┐
          ▼                         ▼                         ▼
   [TRANSACTIONAL]             [RECURRING]              [FINTECH & ADS]
-  Commission: 15-18%          Captain Pass: Flat Fee  RAHI Custom Wallet
+  Commission: 15-18%          Captain Pass: Flat Fee  RAPDO Custom Wallet
   Parcel: Zone-Based          B2B SLA Contracts       Hyperlocal Ad Bid
   B2B APIs: Tiered            Premium memberships     Micro-Insurance Opt
 ```
@@ -32,14 +32,14 @@ RAHI operates on a localized, multi-tenant asset-light revenue generation matrix
 2. **Hyperlocal Parcel Delivery (B2C & C2C):** Flat boarding fees depending on zone (Patna Internal, Patna-to-Hajipur Bypass, Samastipur Inter-city bypass) plus dynamic distance rates.
    * **Base tier:** ₹35 for first 3 km, ₹7 per km thereafter.
 3. **B2B Merchant Delivery Contracts:** Tailored delivery SLAs for Bihar’s high-density trade items — local pharmaceutical distributors, retail outlets in Hathwa Market or Maurya Lok, and local cloud kitchens.
-4. **Subscription "Captain Passes" (Flat Fee model):** To maximize retention, Captains can opt-out of commission models by purchasing a daily "RAHI Swadeshi Captain Pass" of ₹50 or a weekly pass of ₹300, granting 100% of their earnings for that time window back to them. This generates immediate, predictable cash flow for RAHI.
-5. **Hyperlocal Advertising Engine:** Highly localized B2C banners inside the Passenger App allowing local stores (e.g., "RAHI Store, Mahaveer Chowk") to bid for banner space when a passenger is either dropped off or booking a ride within a 500-meter radius of their shop.
-6. **Fintech Integrations & Cash Collection Points:** Leveraging RAHI micro-franchises as offline payment collection hubs where cash can be directly converted into RAHI digital wallet balances for zero-digit onboarding (lowering digital entry barrier in Tier-3 townships).
+4. **Subscription "Captain Passes" (Flat Fee model):** To maximize retention, Captains can opt-out of commission models by purchasing a daily "RAPDO Swadeshi Captain Pass" of ₹50 or a weekly pass of ₹300, granting 100% of their earnings for that time window back to them. This generates immediate, predictable cash flow for RAPDO.
+5. **Hyperlocal Advertising Engine:** Highly localized B2C banners inside the Passenger App allowing local stores (e.g., "RAPDO Store, Mahaveer Chowk") to bid for banner space when a passenger is either dropped off or booking a ride within a 500-meter radius of their shop.
+6. **Fintech Integrations & Cash Collection Points:** Leveraging RAPDO micro-franchises as offline payment collection hubs where cash can be directly converted into RAPDO digital wallet balances for zero-digit onboarding (lowering digital entry barrier in Tier-3 townships).
 
 ---
 
 ## 2. APP ECOSYSTEM WORKFLOWS & INTEGRATIONS
-The RAHI ecosystem is built with a highly cohesive, high-performance distributed app topology.
+The RAPDO ecosystem is built with a highly cohesive, high-performance distributed app topology.
 
 ```
 Passenger App  ──┐
@@ -53,7 +53,7 @@ Admin Console  ──┘                        ▼
 * **Launch & Authenticate:** Login using lightweight Firebase OTP (optimized with silent auto-verification). If OTP or Google Auth fails due to corporate network sandboxing, the app triggers a smart **Demo Bypass** mode for effortless sandbox evaluation.
 * **Intelligent Geo-pickup:** Auto-populates coordinates. Matches localized land-markers.
 * **Dynamic Ride Customization:** Toggle between "Express Ride" (Solo Bike-Taxi) and "Parcel Fast-Track" (Documents, Medicine, hyper-local commerce).
-* **Payment Settlement:** Razorpay SDK, UPI Intent, or RAHI closed-loop Wallet.
+* **Payment Settlement:** Razorpay SDK, UPI Intent, or RAPDO closed-loop Wallet.
 
 ### 2. Captain App Flow
 * **Verification & KYC Desk:** Quick mobile scan of Aadhaar & Driving license with auto-OCR processing.
@@ -76,7 +76,7 @@ The design philosophy is heavily inspired by matte-black minimalism, luxury yell
 
 ```
 ┌───────────────────────────────────────────────────────────┐
-│ [★ RAHI]      (10:42 AM)                     👨🏽 Profile  │
+│ [★ RAPDO]      (10:42 AM)                     👨🏽 Profile  │
 ├───────────────────────────────────────────────────────────┤
 │                                                           │
 │  Hello, Riddhi Sen!                                       │
@@ -99,7 +99,7 @@ The design philosophy is heavily inspired by matte-black minimalism, luxury yell
 └───────────────────────────────────────────────────────────┘
 ```
 
-* **Tailwind Aesthetic Tokens Used:** Deep Onyx Backgrounds (`bg-[#0A0A0A]`), Luxury Yellow Accents (`border-[#FFD000]`, `text-[#FFD000]`), and high-performance blur panels (`backdrop-blur-3xl bg-[#101010]/95`).
+* **Tailwind Aesthetic Tokens Used:** Deep Onyx Backgrounds (`bg-[#0A0A0A]`), Luxury Yellow Accents (`border-[#FFC107]`, `text-[#FFC107]`), and high-performance blur panels (`backdrop-blur-3xl bg-[#101010]/95`).
 * **Micro-Animations (using `motion/react`):** Smooth, staggered item entries for lists, subtle glowing pulsing rings around search selectors to denote tracking updates, and fluid navigation wipes.
 * **Low-End Phone Optimizations:** Eliminates heavy, unneeded 3D shadows. Employs lightweight custom SVG outlines instead of large rasterized image assets. Uses standard `localStorage` caching systems to skip repetitive HTTP requests on patchy networks.
 
@@ -109,7 +109,7 @@ The design philosophy is heavily inspired by matte-black minimalism, luxury yell
 
 ### Hassle-Free Onboarding & KYC
 1. **OCR-Assisted Registration:** CAPTAIN snaps vertical phone photos of their vehicles and driving documents.
-2. **No-Latency Approval:** RAHI’s backend matches and validates the OCR text with a localized background check worker, completing registration in under 2 hours.
+2. **No-Latency Approval:** RAPDO’s backend matches and validates the OCR text with a localized background check worker, completing registration in under 2 hours.
 
 ### Growth and Retention Framework
 * **Insta-Settlement Wallet:** Captains can withdraw cash collected via UPI payouts up to 4 times a day, ensuring they have immediate funds for petrol refills.
@@ -119,7 +119,7 @@ The design philosophy is heavily inspired by matte-black minimalism, luxury yell
 ---
 
 ## 5. BUSINESS LOGISTICS SYSTEM (B2B MERCHANT CONNECT)
-RAHI bridges the critical gap between local wholesalers in Marufganj, pharma hubs in Govind Mitra Road, Patna, and retail consumers.
+RAPDO bridges the critical gap between local wholesalers in Marufganj, pharma hubs in Govind Mitra Road, Patna, and retail consumers.
 
 * **Medicine Distributors Integration:** Dedicated API routes allowing medicine wholesalers to book lightning-speed dispatches with cooler bag requirements for temperature-sensitive lifesaving drugs.
 * **Automated Batching Logistics:** Multi-stop path generation algorithms batching up to 5 deliveries along the same arterial bypass block (e.g., Bailey Road to Saguna More), reducing the cost-per-delivery down to just ₹18.
@@ -134,7 +134,7 @@ We combine the lightning speed of **Gemini Flash-Latest** and **DeepSeek-Chat** 
        [ Client Request ]
                │
                ▼
-   [ Express Backend /api/rahi-ai/chat ]
+   [ Express Backend /api/rapdo-ai/chat ]
                │
                ├─────────────────────────────────────────┐
                ▼ (Attempts Primary)                      ▼ (Fallback Triggered)
@@ -146,21 +146,21 @@ We combine the lightning speed of **Gemini Flash-Latest** and **DeepSeek-Chat** 
                       [ Unified JSON Payload ]
 ```
 
-### Prompt Engineering Matrix: RAHI Customer Assistant
+### Prompt Engineering Matrix: RAPDO Customer Assistant
 ```
 System Role:
-You are the "RAHI Help AI Assistant", a premium conversational customer support intelligence integrated into RAHI (Bihar's leading bike-taxi, parcel delivery, and hyperlocal logistics platform).
+You are the "RAPDO Help AI Assistant", a premium conversational customer support intelligence integrated into RAPDO (Bihar's leading bike-taxi, parcel delivery, and hyperlocal logistics platform).
 
 App Tone & Brand Guidelines:
 - Mood: Ultra-friendly, respectful, clever, fast, and Bihar-local.
 - Theme: Matte Black, Luxury Yellow, Premium Modern UI.
 - Direct Address: Use "Aap", "Bhai", "Sir", or "Bhaiya" respectfully. Conversational Hinglish/Hindi is highly preferred.
-- Start standard greetings with: "Namaste 👋 RAHI Help AI me aapka swagat hai. Main aapki ride, parcel, aur payments related help kar sakta hoon."
+- Start standard greetings with: "Namaste 👋 RAPDO Help AI me aapka swagat hai. Main aapki ride, parcel, aur payments related help kar sakta hoon."
 
 Linguistic Translation Support:
 - Handle common Hinglish questions with deep context.
-- Example: "Patna se Hajipur ka price list?" -> Guide them on RAHI rates or offer quick estimation checks.
-- Example: "Parcel late hai, Captain nahi aaya" -> Give parcel assistance, check tracking formats (RAHI-PRCL-XXXX), and offer support.
+- Example: "Patna se Hajipur ka price list?" -> Guide them on RAPDO rates or offer quick estimation checks.
+- Example: "Parcel late hai, Captain nahi aaya" -> Give parcel assistance, check tracking formats (RAPDO-PRCL-XXXX), and offer support.
 
 Geographic Intelligence:
 - You know core Bihar cities and bypass hubs: Patna (Boring Road, Bailey Road, Gandhi Maidan), Darbhanga (Darbhanga Tower, LNMU), Samastipur, Muzaffarpur (Mithanpura), Gaya.
@@ -168,14 +168,14 @@ Geographic Intelligence:
 
 Operational Controls & Human Escalation Rules:
 - If users complain about severe payment failures or express extreme anger, trigger the escalation logic.
-- Guide them to dial RAHI SOS squad at +91 8252988672 or submit a Support Ticket right inside the AI Assistant tab.
+- Guide them to dial RAPDO SOS squad at +91 8252988672 or submit a Support Ticket right inside the AI Assistant tab.
 - NEVER hallucinate fake booking references, fake live drivers, or expose confidential system metadata.
 ```
 
 ---
 
 ## 7. VOICE AI SYSTEM (HINDI & HINGLISH NLP)
-To break the digital literacy barrier, RAHI implements a zero-click Voice Booking engine.
+To break the digital literacy barrier, RAPDO implements a zero-click Voice Booking engine.
 
 * **NLP Architecture Pipeline:**
   1. **Speech-to-Text (STT):** Powered by OpenAI Whisper or Google Cloud Speech-to-Text configured for Hindi-English dual accented models (Hinglish).
@@ -332,7 +332,7 @@ CREATE INDEX idx_rides_status ON rides(status);
 * **Typographical Scale pairing:** Display Headings use "Space Grotesk" to command high-quality technological authority. Body copy utilizes "Inter" styled for readability on variable-brightness screens.
 * **Liquid Transitions:** Staggered load lists for rides. Animated custom visual markers pulsing dynamically over simulated route corridors.
 * **Color System:**
-  * **Brand Primary:** `#FFD000` (Luxury Gold)
+  * **Brand Primary:** `#FFC107` (Luxury Gold)
   * **Brand Deep base:** `#010101` (Matte Black)
   * **Accents (Positive state):** `#00DF89` (Green Emerald)
   * **Accents (Warning/Escalate):** `#EF4444` (Coral Red)
@@ -340,17 +340,17 @@ CREATE INDEX idx_rides_status ON rides(status);
 ---
 
 ## 14. ROUTE OPTIMIZATION & BYPASS TELEMETRY
-RAHI employs a fallback route synthesizer for Tier-3 Bihar junctions where standard traffic data might be spotty.
+RAPDO employs a fallback route synthesizer for Tier-3 Bihar junctions where standard traffic data might be spotty.
 
 * **Bypass-Oriented Path Scoring:** Our route calculator automatically scores and prioritizes broad ring-roads and dedicated bypass sectors (like Patna Bypass Road and Mithanpura Muzaffarpur Ring Corridor) to help Captains bypass high-density local market congestion.
-* **Lightweight Leaflet/Google Map Fallback Engine:** If Google Maps API quotas exceed limits or network latencies rise, RAHI maps automatically drop back to highly compressed static vectored layers, ensuring real-time positioning updates continue without interruption.
+* **Lightweight Leaflet/Google Map Fallback Engine:** If Google Maps API quotas exceed limits or network latencies rise, RAPDO maps automatically drop back to highly compressed static vectored layers, ensuring real-time positioning updates continue without interruption.
 
 ---
 
 ## 15. PAYMENT ESCROW & AUTOMATIC UPI DISPATCH
 1. **Passenger Checkout:** Passengers pay instantly via custom UPI deep-links, triggering intent interfaces directly inside applications (PhonePe, GPay, Paytm).
 2. **Instant Micro-Payout Ledger:** As soon as the ride pin matches and the ride is flagged as completed:
-   * **15% (Commission)** passes to RAHI core vault.
+   * **15% (Commission)** passes to RAPDO core vault.
    * **85% (Earnings)** hits the Captain's ledger in real time, available for instant payout via bank partner APIs.
 
 ---
@@ -377,13 +377,13 @@ We leverage Firebase Cloud Messaging (FCM) high-priority payloads to wake Captai
 
 * **Local Dialect Text Templates:**
   * *Ride Alert:* `Hey Bhai! 🌟 Boring Road Chowk pe naya customer ready hai. ₹120 fare up for grabs, accept now!`
-  * *Parcel State:* `Namaste, Aapka parcel RAHI-PRCL-8822 safely Bihar Sharif bypass se dispatch ho chuka hai! 👍`
+  * *Parcel State:* `Namaste, Aapka parcel RAPDO-PRCL-8822 safely Bihar Sharif bypass se dispatch ho chuka hai! 👍`
 
 ---
 
 ## 18. EXECUTIVE LOGISTICS WEB CONSOLE
 
-The RAHI Operations Control center is a centralized administration interface built natively for terminal tracking.
+The RAPDO Operations Control center is a centralized administration interface built natively for terminal tracking.
 * **Demands Mapping Contours:** Dynamic high-density map layers overlaying city hotspots in Muzaffarpur, Bhagalpur, and Patna.
 * **System Health Indicators:** Monitor server latency, database reads/writes, payment gateways status, and AI Fallback triggers.
 
@@ -414,7 +414,7 @@ Highly optimized startup budget for the initial 12 months:
 
 ## 21. LOCALIZED BIHAR GROWTH HACKS
 * **Zero-Digit Referral loops:** To scale without heavy capital, passenger rewards are structured like lucky scratch cards offering free cross-town rides. Referrals are designed directly into simple WhatsApp sharing links.
-* **Chhatiya, Durga Puja & Chhath Puja Drives:** Distribute printed paper maps and RAHI premium helmets outside major temples and transit hubs during festival rushes.
+* **Chhatiya, Durga Puja & Chhath Puja Drives:** Distribute printed paper maps and RAPDO premium helmets outside major temples and transit hubs during festival rushes.
 * **B2B Campus Campaigns:** Onboard college students as brand ambassadors at LNMU Darbhanga and Patna University to run high-density local delivery campaigns.
 
 ---
@@ -429,11 +429,11 @@ Highly optimized startup budget for the initial 12 months:
 ---
 
 ## 23. INVESTOR LEVEL OPPORTUNITY PITCH
-> **Why RAHI? Why Bihar? Why Now?**
+> **Why RAPDO? Why Bihar? Why Now?**
 
 Global giants build generic platforms designed for metropolitan hubs like Bengaluru or Mumbai. They fail completely in Tier-2 and Tier-3 Bihar because of high commissions (25%+), rigid address coordinates, high data-usage apps, and zero Hindi-Hinglish localized voice support. 
 
-RAHI captures a massive, completely untapped market of **130 Million consumers** in Bihar through premium, ultra-lightweight technology, customized route mapping, and accessible offline local micro-escrows.
+RAPDO captures a massive, completely untapped market of **130 Million consumers** in Bihar through premium, ultra-lightweight technology, customized route mapping, and accessible offline local micro-escrows.
 
 ---
 
@@ -444,10 +444,10 @@ RAHI captures a massive, completely untapped market of **130 Million consumers**
 ---
 
 ## 25. THE STRATEGIC RECOMMENDATIONS RULEBOOK
-1. **What to Build First:** The absolute lean MVP — Bike-Taxi passenger bookings paired with the **RAHI Help AI** and direct human SOS calling support.
+1. **What to Build First:** The absolute lean MVP — Bike-Taxi passenger bookings paired with the **RAPDO Help AI** and direct human SOS calling support.
 2. **What to Avoid:** Heavy, data-hungry real-time maps. Skip building complicated premium subscription channels or complex AI models until reaching 1,500 daily active rides.
 3. **How to Beat Ola / Rapido / Uber:** Set commissions strictly lower (15%), offer instant settlement payouts (UPI 4x/day), support direct Hinglish voice messages, and establish deep relationships with local merchant trade associations.
 4. **Primary Startup Pitfall to Evade:** Over-expansion across too many cities before getting positive unit economics in the primary launch sector (Patna HQ).
 
 ---
-*Created and verified under the RAHI Full-Stack Tech Governance Board.*
+*Created and verified under the RAPDO Full-Stack Tech Governance Board.*

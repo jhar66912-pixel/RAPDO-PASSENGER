@@ -1,12 +1,12 @@
 # PHASE 7: Ultra-Premium Flutter Super App Architecture
 
 ## 1. Vision & UI/UX Strategy
-The RAHI app transforms from a simple utility into an **AI-Native Hyperlocal Mobility Ecosystem**. The design language shifts to "Futuristic Luxury" — inspired by Tesla, Airbnb, and CRED. 
+The RAPDO app transforms from a simple utility into an **AI-Native Hyperlocal Mobility Ecosystem**. The design language shifts to "Futuristic Luxury" — inspired by Tesla, Airbnb, and CRED. 
 
 Every pixel is intentional. Every interaction is animated. The interface breathes through ambient glowing effects and glassmorphism.
 
 ## 2. Core Visual Language
-*   **Palette:** Deep Space Black (`#0A0A0A`), Matte Black (`#121212`), Luxury Yellow (`#FFD000`), Premium Gold (`#F5B700`), and pure White (`#FFFFFF`).
+*   **Palette:** Deep Space Black (`#0A0A0A`), Matte Black (`#121212`), Luxury Yellow (`#FFC107`), Premium Gold (`#FFB300`), and pure White (`#FFFFFF`).
 *   **Accents:** Cyber-blue and neon-purple ambient glows used strictly for AI features.
 *   **Typography:** Satoshi (Headings) + Inter (Data/Readings). Heavy font weights for impact, extreme letter-spacing for premium feel.
 *   **Depth:** 3D card layering using `BackdropFilter` (Glassmorphism), dynamic inset shadows, and colored drop shadows mimicking ambient light.
@@ -18,9 +18,9 @@ Every pixel is intentional. Every interaction is animated. The interface breathe
 lib/
  ├── core/
  │    ├── theme/
- │    │    ├── RahiColors.dart
- │    │    ├── RahiTypography.dart
- │    │    └── RahiMotion.dart          // Framer-Motion style spring curves
+ │    │    ├── RapdoColors.dart
+ │    │    ├── RapdoTypography.dart
+ │    │    └── RapdoMotion.dart          // Framer-Motion style spring curves
  │    └── ai_engine/
  │         ├── GeminiPromptBuilder.dart
  │         └── ContextAnalyzer.dart
@@ -66,7 +66,7 @@ lib/
 *   **Routes:** Map uses a dark style with golden polylines for routes.
 
 ### C. Fintech-Grade Wallet & Memberships
-*   Wallet looks like a high-end credit card app. Rotating 3D card for "RAHI Gold Pass".
+*   Wallet looks like a high-end credit card app. Rotating 3D card for "RAPDO Gold Pass".
 *   Animated number counters for balance changes.
 *   Confetti/Glow burst on cashback received.
 

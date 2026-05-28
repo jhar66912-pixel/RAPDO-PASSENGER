@@ -2,7 +2,7 @@
   "entities": {
     "User": {
       "title": "User",
-      "description": "A user profile in the RAHI app.",
+      "description": "A user profile in the RAPDO app.",
       "type": "object",
       "properties": {
         "uid": { "type": "string" },

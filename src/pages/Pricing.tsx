@@ -7,7 +7,7 @@ import {
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Link } from 'react-router-dom';
-import { RAHI_40_ROUTES, calculateBreakdown, RahiRoute } from '../data/pricingDatabase';
+import { RAPDO_40_ROUTES, calculateBreakdown, RapdoRoute } from '../data/pricingDatabase';
 import { useAuth } from '../lib/auth';
 import BottomNav from '../components/BottomNav';
 
@@ -32,7 +32,7 @@ export default function Pricing() {
   // Interactive Live ETA Simulation States
   const [isSimulating, setIsSimulating] = useState<boolean>(false);
   const [simSteps, setSimSteps] = useState<number>(4); // countdown 4min -> 3min -> 2min -> Arrived
-  const [simStepText, setSimStepText] = useState<string>("Captain Assigned • RAHI Hub");
+  const [simStepText, setSimStepText] = useState<string>("Captain Assigned • RAPDO Hub");
   const [simProgressPercent, setSimProgressPercent] = useState<number>(10);
   const [audioFeedback, setAudioFeedback] = useState<boolean>(true);
   const simIntervalRef = useRef<any>(null);
@@ -122,7 +122,7 @@ export default function Pricing() {
         } else if (stepCount === 1) {
           setSimSteps(1);
           setSimProgressPercent(90);
-          setSimStepText("🔔 Captain adjacent to RAHI Hub!");
+          setSimStepText("🔔 Captain adjacent to RAPDO Hub!");
           playSorenChime([783, 880], 0.25, 'triangle');
         } else if (stepCount <= 0) {
           setSimSteps(0);
@@ -143,7 +143,7 @@ export default function Pricing() {
   }, []);
 
   // Filter routes
-  const filteredRoutes = RAHI_40_ROUTES.filter(route => {
+  const filteredRoutes = RAPDO_40_ROUTES.filter(route => {
     const term = searchQuery.toLowerCase();
     const isSearchMatch = 
       route.drop.toLowerCase().includes(term) || 
@@ -235,22 +235,22 @@ export default function Pricing() {
       setVoiceParsingStatus('completed');
       
       // Smart prompt indexing & coordinate extraction
-      let detectedRoute: RahiRoute | undefined;
+      let detectedRoute: RapdoRoute | undefined;
       let serviceModule: string = "Bike Taxi";
 
       if (utterance.includes("station") || utterance.includes("Station")) {
-        detectedRoute = RAHI_40_ROUTES.find(r => r.id === "001"); // Samastipur -> Tajpur Road
+        detectedRoute = RAPDO_40_ROUTES.find(r => r.id === "001"); // Samastipur -> Tajpur Road
       } else if (utterance.includes("Darbhanga") && utterance.includes("Muzaffarpur")) {
-        detectedRoute = RAHI_40_ROUTES.find(r => r.id === "015"); // Samastipur -> Muzaffarpur (serving intercity bypass query)
+        detectedRoute = RAPDO_40_ROUTES.find(r => r.id === "015"); // Samastipur -> Muzaffarpur (serving intercity bypass query)
         serviceModule = "Smart Parcel";
       } else if (utterance.includes("urgent dawa") || utterance.includes("Pusa")) {
-        detectedRoute = RAHI_40_ROUTES.find(r => r.id === "009"); // Samastipur -> Pusa Agriculture Univ
+        detectedRoute = RAPDO_40_ROUTES.find(r => r.id === "009"); // Samastipur -> Pusa Agriculture Univ
         serviceModule = "Medicine Courier";
       } else if (utterance.includes("loan") || utterance.includes("Rosera")) {
-        detectedRoute = RAHI_40_ROUTES.find(r => r.id === "006"); // Samastipur -> Rosera
+        detectedRoute = RAPDO_40_ROUTES.find(r => r.id === "006"); // Samastipur -> Rosera
         serviceModule = "Credit Field audit verify";
       } else {
-        detectedRoute = RAHI_40_ROUTES[Math.floor(Math.random() * RAHI_40_ROUTES.length)];
+        detectedRoute = RAPDO_40_ROUTES[Math.floor(Math.random() * RAPDO_40_ROUTES.length)];
       }
 
       if (detectedRoute) {
@@ -278,11 +278,11 @@ export default function Pricing() {
       icon: <AlertTriangle className="w-8 h-8 text-amber-500" />
     },
     {
-      title: "2. The RAHI Disruption Blueprint",
+      title: "2. The RAPDO Disruption Blueprint",
       tagline: "Subscription pricing model, fixed offline transparent corridors, and local focus.",
       highlight: "₹49/Day Flat Captain Passes",
-      desc: "Unlike Uber/Ola/Rapido, RAHI charges Captains zero high-ride commission. Captains purchase simple daily, weekly, or monthly subscription passes. They retain 100% of the passenger split fare, unlocking up to 35% higher earnings.",
-      icon: <Zap className="w-8 h-8 text-[#FFD000] animate-pulse" />
+      desc: "Unlike Uber/Ola/Rapido, RAPDO charges Captains zero high-ride commission. Captains purchase simple daily, weekly, or monthly subscription passes. They retain 100% of the passenger split fare, unlocking up to 35% higher earnings.",
+      icon: <Zap className="w-8 h-8 text-[#FFC107] animate-pulse" />
     },
     {
       title: "3. Addressable TAM / SAM / SOM",
@@ -292,10 +292,10 @@ export default function Pricing() {
       icon: <Target className="w-8 h-8 text-blue-400" />
     },
     {
-      title: "4. Unit Economics: RAHI vs. Legacy Aggregators",
+      title: "4. Unit Economics: RAPDO vs. Legacy Aggregators",
       tagline: "Why our dual business-api and low-cost structure is investor-ready.",
-      highlight: "Aggregator takes ₹30 vs. RAHI ₹7 Flat Fee",
-      desc: "Aggregators demand heavy margins. RAHI takes ₹0 ride commission, charging ₹7 flat passenger platform fee + dynamic Captain subscriptions. Scale provides high-frequency wallet balances, local digital ad yields, and B2B commerce margins.",
+      highlight: "Aggregator takes ₹30 vs. RAPDO ₹7 Flat Fee",
+      desc: "Aggregators demand heavy margins. RAPDO takes ₹0 ride commission, charging ₹7 flat passenger platform fee + dynamic Captain subscriptions. Scale provides high-frequency wallet balances, local digital ad yields, and B2B commerce margins.",
       icon: <IndianRupee className="w-8 h-8 text-emerald-400" />
     },
     {
@@ -318,7 +318,7 @@ export default function Pricing() {
   const reactCodeSnippet = `import React from 'react';
 import { Navigation, Bike } from 'lucide-react';
 
-interface RahiRouteProps {
+interface RapdoRouteProps {
   id: string;
   pickup: string;
   drop: string;
@@ -330,21 +330,21 @@ interface RahiRouteProps {
   eta: number;
 }
 
-export const RahiRouteCard: React.FC<RahiRouteProps> = ({
+export const RapdoRouteCard: React.FC<RapdoRouteProps> = ({
   id, pickup, drop, distanceKm, fare, captainEarnings, companyProfit, trafficStatus, eta
 }) => {
   return (
-    <div className="relative bg-[#121212] border border-white/5 rounded-[32px] p-6 hover:border-[#FFD000]/30 transition-all overflow-hidden text-left">
+    <div className="relative bg-[#121212] border border-white/5 rounded-[32px] p-6 hover:border-[#FFC107]/30 transition-all overflow-hidden text-left">
       <div className="absolute top-0 right-0 w-24 h-24 bg-amber-500/5 rounded-full blur-[30px]" />
       <div className="flex justify-between items-center mb-4">
         <span className="text-[9px] uppercase tracking-wider font-extrabold px-3 py-1 bg-white/5 text-white/60 rounded-full border border-white/5">
           Route R-{id}
         </span>
-        <span className="text-xl font-black text-[#FFD000]">₹{fare}</span>
+        <span className="text-xl font-black text-[#FFC107]">₹{fare}</span>
       </div>
       <div className="space-y-3 mb-6">
         <div className="flex items-center gap-2">
-          <div className="w-1.5 h-1.5 bg-[#FFD000] rounded-full shrink-0" />
+          <div className="w-1.5 h-1.5 bg-[#FFC107] rounded-full shrink-0" />
           <p className="text-white font-extrabold text-sm truncate">{pickup} → {drop}</p>
         </div>
         <p className="text-white/40 text-[10px] font-bold uppercase tracking-wider">
@@ -357,7 +357,7 @@ export const RahiRouteCard: React.FC<RahiRouteProps> = ({
           <span className="text-sm font-black text-emerald-400">₹{captainEarnings}</span>
         </div>
         <div>
-          <span className="block text-[8px] text-white/30 font-black uppercase tracking-widest">RAHI Vault</span>
+          <span className="block text-[8px] text-white/30 font-black uppercase tracking-widest">RAPDO Vault</span>
           <span className="text-sm font-black text-white/80 font-mono">₹{companyProfit}</span>
         </div>
       </div>
@@ -365,10 +365,10 @@ export const RahiRouteCard: React.FC<RahiRouteProps> = ({
   );
 };`;
 
-  const flutterCodeSnippet = `// RAHI Bihar Premium Mobility Network - Route Card Dart UI Widget
+  const flutterCodeSnippet = `// RAPDO Bihar Premium Mobility Network - Route Card Dart UI Widget
 import 'package:flutter/material.dart';
 
-class RahiRouteCard extends StatelessWidget {
+class RapdoRouteCard extends StatelessWidget {
   final String routeId;
   final String pickup;
   final String drop;
@@ -379,7 +379,7 @@ class RahiRouteCard extends StatelessWidget {
   final String trafficStatus;
   final int etaMinutes;
 
-  const RahiRouteCard({
+  const RapdoRouteCard({
     Key? key,
     required this.routeId,
     required this.pickup,
@@ -417,13 +417,13 @@ class RahiRouteCard extends StatelessWidget {
                   ),
                   child: Text("ROUTE $routeId", style: const TextStyle(color: Colors.white55, fontSize: 10, fontWeight: FontWeight.bold)),
                 ),
-                Text("₹\${customerFare.toStringAsFixed(0)}", style: const TextStyle(color: Color(0xFFFFD000), fontWeight: FontWeight.black, fontSize: 24))
+                Text("₹\${customerFare.toStringAsFixed(0)}", style: const TextStyle(color: Color(0xFFFFC107), fontWeight: FontWeight.black, fontSize: 24))
               ],
             ),
             const SizedBox(height: 18),
             Row(
               children: [
-                const Icon(Icons.location_on, color: Color(0xFFFFD000), size: 16),
+                const Icon(Icons.location_on, color: Color(0xFFFFC107), size: 16),
                 const SizedBox(width: 8),
                 Text("$pickup → $drop", style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w800, fontSize: 14)),
               ],
@@ -434,7 +434,7 @@ class RahiRouteCard extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 _buildCol("CAPTAIN", "₹\${captainEarnings.toStringAsFixed(0)}", Colors.green),
-                _buildCol("RAHI VAULT", "₹\${companyProfit.toStringAsFixed(0)}", const Color(0xFFFFD000)),
+                _buildCol("RAPDO VAULT", "₹\${companyProfit.toStringAsFixed(0)}", const Color(0xFFFFC107)),
               ],
             )
           ],
@@ -455,23 +455,23 @@ class RahiRouteCard extends StatelessWidget {
 }`;
 
   return (
-    <div className="flex-1 bg-[#0A0A0A] min-h-screen font-sans text-left selection:bg-[#FFD000]/20 selection:text-white relative">
+    <div className="flex-1 bg-[#0A0A0A] min-h-screen font-sans text-left selection:bg-[#FFC107]/20 selection:text-white relative">
       <div className="w-full max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         
         {/* Upper Corporate Jumbotron Banner */}
         <div className="relative bg-[#121212] rounded-[48px] border border-white/5 p-8 sm:p-12 overflow-hidden shadow-2xl mb-8">
-           <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-gradient-to-tr from-transparent to-[#FFD000]/10 rounded-full blur-[60px] pointer-events-none animate-pulse" />
+           <div className="absolute top-0 right-0 w-[40%] h-[40%] bg-gradient-to-tr from-transparent to-[#FFC107]/10 rounded-full blur-[60px] pointer-events-none animate-pulse" />
            <div className="absolute bottom-[-100px] left-[-100px] w-80 h-80 bg-blue-500/5 rounded-full blur-[100px] pointer-events-none" />
-           <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-[#FFD000] to-transparent" />
+           <div className="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-transparent via-[#FFC107] to-transparent" />
 
            <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-8 text-left">
               <div className="space-y-3 max-w-2xl">
-                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFD000]/15 border border-[#FFD000]/35 shadow-inner">
-                    <Sparkles className="w-3.5 h-3.5 text-[#FFD000] animate-bounce" />
-                    <span className="text-[#FFD000] text-[9px] font-black uppercase tracking-widest leading-none">RAHI STARTUP ENTERPRISE HUB</span>
+                 <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-[#FFC107]/15 border border-[#FFC107]/35 shadow-inner">
+                    <Sparkles className="w-3.5 h-3.5 text-[#FFC107] animate-bounce" />
+                    <span className="text-[#FFC107] text-[9px] font-black uppercase tracking-widest leading-none">RAPDO STARTUP ENTERPRISE HUB</span>
                  </div>
                  <h1 className="text-4xl sm:text-6xl font-black text-white tracking-tight leading-none uppercase font-sans">
-                   Bihar's Premium <span className="text-[#FFD000] block sm:inline">Mobility Platform</span>
+                   Bihar's Premium <span className="text-[#FFC107] block sm:inline">Mobility Platform</span>
                  </h1>
                  <p className="text-white/60 text-sm leading-relaxed max-w-xl font-medium">
                     Redesigning public commerce across Tier-2/3 Bihar. Interactive ledger simulations, algorithmic route directory, dynamic environmental overrides, and verified banking audit channels.
@@ -479,7 +479,7 @@ class RahiRouteCard extends StatelessWidget {
                  
                  <div className="flex flex-wrap items-center gap-4 pt-2">
                     <div className="flex items-center gap-1.5 text-xs text-white/50">
-                       <Database className="w-4 h-4 text-[#FFD000]" />
+                       <Database className="w-4 h-4 text-[#FFC107]" />
                        <span>40 Active Corridors</span>
                     </div>
                     <div className="flex items-center gap-1.5 text-xs text-white/50">
@@ -525,7 +525,7 @@ class RahiRouteCard extends StatelessWidget {
              <button 
                key={tab.id}
                onClick={() => { setActiveTab(tab.id as any); playSorenChime([523], 0.08); }}
-               className={`flex-1 min-w-[110px] sm:min-w-0 flex items-center justify-center gap-1.5 py-3.5 rounded-[18px] text-[9px] font-black uppercase tracking-widest transition-all duration-300 ${activeTab === tab.id ? 'bg-[#FFD000] text-black font-black shadow-lg scale-[1.02]' : 'text-white/55 hover:text-white hover:bg-white/5'}`}
+               className={`flex-1 min-w-[110px] sm:min-w-0 flex items-center justify-center gap-1.5 py-3.5 rounded-[18px] text-[9px] font-black uppercase tracking-widest transition-all duration-300 ${activeTab === tab.id ? 'bg-[#FFC107] text-black font-black shadow-lg scale-[1.02]' : 'text-white/55 hover:text-white hover:bg-white/5'}`}
              >
                 {tab.icon}
                 <span>{tab.label}</span>
@@ -556,7 +556,7 @@ class RahiRouteCard extends StatelessWidget {
                            placeholder="Search destination, village, or crossing..."
                            value={searchQuery}
                            onChange={e => { setSearchQuery(e.target.value); setRoutePage(1); }}
-                           className="w-full bg-[#1A1A1A] border border-white/10 rounded-xl pl-9 pr-4 py-2.5 text-xs font-bold outline-none text-white focus:border-[#FFD000]/60 placeholder:text-white/20 transition-colors"
+                           className="w-full bg-[#1A1A1A] border border-white/10 rounded-xl pl-9 pr-4 py-2.5 text-xs font-bold outline-none text-white focus:border-[#FFC107]/60 placeholder:text-white/20 transition-colors"
                          />
                       </div>
                       
@@ -564,7 +564,7 @@ class RahiRouteCard extends StatelessWidget {
                       <select 
                         value={sortBy}
                         onChange={e => { setSortBy(e.target.value as any); setRoutePage(1); }}
-                        className="bg-[#1a1a1c] border border-white/5 text-white/80 text-xs font-black rounded-xl px-3 py-2 outline-none focus:border-[#FFD000] cursor-pointer"
+                        className="bg-[#1a1a1c] border border-white/5 text-white/80 text-xs font-black rounded-xl px-3 py-2 outline-none focus:border-[#FFC107] cursor-pointer"
                       >
                          <option value="id">Route Tag ID</option>
                          <option value="fare">Settle Fare Price</option>
@@ -574,7 +574,7 @@ class RahiRouteCard extends StatelessWidget {
                       {/* Sound Feedback trigger */}
                       <button 
                         onClick={() => { setAudioFeedback(!audioFeedback); playSorenChime([880], 0.1, 'sine'); }}
-                        className={`px-3 py-2 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-1.5 border border-white/5 transition-colors ${audioFeedback ? 'bg-[#FFD000]/10 text-[#FFD000] border-[#FFD000]/25' : 'bg-[#1A1A1A] text-white/40'}`}
+                        className={`px-3 py-2 rounded-xl text-xs font-black uppercase tracking-wider flex items-center gap-1.5 border border-white/5 transition-colors ${audioFeedback ? 'bg-[#FFC107]/10 text-[#FFC107] border-[#FFC107]/25' : 'bg-[#1A1A1A] text-white/40'}`}
                       >
                          <Volume2 className="w-3.5 h-3.5" />
                          <span>{audioFeedback ? 'Sound ON' : 'Muted'}</span>
@@ -594,7 +594,7 @@ class RahiRouteCard extends StatelessWidget {
                      <button
                        key={cat.id}
                        onClick={() => { setFilterRange(cat.id as any); setRoutePage(1); playSorenChime([523], 0.05); }}
-                       className={`px-3.5 py-3 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all whitespace-nowrap flex-grow ${filterRange === cat.id ? 'bg-[#FFD000] text-black font-black' : 'text-white/40 hover:text-white/80'}`}
+                       className={`px-3.5 py-3 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all whitespace-nowrap flex-grow ${filterRange === cat.id ? 'bg-[#FFC107] text-black font-black' : 'text-white/40 hover:text-white/80'}`}
                      >
                         {cat.label}
                      </button>
@@ -609,14 +609,14 @@ class RahiRouteCard extends StatelessWidget {
                       return (
                         <div 
                            key={route.id}
-                           className="group relative bg-[#18181a] border border-white/5 hover:border-[#FFD000]/30 rounded-[32px] p-6 shadow-xl hover:shadow-[0_15px_30px_rgba(255,208,0,0.03)] transition-all duration-300 flex flex-col justify-between text-left overflow-hidden"
+                           className="group relative bg-[#18181a] border border-white/5 hover:border-[#FFC107]/30 rounded-[32px] p-6 shadow-xl hover:shadow-[0_15px_30px_rgba(255,193,7,0.03)] transition-all duration-300 flex flex-col justify-between text-left overflow-hidden"
                         >
-                           <div className="absolute top-0 right-0 w-[80px] h-[80px] bg-[#FFD000]/5 rounded-full blur-2xl pointer-events-none group-hover:bg-[#FFD000]/10 transition-colors" />
+                           <div className="absolute top-0 right-0 w-[80px] h-[80px] bg-[#FFC107]/5 rounded-full blur-2xl pointer-events-none group-hover:bg-[#FFC107]/10 transition-colors" />
 
                            <div>
                               <div className="flex justify-between items-center mb-4">
                                  <div className="flex items-center gap-2">
-                                    <span className="text-[10px] font-black tracking-widest text-[#FFD000] bg-[#FFD000]/10 border border-[#FFD000]/20 rounded-md px-2 py-1 leading-none uppercase font-mono">
+                                    <span className="text-[10px] font-black tracking-widest text-[#FFC107] bg-[#FFC107]/10 border border-[#FFC107]/20 rounded-md px-2 py-1 leading-none uppercase font-mono">
                                        R-{route.id}
                                     </span>
                                     <span className="text-[9px] font-bold tracking-widest uppercase px-2 py-1 bg-white/5 text-white/50 rounded-md">
@@ -625,16 +625,16 @@ class RahiRouteCard extends StatelessWidget {
                                  </div>
                                  <div className="text-right">
                                     <span className="block text-[8px] font-bold text-white/30 uppercase tracking-widest">Pre-Mapped</span>
-                                    <span className="text-2xl font-black text-[#FFD000] tracking-tight font-mono">₹{route.fare}</span>
+                                    <span className="text-2xl font-black text-[#FFC107] tracking-tight font-mono">₹{route.fare}</span>
                                  </div>
                               </div>
 
                               {/* Locations timeline representation */}
                               <div className="space-y-4 pt-4 pb-4 border-t border-dashed border-white/5">
                                  <div className="flex items-start gap-3 relative">
-                                    <div className="absolute left-2.5 top-5 bottom-0.5 w-[2px] bg-gradient-to-b from-[#FFD000] to-transparent border-dashed" />
-                                    <div className="w-5 h-5 rounded-full bg-white/5 border border-[#FFD000] flex items-center justify-center shrink-0 mt-0.5">
-                                       <div className="w-1.5 h-1.5 bg-[#FFD000] rounded-full" />
+                                    <div className="absolute left-2.5 top-5 bottom-0.5 w-[2px] bg-gradient-to-b from-[#FFC107] to-transparent border-dashed" />
+                                    <div className="w-5 h-5 rounded-full bg-white/5 border border-[#FFC107] flex items-center justify-center shrink-0 mt-0.5">
+                                       <div className="w-1.5 h-1.5 bg-[#FFC107] rounded-full" />
                                     </div>
                                     <div>
                                        <span className="block text-[8px] text-white/30 font-bold uppercase tracking-widest">Origin Cluster</span>
@@ -679,7 +679,7 @@ class RahiRouteCard extends StatelessWidget {
                               <Link 
                                 to={`/book?route=route-${parseInt(route.id, 10)}`}
                                 onClick={() => playSorenChime([659, 1046], 0.15, 'sawtooth')}
-                                className="w-[100%] inline-block text-center py-3 bg-white/5 text-white/95 border border-white/5 font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-[#FFD000] hover:text-black hover:scale-[1.01] active:scale-95 transition-all"
+                                className="w-[100%] inline-block text-center py-3 bg-white/5 text-white/95 border border-white/5 font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-[#FFC107] hover:text-black hover:scale-[1.01] active:scale-95 transition-all"
                               >
                                 Dispatch Commute Ride
                               </Link>
@@ -692,7 +692,7 @@ class RahiRouteCard extends StatelessWidget {
                 {/* Empty directory catch check */}
                 {paginatedRoutes.length === 0 && (
                    <div className="text-center py-20 bg-[#161618] rounded-[40px] border border-white/5">
-                      <AlertTriangle className="w-12 h-12 text-[#FFD000]/60 mx-auto mb-3" />
+                      <AlertTriangle className="w-12 h-12 text-[#FFC107]/60 mx-auto mb-3" />
                       <p className="text-white font-black text-sm">No matched corridors found</p>
                       <p className="text-white/40 text-xs mt-1">Refine your search keywords (e.g. Try 'Samastipur', 'Patna', 'Bypass').</p>
                    </div>
@@ -733,8 +733,8 @@ class RahiRouteCard extends StatelessWidget {
              <div className="lg:col-span-2 space-y-6">
                 <div className="bg-[#121212] border border-white/5 rounded-[40px] p-8 shadow-xl text-left">
                    <div className="flex items-center gap-3 mb-6">
-                      <div className="w-10 h-10 rounded-xl bg-[#FFD000]/10 flex items-center justify-center">
-                         <Sliders className="w-5 h-5 text-[#FFD000]" />
+                      <div className="w-10 h-10 rounded-xl bg-[#FFC107]/10 flex items-center justify-center">
+                         <Sliders className="w-5 h-5 text-[#FFC107]" />
                       </div>
                       <div>
                          <h3 className="text-xl font-extrabold text-white">Algorithmic Base-Fare Sandbox</h3>
@@ -749,13 +749,13 @@ class RahiRouteCard extends StatelessWidget {
                          <div className="grid grid-cols-2 gap-3">
                             <button 
                               type="button" onClick={() => { setCalcServiceType('bike'); playSorenChime([440, 554], 0.1, 'sine'); }}
-                              className={`py-4 rounded-xl text-xs font-black uppercase tracking-widest border transition-all ${calcServiceType === 'bike' ? 'bg-[#FFD000] text-black border-transparent font-black shadow-lg shadow-[#FFD000]/10' : 'bg-transparent text-white/50 hover:bg-white/5 border-white/10'}`}
+                              className={`py-4 rounded-xl text-xs font-black uppercase tracking-widest border transition-all ${calcServiceType === 'bike' ? 'bg-[#FFC107] text-black border-transparent font-black shadow-lg shadow-[#FFC107]/10' : 'bg-transparent text-white/50 hover:bg-white/5 border-white/10'}`}
                             >
                                🏍️ Bike Taxi Commute
                             </button>
                             <button 
                               type="button" onClick={() => { setCalcServiceType('parcel'); playSorenChime([523, 659], 0.1, 'sine'); }}
-                              className={`py-4 rounded-xl text-xs font-black uppercase tracking-widest border transition-all ${calcServiceType === 'parcel' ? 'bg-[#FFD000] text-black border-transparent font-black shadow-lg shadow-[#FFD000]/10' : 'bg-transparent text-white/50 hover:bg-white/5 border-white/10'}`}
+                              className={`py-4 rounded-xl text-xs font-black uppercase tracking-widest border transition-all ${calcServiceType === 'parcel' ? 'bg-[#FFC107] text-black border-transparent font-black shadow-lg shadow-[#FFC107]/10' : 'bg-transparent text-white/50 hover:bg-white/5 border-white/10'}`}
                             >
                                📦 Smart Parcel Courier
                             </button>
@@ -766,7 +766,7 @@ class RahiRouteCard extends StatelessWidget {
                       <div className="space-y-3">
                          <div className="flex justify-between items-center">
                             <span className="text-white/40 text-[9px] font-black uppercase tracking-widest">Commute Distance Mileage</span>
-                            <span className="text-2xl font-black text-[#FFD000] font-mono">{calcDistance} <span className="text-xs text-white/50 font-sans">KM</span></span>
+                            <span className="text-2xl font-black text-[#FFC107] font-mono">{calcDistance} <span className="text-xs text-white/50 font-sans">KM</span></span>
                          </div>
                          <input 
                            type="range"
@@ -774,7 +774,7 @@ class RahiRouteCard extends StatelessWidget {
                            max="100"
                            value={calcDistance}
                            onChange={e => { setCalcDistance(parseInt(e.target.value)); playSorenChime([330 + parseInt(e.target.value)*4], 0.05, 'triangle'); }}
-                           className="w-full accent-[#FFD000] h-1.5 bg-neutral-800 rounded-lg appearance-none cursor-pointer"
+                           className="w-full accent-[#FFC107] h-1.5 bg-neutral-800 rounded-lg appearance-none cursor-pointer"
                          />
                          
                          {/* Presets */}
@@ -784,7 +784,7 @@ class RahiRouteCard extends StatelessWidget {
                                  key={p} 
                                  type="button"
                                  onClick={() => handleDistancePreset(p)}
-                                 className={`px-3.5 py-2 bg-[#1a1a1c] hover:bg-neutral-800 rounded-lg text-[10px] font-bold font-mono text-white/80 border ${calcDistance === p ? 'border-[#FFD000] text-white bg-[#FFD000]/5' : 'border-white/5'}`}
+                                 className={`px-3.5 py-2 bg-[#1a1a1c] hover:bg-neutral-800 rounded-lg text-[10px] font-bold font-mono text-white/80 border ${calcDistance === p ? 'border-[#FFC107] text-white bg-[#FFC107]/5' : 'border-white/5'}`}
                                >
                                   {p} KM {p === 98 ? '(Patna Hub)' : ''}
                                </button>
@@ -805,11 +805,11 @@ class RahiRouteCard extends StatelessWidget {
                            step="1"
                            value={calcPlatformFee}
                            onChange={e => { setCalcPlatformFee(parseInt(e.target.value)); playSorenChime([440], 0.05, 'sine'); }}
-                           className="w-full accent-[#FFD000] h-1.5 bg-neutral-800 rounded-lg appearance-none cursor-pointer"
+                           className="w-full accent-[#FFC107] h-1.5 bg-neutral-800 rounded-lg appearance-none cursor-pointer"
                          />
                          <div className="p-3 bg-[#18181b] border border-white/5 rounded-2xl flex items-center justify-between text-[11px] text-white/50">
                             <span>Sourced platform base fee dynamically adjusts ledger margin (₹5 - ₹10)</span>
-                            <span className="font-mono text-[#FFD000] font-black">Standard: ₹7</span>
+                            <span className="font-mono text-[#FFC107] font-black">Standard: ₹7</span>
                          </div>
                       </div>
 
@@ -856,10 +856,10 @@ class RahiRouteCard extends StatelessWidget {
 
                 {/* dynamic constraints metrics details */}
                 <div className="bg-[#121212] border border-white/5 rounded-[40px] p-6 text-[12px] text-white/60 space-y-4 text-left">
-                   <h4 className="font-extrabold text-[#FFD000] uppercase text-[10px] tracking-widest">Dynamic pricing guidelines schema</h4>
+                   <h4 className="font-extrabold text-[#FFC107] uppercase text-[10px] tracking-widest">Dynamic pricing guidelines schema</h4>
                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div className="p-4 bg-white/[0.01] border border-white/5 rounded-2xl">
-                         <span className="block text-[#FFD000] font-black text-xs mb-1">Base Threshold Limit (0 to 3 KM)</span>
+                         <span className="block text-[#FFC107] font-black text-xs mb-1">Base Threshold Limit (0 to 3 KM)</span>
                          <p className="text-white/55">Base fare remains locked solid at ₹20. Ensure local drivers earn base cost on short corridor dispatch calls.</p>
                       </div>
                       <div className="p-4 bg-white/[0.01] border border-white/5 rounded-2xl">
@@ -874,10 +874,10 @@ class RahiRouteCard extends StatelessWidget {
              <div className="space-y-6">
                 
                 {/* Simulated payment invoice node */}
-                <div className="bg-gradient-to-br from-[#121212] to-[#18181a] border border-[#FFD000]/15 rounded-[40px] p-8 shadow-2xl relative overflow-hidden text-left">
-                   <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFD000]/5 rounded-full blur-[40px] pointer-events-none" />
+                <div className="bg-gradient-to-br from-[#121212] to-[#18181a] border border-[#FFC107]/15 rounded-[40px] p-8 shadow-2xl relative overflow-hidden text-left">
+                   <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFC107]/5 rounded-full blur-[40px] pointer-events-none" />
                    
-                   <span className="text-[#FFD000] text-[8px] font-black uppercase tracking-[0.2em] block mb-1 font-mono">Micro-Ledger breakdown record</span>
+                   <span className="text-[#FFC107] text-[8px] font-black uppercase tracking-[0.2em] block mb-1 font-mono">Micro-Ledger breakdown record</span>
                    <h3 className="text-2xl font-black text-white mb-6 uppercase tracking-tight">Active Settle Invoice</h3>
 
                    <div className="space-y-4 text-xs">
@@ -901,7 +901,7 @@ class RahiRouteCard extends StatelessWidget {
                       )}
 
                       {adminPeakSurge > 1.0 && (
-                         <div className="flex justify-between items-center text-[#FFD000] font-bold bg-[#FFD000]/5 px-2 py-1 rounded">
+                         <div className="flex justify-between items-center text-[#FFC107] font-bold bg-[#FFC107]/5 px-2 py-1 rounded">
                             <span>Admin Peak hour manual override ({adminPeakSurge}x)</span>
                             <span className="font-mono">+{Math.round(computedSandboxCustomerFare - baseBreakdown.finalCustomerFare)}</span>
                          </div>
@@ -924,7 +924,7 @@ class RahiRouteCard extends StatelessWidget {
                          {/* Grand customer total */}
                          <div className="flex justify-between items-baseline">
                             <span className="text-[10px] text-white/60 font-black uppercase tracking-wider">Settled Cost:</span>
-                            <span className="text-4xl font-extrabold text-[#FFD000] tracking-tighter sm:text-5xl font-mono">₹{computedSandboxCustomerFare}</span>
+                            <span className="text-4xl font-extrabold text-[#FFC107] tracking-tighter sm:text-5xl font-mono">₹{computedSandboxCustomerFare}</span>
                          </div>
 
                          {/* Splits breakdown charts */}
@@ -938,11 +938,11 @@ class RahiRouteCard extends StatelessWidget {
                             </div>
 
                             <div className="flex justify-between items-center text-xs pt-1.5">
-                               <span className="text-[#FFD000] font-semibold">🏢 Aggregator Net Yield:</span>
-                               <span className="font-black text-[#FFD000] font-mono">₹{computedSandboxCompanyProfit}</span>
+                               <span className="text-[#FFC107] font-semibold">🏢 Aggregator Net Yield:</span>
+                               <span className="font-black text-[#FFC107] font-mono">₹{computedSandboxCompanyProfit}</span>
                             </div>
                             <div className="w-full bg-neutral-800 h-1.5 rounded-full overflow-hidden">
-                               <div className="bg-[#FFD000] h-full" style={{ width: `${(computedSandboxCompanyProfit / computedSandboxCustomerFare) * 100}%` }}></div>
+                               <div className="bg-[#FFC107] h-full" style={{ width: `${(computedSandboxCompanyProfit / computedSandboxCustomerFare) * 100}%` }}></div>
                             </div>
                          </div>
                       </div>
@@ -953,7 +953,7 @@ class RahiRouteCard extends StatelessWidget {
                       <Link 
                         to={`/book`}
                         onClick={() => playSorenChime([880, 1046], 0.2, 'sawtooth')}
-                        className="block w-full py-4 bg-gradient-to-r from-[#FFD000] to-[#F5B700] text-black font-black text-xs uppercase tracking-widest text-center rounded-2xl shadow-xl hover:scale-[1.01] active:scale-95 transition-all"
+                        className="block w-full py-4 bg-gradient-to-r from-[#FFC107] to-[#FFB300] text-black font-black text-xs uppercase tracking-widest text-center rounded-2xl shadow-xl hover:scale-[1.01] active:scale-95 transition-all"
                       >
                          Configure Dispatch Ride
                       </Link>
@@ -963,7 +963,7 @@ class RahiRouteCard extends StatelessWidget {
                         onClick={() => { setActiveTab('eta'); triggerHailingSimulation(); }}
                         className="w-full py-3 bg-white/5 hover:bg-white/10 text-white font-extrabold text-[9px] uppercase tracking-widest rounded-2xl border border-white/5 transition-colors flex items-center justify-center gap-2"
                       >
-                         <Play className="w-3.5 h-3.5 text-[#FFD000]" /> Simulated Tracking
+                         <Play className="w-3.5 h-3.5 text-[#FFC107]" /> Simulated Tracking
                       </button>
                    </div>
                 </div>
@@ -988,7 +988,7 @@ class RahiRouteCard extends StatelessWidget {
                          <span>25 to 50 KM Intercity Link</span>
                          <span className="font-mono text-emerald-400 font-bold">₹20 OFF</span>
                       </div>
-                      <div className="flex justify-between text-[#FFD000] font-bold">
+                      <div className="flex justify-between text-[#FFC107] font-bold">
                          <span>50 to 80 KM District Link</span>
                          <span className="font-mono text-emerald-400">₹40 OFF</span>
                       </div>
@@ -1016,7 +1016,7 @@ class RahiRouteCard extends StatelessWidget {
 
                    <button 
                      onClick={triggerHailingSimulation}
-                     className={`px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-lg transition-transform ${isSimulating ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-[#FFD000] text-black hover:scale-105'}`}
+                     className={`px-6 py-4 rounded-2xl text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-lg transition-transform ${isSimulating ? 'bg-red-500 text-white hover:bg-red-600' : 'bg-[#FFC107] text-black hover:scale-105'}`}
                    >
                       {isSimulating ? (
                         <>
@@ -1035,7 +1035,7 @@ class RahiRouteCard extends StatelessWidget {
                    <div className="absolute inset-x-0 top-1/4 h-[1px] bg-white/[0.03] border-dashed" />
                    <div className="absolute inset-x-0 top-2/3 h-[1px] bg-white/[0.03]" />
                    <div className="absolute inset-y-0 left-1/3 w-[1px] bg-gradient-to-b from-transparent via-white/5 to-transparent border-dashed" />
-                   <div className="absolute inset-y-0 left-2/3 w-[1px] bg-[#FFD000]/5" />
+                   <div className="absolute inset-y-0 left-2/3 w-[1px] bg-[#FFC107]/5" />
 
                    {/* Starting pin */}
                    <div className="absolute bottom-[20%] left-[15%] text-center">
@@ -1047,10 +1047,10 @@ class RahiRouteCard extends StatelessWidget {
 
                    {/* Ending pin */}
                    <div className="absolute top-[30%] right-[25%] text-center">
-                      <div className="w-8 h-8 rounded-full bg-[#FFD000]/10 border border-[#FFD000]/40 flex items-center justify-center relative">
-                         <div className="w-3 h-3 bg-[#FFD000] rounded-full shadow-[0_0_10px_#FFD000]" />
+                      <div className="w-8 h-8 rounded-full bg-[#FFC107]/10 border border-[#FFC107]/40 flex items-center justify-center relative">
+                         <div className="w-3 h-3 bg-[#FFC107] rounded-full shadow-[0_0_10px_#FFC107]" />
                       </div>
-                      <span className="text-[8px] bg-black/80 border border-[#FFD000]/30 px-2 py-0.5 rounded font-black text-white mt-1 block">Patna Junction</span>
+                      <span className="text-[8px] bg-black/80 border border-[#FFC107]/30 px-2 py-0.5 rounded font-black text-white mt-1 block">Patna Junction</span>
                    </div>
 
                    {/* Simulated Rider Marker moving on the line */}
@@ -1062,10 +1062,10 @@ class RahiRouteCard extends StatelessWidget {
                            top: `${72 - (simProgressPercent * 0.45)}%`
                         }}
                       >
-                         <div className="w-11 h-11 bg-[#FFD000] border-2 border-black rounded-full flex items-center justify-center shadow-2xl transform rotate-[-125deg] duration-300">
+                         <div className="w-11 h-11 bg-[#FFC107] border-2 border-black rounded-full flex items-center justify-center shadow-2xl transform rotate-[-125deg] duration-300">
                             <Navigation className="w-5 h-5 text-black transform rotate-[130deg]" />
                          </div>
-                         <div className="absolute top-12 left-1/2 -translate-x-1/2 bg-black border border-[#FFD000]/35 text-[#FFD000] text-[8px] font-black rounded-md px-2 py-0.5 whitespace-nowrap shadow-xl">
+                         <div className="absolute top-12 left-1/2 -translate-x-1/2 bg-black border border-[#FFC107]/35 text-[#FFC107] text-[8px] font-black rounded-md px-2 py-0.5 whitespace-nowrap shadow-xl">
                             {simSteps > 0 ? `Captain (${simSteps} min ETA)` : 'ARRIVED ✅'}
                          </div>
                       </div>
@@ -1079,10 +1079,10 @@ class RahiRouteCard extends StatelessWidget {
                             <line 
                               x1="0%" y1="100%" 
                               x2={`${simProgressPercent}%`} y2={`${100 - simProgressPercent}%`} 
-                              stroke="#FFD000" 
+                              stroke="#FFC107" 
                               strokeWidth="5" 
                               className="transition-all duration-1000"
-                              style={{ filter: "drop-shadow(0px 0px 6px #FFD000)" }}
+                              style={{ filter: "drop-shadow(0px 0px 6px #FFC107)" }}
                             />
                          )}
                       </svg>
@@ -1090,10 +1090,10 @@ class RahiRouteCard extends StatelessWidget {
 
                    {/* Telemetry log block */}
                    <div className="absolute bottom-4 right-4 bg-black/90 backdrop-blur-md border border-white/10 p-5 rounded-2xl max-w-xs text-left">
-                      <span className="text-[#FFD000] text-[7px] font-black uppercase tracking-widest block font-mono">Approaching telemetry data</span>
+                      <span className="text-[#FFC107] text-[7px] font-black uppercase tracking-widest block font-mono">Approaching telemetry data</span>
                       <p className="text-white font-extrabold text-xs mt-1 truncate">{simStepText}</p>
                       <div className="w-40 bg-neutral-800 h-1 rounded-full overflow-hidden mt-3.5">
-                         <div className="bg-[#FFD000] h-full duration-1000 transition-all animate-pulse" style={{ width: `${simProgressPercent}%` }}></div>
+                         <div className="bg-[#FFC107] h-full duration-1000 transition-all animate-pulse" style={{ width: `${simProgressPercent}%` }}></div>
                       </div>
                    </div>
 
@@ -1114,11 +1114,11 @@ class RahiRouteCard extends StatelessWidget {
                    ].map((item) => (
                       <div 
                         key={item.step}
-                        className={`p-5 rounded-2xl border transition-all ${simSteps === item.step ? 'bg-[#FFD000]/10 border-[#FFD000]/30 text-white scale-[1.01]' : 'bg-[#1A1A1D]/40 border-white/[0.03] text-white/40'}`}
+                        className={`p-5 rounded-2xl border transition-all ${simSteps === item.step ? 'bg-[#FFC107]/10 border-[#FFC107]/30 text-white scale-[1.01]' : 'bg-[#1A1A1D]/40 border-white/[0.03] text-white/40'}`}
                       >
                          <div className="flex justify-between items-center mb-1">
                             <span className="text-[10px] uppercase font-black tracking-widest block">Phase 0{5 - item.step}</span>
-                            <span className={`text-xs font-mono font-bold ${simSteps === item.step ? 'text-[#FFD000]' : 'text-white/30'}`}>{item.duration}</span>
+                            <span className={`text-xs font-mono font-bold ${simSteps === item.step ? 'text-[#FFC107]' : 'text-white/30'}`}>{item.duration}</span>
                          </div>
                          <p className="text-xs font-bold font-sans mt-2">{item.desc}</p>
                       </div>
@@ -1135,8 +1135,8 @@ class RahiRouteCard extends StatelessWidget {
              <div className="bg-[#121212] border border-white/5 rounded-[40px] p-8 shadow-xl">
                 
                 <div className="flex items-center gap-3 mb-8 pb-6 border-b border-white/5">
-                   <div className="w-10 h-10 rounded-xl bg-[#FFD000]/10 flex items-center justify-center animate-pulse">
-                      <Mic className="w-5 h-5 text-[#FFD000]" />
+                   <div className="w-10 h-10 rounded-xl bg-[#FFC107]/10 flex items-center justify-center animate-pulse">
+                      <Mic className="w-5 h-5 text-[#FFC107]" />
                    </div>
                    <div>
                       <h3 className="text-xl font-extrabold text-white">AI Voice dispatch console (Hindi-first NLP)</h3>
@@ -1156,7 +1156,7 @@ class RahiRouteCard extends StatelessWidget {
                             {voiceWaveform.map((height, idx) => (
                               <div 
                                 key={idx} 
-                                className={`w-1.5 rounded-full transition-all duration-150 ${isRecording ? 'bg-[#FFD000] shadow-[0_0_8px_#FFD000]' : 'bg-neutral-800'}`}
+                                className={`w-1.5 rounded-full transition-all duration-150 ${isRecording ? 'bg-[#FFC107] shadow-[0_0_8px_#FFC107]' : 'bg-neutral-800'}`}
                                 style={{ height: `${isRecording ? height : 15}%`, minHeight: '6px' }}
                               />
                             ))}
@@ -1167,9 +1167,9 @@ class RahiRouteCard extends StatelessWidget {
                          <button
                            onClick={() => executeHindiVoiceSim("Bhaiya, Samastipur HQ se Tajpur Road station chalna hai.")}
                            disabled={isRecording}
-                           className={`w-20 h-20 rounded-full flex items-center justify-center border transition-all ${isRecording ? 'border-[#FFD000] bg-[#FFD000]/10 scale-95 shadow-[0_0_20px_rgba(255,208,0,0.15)] animate-pulse' : 'border-white/10 bg-white/5 hover:border-[#FFD000] hover:scale-105'}`}
+                           className={`w-20 h-20 rounded-full flex items-center justify-center border transition-all ${isRecording ? 'border-[#FFC107] bg-[#FFC107]/10 scale-95 shadow-[0_0_20px_rgba(255,193,7,0.15)] animate-pulse' : 'border-white/10 bg-white/5 hover:border-[#FFC107] hover:scale-105'}`}
                          >
-                            <Mic className={`w-8 h-8 ${isRecording ? 'text-[#FFD000]' : 'text-white'}`} />
+                            <Mic className={`w-8 h-8 ${isRecording ? 'text-[#FFC107]' : 'text-white'}`} />
                          </button>
                          <p className="text-[10px] text-white/50 uppercase font-black tracking-widest">
                             {isRecording ? "Processing spoken Hindi..." : "Press card or utterances below"}
@@ -1191,10 +1191,10 @@ class RahiRouteCard extends StatelessWidget {
                               <button
                                 key={idx}
                                 onClick={() => executeHindiVoiceSim(item.label)}
-                                className="w-full text-left p-4 bg-[#1A1A1D]/80 border border-white/5 hover:border-[#FFD000]/30 rounded-2xl block text-xs font-bold leading-relaxed transition-all text-white flex items-center justify-between group"
+                                className="w-full text-left p-4 bg-[#1A1A1D]/80 border border-white/5 hover:border-[#FFC107]/30 rounded-2xl block text-xs font-bold leading-relaxed transition-all text-white flex items-center justify-between group"
                               >
-                                 <span className="group-hover:text-[#FFD000] transition-colors">{item.label}</span>
-                                 <ChevronRight className="w-3.5 h-3.5 text-white/30 shrink-0 group-hover:text-[#FFD000] transition-colors ml-3" />
+                                 <span className="group-hover:text-[#FFC107] transition-colors">{item.label}</span>
+                                 <ChevronRight className="w-3.5 h-3.5 text-white/30 shrink-0 group-hover:text-[#FFC107] transition-colors ml-3" />
                               </button>
                             ))}
                          </div>
@@ -1204,7 +1204,7 @@ class RahiRouteCard extends StatelessWidget {
                       <AnimatePresence mode="wait">
                          {voiceParsingStatus === 'listening' && (
                            <div className="bg-[#1C1810] border border-amber-500/10 p-5 rounded-2xl text-xs flex items-center gap-3">
-                              <RefreshCw className="w-4 h-4 text-[#FFD000] animate-spin shrink-0" />
+                              <RefreshCw className="w-4 h-4 text-[#FFC107] animate-spin shrink-0" />
                               <div className="text-left">
                                  <p className="text-white font-bold uppercase text-[9px] tracking-wide text-amber-500">AI Parser resolving nodes...</p>
                                  <p className="text-white/60">Sourcing departure points, converting Hindi keywords, and routing database ledger match.</p>
@@ -1240,7 +1240,7 @@ class RahiRouteCard extends StatelessWidget {
                                  </div>
                                  <div>
                                     <span className="text-white/35 block text-[8px] uppercase tracking-widest font-black">Estimated Hailing Arrival</span>
-                                    <span className="text-[#FFD000] font-mono font-black">{voiceMatchModel.eta} mins ETA</span>
+                                    <span className="text-[#FFC107] font-mono font-black">{voiceMatchModel.eta} mins ETA</span>
                                  </div>
                               </div>
 
@@ -1295,7 +1295,7 @@ class RahiRouteCard extends StatelessWidget {
                    <div className="p-5 bg-black/40 border border-white/5 rounded-2xl relative overflow-hidden">
                       <span className="text-white/40 text-[7px] uppercase font-black block tracking-widest">Active Passenger Hails</span>
                       <p className="text-2xl font-black text-white mt-1">{activePassengerHails}</p>
-                      <span className="text-[#FFD000] text-[8px] font-extrabold block mt-3">↑ Peak matching ratio 98.4%</span>
+                      <span className="text-[#FFC107] text-[8px] font-extrabold block mt-3">↑ Peak matching ratio 98.4%</span>
                    </div>
 
                    <div className="p-5 bg-black/40 border border-white/5 rounded-2xl">
@@ -1305,8 +1305,8 @@ class RahiRouteCard extends StatelessWidget {
                    </div>
 
                    <div className="p-5 bg-[#1C1810] border border-amber-500/10 rounded-2xl">
-                      <span className="text-[#FFD000] text-[7px] uppercase font-black block tracking-widest font-mono">Platform Peak Surge multiplier</span>
-                      <p className="text-2xl font-black text-[#FFD000] font-mono mt-1">{adminPeakSurge}x</p>
+                      <span className="text-[#FFC107] text-[7px] uppercase font-black block tracking-widest font-mono">Platform Peak Surge multiplier</span>
+                      <p className="text-2xl font-black text-[#FFC107] font-mono mt-1">{adminPeakSurge}x</p>
                       <span className="text-white/50 text-[8px] block mt-3">Algorithmic fare trigger</span>
                    </div>
                 </div>
@@ -1319,7 +1319,7 @@ class RahiRouteCard extends StatelessWidget {
                       <p className="text-white/55 text-xs">Simulate heavy monsoon rain emergencies or severe traffic delays on the Bihar corridors instantly.</p>
                       
                       <div className="space-y-2">
-                         <div className="flex justify-between font-mono text-xs text-[#FFD000] font-bold">
+                         <div className="flex justify-between font-mono text-xs text-[#FFC107] font-bold">
                             <span>Peak Multiplier Override</span>
                             <span>{adminPeakSurge}x</span>
                          </div>
@@ -1330,7 +1330,7 @@ class RahiRouteCard extends StatelessWidget {
                            step="0.1"
                            value={adminPeakSurge}
                            onChange={e => { setAdminPeakSurge(parseFloat(e.target.value)); playSorenChime([220 + parseFloat(e.target.value)*100], 0.05, 'sine'); }}
-                           className="w-full accent-[#FFD000] h-1.5 bg-neutral-800 rounded-lg cursor-pointer"
+                           className="w-full accent-[#FFC107] h-1.5 bg-neutral-800 rounded-lg cursor-pointer"
                          />
                       </div>
 
@@ -1343,7 +1343,7 @@ class RahiRouteCard extends StatelessWidget {
                            <button
                              key={idx}
                              onClick={() => { setAdminPeakSurge(pres.v); playSorenChime([440, 554], 0.1, 'sine'); }}
-                             className={`px-2 py-2 text-[8px] uppercase tracking-widest font-black rounded-lg border transition-all ${adminPeakSurge === pres.v ? 'bg-[#FFD000] text-black border-transparent font-black' : 'bg-transparent text-white/50 border-white/5'}`}
+                             className={`px-2 py-2 text-[8px] uppercase tracking-widest font-black rounded-lg border transition-all ${adminPeakSurge === pres.v ? 'bg-[#FFC107] text-black border-transparent font-black' : 'bg-transparent text-white/50 border-white/5'}`}
                            >
                               {pres.label}
                            </button>
@@ -1352,7 +1352,7 @@ class RahiRouteCard extends StatelessWidget {
 
                       {/* Kirana & Medicine deliveries logistics override logic */}
                       <div className="p-4 bg-white/[0.01] border border-white/5 rounded-2xl text-[11px] leading-relaxed text-white/60">
-                         <span className="text-[#FFD000] font-bold uppercase tracking-wider block text-[9px] mb-1">Logistics platform API overrides</span>
+                         <span className="text-[#FFC107] font-bold uppercase tracking-wider block text-[9px] mb-1">Logistics platform API overrides</span>
                          Monsoon rain surges can trigger automated incentives up to +₹40 flat, ensuring continuous delivery of prescription medical products in Darbhanga bypass and Begusarai crossing points.
                       </div>
                    </div>
@@ -1383,7 +1383,7 @@ class RahiRouteCard extends StatelessWidget {
                          <div>
                             <span className="text-purple-400 text-[8px] font-black uppercase tracking-widest block font-mono">NBFC field verify alert</span>
                             <p className="text-white font-bold leading-none mt-1">Tajpur Road address survey audit</p>
-                            <span className="text-white/40 text-[10px] block mt-1">Rahi Captain assigned for Aadhaar survey verification</span>
+                            <span className="text-white/40 text-[10px] block mt-1">Rapdo Captain assigned for Aadhaar survey verification</span>
                          </div>
                          <span className="text-purple-400 font-bold font-mono text-xs">+₹400 Net profit</span>
                       </div>
@@ -1401,8 +1401,8 @@ class RahiRouteCard extends StatelessWidget {
              <div className="bg-[#121212] border border-white/5 rounded-[40px] p-8 shadow-xl">
                 
                 <div className="flex items-center gap-3 mb-8 pb-6 border-b border-white/5">
-                   <div className="w-10 h-10 rounded-xl bg-[#FFD000]/10 flex items-center justify-center">
-                      <Server className="w-5 h-5 text-[#FFD000]" />
+                   <div className="w-10 h-10 rounded-xl bg-[#FFC107]/10 flex items-center justify-center">
+                      <Server className="w-5 h-5 text-[#FFC107]" />
                    </div>
                    <div>
                       <h3 className="text-xl font-extrabold text-white font-sans">Systems Enterprise Architecture specification</h3>
@@ -1415,7 +1415,7 @@ class RahiRouteCard extends StatelessWidget {
                    {/* Left Column: DB Document Schemas */}
                    <div className="space-y-4">
                       <h4 className="text-white font-black text-xs uppercase tracking-wider flex items-center gap-2">
-                         <Database className="w-4 h-4 text-[#FFD000]" /> Firestore & relational document scheme
+                         <Database className="w-4 h-4 text-[#FFC107]" /> Firestore & relational document scheme
                       </h4>
 
                       {/* User module */}
@@ -1493,12 +1493,12 @@ class RahiRouteCard extends StatelessWidget {
              
              {/* Dynamic Pitch Slideshow Container */}
              <div className="bg-[#121212] border border-white/5 rounded-[40px] p-8 sm:p-10 shadow-2xl relative overflow-hidden">
-                <div className="absolute top-0 right-0 w-[30%] h-[30%] bg-[#FFD000]/5 rounded-full blur-[50px] pointer-events-none" />
+                <div className="absolute top-0 right-0 w-[30%] h-[30%] bg-[#FFC107]/5 rounded-full blur-[50px] pointer-events-none" />
                 
                 {/* Upper Slide Header */}
                 <div className="flex justify-between items-center pb-6 border-b border-white/5 mb-8">
                    <div>
-                      <span className="text-[#FFD000] text-[8px] font-black uppercase tracking-[0.2em] block font-mono">Investor series-A presentation slide</span>
+                      <span className="text-[#FFC107] text-[8px] font-black uppercase tracking-[0.2em] block font-mono">Investor series-A presentation slide</span>
                       <h3 className="text-xl font-extrabold text-white mt-1 uppercase">Pitch Slideshow Deck</h3>
                    </div>
                    <div className="flex gap-1.5 shrink-0">
@@ -1506,7 +1506,7 @@ class RahiRouteCard extends StatelessWidget {
                         <button
                           key={i}
                           onClick={() => { setActiveSlide(i); playSorenChime([440], 0.05); }}
-                          className={`w-7 h-2 rounded transition-all ${activeSlide === i ? 'bg-[#FFD000] w-10' : 'bg-neutral-800'}`}
+                          className={`w-7 h-2 rounded transition-all ${activeSlide === i ? 'bg-[#FFC107] w-10' : 'bg-neutral-800'}`}
                         />
                       ))}
                    </div>
@@ -1522,7 +1522,7 @@ class RahiRouteCard extends StatelessWidget {
                             {PITCH_DECK_SLIDES[activeSlide].icon}
                          </div>
                          <div>
-                            <span className="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-[#FFD000]/10 to-amber-500/10 border border-[#FFD000]/20 text-[#FFD000] text-[9.5px] font-black uppercase tracking-widest rounded-lg leading-none font-mono">
+                            <span className="inline-flex items-center gap-2 px-3 py-1 bg-gradient-to-r from-[#FFC107]/10 to-amber-500/10 border border-[#FFC107]/20 text-[#FFC107] text-[9.5px] font-black uppercase tracking-widest rounded-lg leading-none font-mono">
                                {PITCH_DECK_SLIDES[activeSlide].highlight}
                             </span>
                             <h4 className="text-xl sm:text-2xl font-black text-white mt-2 font-sans tracking-tight leading-none uppercase">{PITCH_DECK_SLIDES[activeSlide].title}</h4>
@@ -1552,14 +1552,14 @@ class RahiRouteCard extends StatelessWidget {
                       {activeSlide === PITCH_DECK_SLIDES.length - 1 ? (
                         <button
                           onClick={() => { setActiveSlide(0); playSorenChime([523, 659, 783], 0.1, 'sawtooth'); }}
-                          className="px-4 py-2.5 bg-[#FFD000] text-black font-black text-[9.5px] uppercase tracking-widest rounded-xl transition-all hover:scale-105"
+                          className="px-4 py-2.5 bg-[#FFC107] text-black font-black text-[9.5px] uppercase tracking-widest rounded-xl transition-all hover:scale-105"
                         >
                            Re-watch Deck
                         </button>
                       ) : (
                         <button
                           onClick={() => { setActiveSlide(prev => Math.min(PITCH_DECK_SLIDES.length - 1, prev + 1)); playSorenChime([523], 0.08); }}
-                          className="px-4 py-2.5 bg-[#FFD000] text-black font-black text-[9.5px] uppercase tracking-widest rounded-xl transition-all hover:scale-105"
+                          className="px-4 py-2.5 bg-[#FFC107] text-black font-black text-[9.5px] uppercase tracking-widest rounded-xl transition-all hover:scale-105"
                         >
                            Next Slide
                         </button>
@@ -1592,7 +1592,7 @@ class RahiRouteCard extends StatelessWidget {
                       <div className="space-y-3 font-medium">
                          <div className="flex justify-between items-center text-xs">
                             <span className="text-white/50">Daily Ecosystem Rides Completed Across Clusters</span>
-                            <span className="text-lg font-black font-mono text-[#FFD000]">{dailyRidesTarget.toLocaleString()} / day</span>
+                            <span className="text-lg font-black font-mono text-[#FFC107]">{dailyRidesTarget.toLocaleString()} / day</span>
                          </div>
                          <input 
                            type="range"
@@ -1601,7 +1601,7 @@ class RahiRouteCard extends StatelessWidget {
                            step="1000"
                            value={dailyRidesTarget}
                            onChange={e => { setDailyRidesTarget(parseInt(e.target.value)); playSorenChime([330], 0.04); }}
-                           className="w-full accent-[#FFD000] h-1.5 bg-neutral-800 rounded-lg cursor-pointer animate-pulse"
+                           className="w-full accent-[#FFC107] h-1.5 bg-neutral-800 rounded-lg cursor-pointer animate-pulse"
                          />
                          <p className="text-[10px] text-white/30">Representative of 40 local Bihar hubs serving 120,000 digital commuting residents.</p>
                       </div>
@@ -1610,7 +1610,7 @@ class RahiRouteCard extends StatelessWidget {
                       <div className="space-y-3 font-medium">
                          <div className="flex justify-between items-center text-xs">
                             <span className="text-white/50">Monthly B2B Logistics & Merchant Delivery Contracts Volume</span>
-                            <span className="text-lg font-black font-mono text-[#FFD000]">₹{b2bLogisticsIncome.toLocaleString()} / mo</span>
+                            <span className="text-lg font-black font-mono text-[#FFC107]">₹{b2bLogisticsIncome.toLocaleString()} / mo</span>
                          </div>
                          <input 
                            type="range"
@@ -1619,7 +1619,7 @@ class RahiRouteCard extends StatelessWidget {
                            step="50000"
                            value={b2bLogisticsIncome}
                            onChange={e => { setB2bLogisticsIncome(parseInt(e.target.value)); playSorenChime([440], 0.04); }}
-                           className="w-full accent-[#FFD000] h-1.5 bg-neutral-800 rounded-lg cursor-pointer"
+                           className="w-full accent-[#FFC107] h-1.5 bg-neutral-800 rounded-lg cursor-pointer"
                          />
                       </div>
 
@@ -1627,7 +1627,7 @@ class RahiRouteCard extends StatelessWidget {
                       <div className="space-y-3 font-medium">
                          <div className="flex justify-between items-center text-xs">
                             <span className="text-white/50">Monthly Active Captain Passes Sold (₹199 flat per pass)</span>
-                            <span className="text-lg font-black font-mono text-[#FFD000]">{subscriptionCoupons.toLocaleString()} passes</span>
+                            <span className="text-lg font-black font-mono text-[#FFC107]">{subscriptionCoupons.toLocaleString()} passes</span>
                          </div>
                          <input 
                            type="range"
@@ -1636,7 +1636,7 @@ class RahiRouteCard extends StatelessWidget {
                            step="250"
                            value={subscriptionCoupons}
                            onChange={e => { setSubscriptionCoupons(parseInt(e.target.value)); playSorenChime([523], 0.04); }}
-                           className="w-full accent-[#FFD000] h-1.5 bg-neutral-800 rounded-lg cursor-pointer"
+                           className="w-full accent-[#FFC107] h-1.5 bg-neutral-800 rounded-lg cursor-pointer"
                          />
                       </div>
 
@@ -1644,7 +1644,7 @@ class RahiRouteCard extends StatelessWidget {
                       <div className="space-y-3 font-medium">
                          <div className="flex justify-between items-center text-xs">
                             <span className="text-white/50">Monthly NBFC verified Address and photo audit audits verified (₹400/audit)</span>
-                            <span className="text-lg font-black font-mono text-[#FFD000]">₹{loanAuditRevenue.toLocaleString()} / mo</span>
+                            <span className="text-lg font-black font-mono text-[#FFC107]">₹{loanAuditRevenue.toLocaleString()} / mo</span>
                          </div>
                          <input 
                            type="range"
@@ -1653,13 +1653,13 @@ class RahiRouteCard extends StatelessWidget {
                            step="50000"
                            value={loanAuditRevenue}
                            onChange={e => { setLoanAuditRevenue(parseInt(e.target.value)); playSorenChime([659], 0.04); }}
-                           className="w-full accent-[#FFD000] h-1.5 bg-neutral-800 rounded-lg cursor-pointer"
+                           className="w-full accent-[#FFC107] h-1.5 bg-neutral-800 rounded-lg cursor-pointer"
                          />
                       </div>
                    </div>
 
                    {/* Pro-forma P&L Outputs Sheet */}
-                   <div className="bg-[#1A1A1D]/60 border border-white/5 rounded-[30px] p-6 space-y-6 hover:border-[#FFD000]/20 transition-all duration-300 text-left">
+                   <div className="bg-[#1A1A1D]/60 border border-white/5 rounded-[30px] p-6 space-y-6 hover:border-[#FFC107]/20 transition-all duration-300 text-left">
                       <div>
                          <span className="text-white/40 text-[8px] font-black uppercase tracking-widest block mb-1">Financial growth projections</span>
                          <h4 className="text-white text-md font-extrabold uppercase">Ecosystem Revenue Sheets</h4>
@@ -1690,8 +1690,8 @@ class RahiRouteCard extends StatelessWidget {
 
                       <div className="pt-4 border-t border-dashed border-white/10 text-center bg-black/40 p-4 rounded-2xl">
                          <span className="text-white/30 text-[8px] font-black uppercase tracking-widest block mb-1">Annual Scaling ARR Target Run Rate</span>
-                         <p className="text-3xl font-black text-[#FFD000] tracking-tighter">₹{(annualizedEcoyieldRunrate / 100000).toFixed(1)} Lakhs</p>
-                         <span className="text-[9px] text-[#FFD000] font-bold uppercase mt-1.5 block">Bihar statewide franchise margin OK</span>
+                         <p className="text-3xl font-black text-[#FFC107] tracking-tighter">₹{(annualizedEcoyieldRunrate / 100000).toFixed(1)} Lakhs</p>
+                         <span className="text-[9px] text-[#FFC107] font-bold uppercase mt-1.5 block">Bihar statewide franchise margin OK</span>
                       </div>
 
                       <div className="p-4 bg-white/[0.01] border border-white/5 rounded-2xl">
@@ -1721,14 +1721,14 @@ class RahiRouteCard extends StatelessWidget {
                    <div className="flex gap-2 p-1.5 bg-[#1A1A1A] rounded-xl border border-white/5 shrink-0 shadow-inner">
                       <button 
                         onClick={() => { setExportFramework('react'); playSorenChime([440]); }}
-                        className={`flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${exportFramework === 'react' ? 'bg-[#FFD000] text-black font-black' : 'text-white/40 hover:text-white'}`}
+                        className={`flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${exportFramework === 'react' ? 'bg-[#FFC107] text-black font-black' : 'text-white/40 hover:text-white'}`}
                       >
                          <Layers className="w-3.5 h-3.5" />
                          React Component
                       </button>
                       <button 
                         onClick={() => { setExportFramework('flutter'); playSorenChime([523]); }}
-                        className={`flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${exportFramework === 'flutter' ? 'bg-[#FFD000] text-black font-black' : 'text-white/40 hover:text-white'}`}
+                        className={`flex items-center gap-1.5 px-4 py-2.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${exportFramework === 'flutter' ? 'bg-[#FFC107] text-black font-black' : 'text-white/40 hover:text-white'}`}
                       >
                          <Smartphone className="w-3.5 h-3.5" />
                          Flutter Widget Code
@@ -1740,11 +1740,11 @@ class RahiRouteCard extends StatelessWidget {
                 <div className="relative rounded-2xl border border-white/10 bg-[#070708] overflow-hidden">
                    <div className="flex justify-between items-center p-4 bg-[#141416] border-b border-white/5">
                       <span className="text-[10px] text-white/40 font-mono font-bold">
-                         {exportFramework === 'react' ? 'RahiRouteCard.tsx (TypeScript React layout Component)' : 'rahi_route_card.dart (Flutter SDK Dart StatelessWidget)'}
+                         {exportFramework === 'react' ? 'RapdoRouteCard.tsx (TypeScript React layout Component)' : 'rapdo_route_card.dart (Flutter SDK Dart StatelessWidget)'}
                       </span>
                       <button
                         onClick={() => handleCopyCode(exportFramework === 'react' ? reactCodeSnippet : flutterCodeSnippet)}
-                        className="px-4 py-2 bg-[#FFD000]/10 text-[#FFD000] border border-[#FFD000]/25 text-[10px] font-black uppercase tracking-widest rounded-lg flex items-center gap-1.5 transition-colors hover:bg-[#FFD000]/20"
+                        className="px-4 py-2 bg-[#FFC107]/10 text-[#FFC107] border border-[#FFC107]/25 text-[10px] font-black uppercase tracking-widest rounded-lg flex items-center gap-1.5 transition-colors hover:bg-[#FFC107]/20"
                       >
                          {isCopied ? (
                            <>
@@ -1766,15 +1766,15 @@ class RahiRouteCard extends StatelessWidget {
                 {/* Benefits panel card */}
                 <div className="mt-8 grid grid-cols-1 md:grid-cols-3 gap-4">
                    <div className="p-5 bg-white/[0.01] border border-white/5 rounded-2xl">
-                      <h4 className="text-[#FFD000] text-[9px] font-black uppercase tracking-wider mb-2">Pristine typography pairings</h4>
+                      <h4 className="text-[#FFC107] text-[9px] font-black uppercase tracking-wider mb-2">Pristine typography pairings</h4>
                       <p className="text-white/60 text-xs">Styles built in robust classes conforming completely to dark luxurious micro-guidelines.</p>
                    </div>
                    <div className="p-5 bg-white/[0.01] border border-white/5 rounded-2xl">
-                      <h4 className="text-[#FFD000] text-[9px] font-black uppercase tracking-wider mb-2">High developer efficiency</h4>
+                      <h4 className="text-[#FFC107] text-[9px] font-black uppercase tracking-wider mb-2">High developer efficiency</h4>
                       <p className="text-white/60 text-xs">Direct drop-in for Flutter developers using stateless widgets compatible with clean structures.</p>
                    </div>
                    <div className="p-5 bg-white/[0.01] border border-white/5 rounded-2xl">
-                      <h4 className="text-[#FFD000] text-[9px] font-black uppercase tracking-wider mb-2">Decoupled Architecture</h4>
+                      <h4 className="text-[#FFC107] text-[9px] font-black uppercase tracking-wider mb-2">Decoupled Architecture</h4>
                       <p className="text-white/60 text-xs">Pristine separations of data metrics allowing seamless JSON updates from server telemetry hubs.</p>
                    </div>
                 </div>

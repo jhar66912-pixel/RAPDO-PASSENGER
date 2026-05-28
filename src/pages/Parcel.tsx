@@ -3,6 +3,7 @@ import { PackageSearch, MapPin, Navigation, Box, Zap, ArrowRight, ShieldCheck, C
 import BottomNav from '../components/BottomNav';
 import { useAuth } from '../lib/auth';
 import { Map, Marker } from '../components/SmartMapView';
+import { LocationSearchInput } from '../components/LocationSearchInput';
 
 export default function Parcel() {
   const { currentUser } = useAuth();
@@ -27,7 +28,7 @@ export default function Parcel() {
           <div className="flex justify-between items-center mb-8">
              <div>
                 <h1 className="text-2xl font-black text-white tracking-widest flex items-center gap-3 uppercase">
-                   {isB2bMode ? 'RAHI B2B' : 'RAHI Parcel'} <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
+                   {isB2bMode ? 'RAPDO B2B' : 'RAPDO Parcel'} <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse"></div>
                 </h1>
                 <p className="text-white/40 text-[11px] font-bold tracking-widest uppercase mt-1">
                    {isB2bMode ? 'Merchant Logistics Console' : 'Hyperlocal delivery network'}
@@ -35,7 +36,7 @@ export default function Parcel() {
              </div>
              <button 
                onClick={() => setIsB2bMode(!isB2bMode)}
-               className={`w-12 h-12 rounded-[18px] flex items-center justify-center transition-all ${isB2bMode ? 'bg-[#FFD000]/10 border border-[#FFD000]/20 text-[#FFD000]' : 'bg-white/5 border border-white/10 text-blue-400 opacity-80 hover:opacity-100'}`}
+               className={`w-12 h-12 rounded-[18px] flex items-center justify-center transition-all ${isB2bMode ? 'bg-[#FFC107]/10 border border-[#FFC107]/20 text-[#FFC107]' : 'bg-white/5 border border-white/10 text-blue-400 opacity-80 hover:opacity-100'}`}
                title="Toggle Merchant Mode"
               >
                 {isB2bMode ? <Box className="w-6 h-6" /> : <PackageSearch className="w-6 h-6" />}
@@ -44,9 +45,9 @@ export default function Parcel() {
 
           {isB2bMode ? (
             <div className="animate-in fade-in slide-in-from-bottom-4 duration-500 ease-out space-y-6">
-               <div className="bg-[#1A1A1A] rounded-[24px] border border-[#FFD000]/20 p-5 shadow-[0_20px_40px_rgba(250,204,21,0.05)] relative overflow-hidden transform-gpu hover:scale-[1.02] transition-transform">
-                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFD000]/10 blur-[40px]"></div>
-                 <h2 className="text-[#FFD000] font-black text-xs tracking-widest uppercase mb-1">Active SLA</h2>
+               <div className="bg-[#1A1A1A] rounded-[24px] border border-[#FFC107]/20 p-5 shadow-[0_20px_40px_rgba(255,193,7,0.05)] relative overflow-hidden transform-gpu hover:scale-[1.02] transition-transform">
+                 <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFC107]/10 blur-[40px]"></div>
+                 <h2 className="text-[#FFC107] font-black text-xs tracking-widest uppercase mb-1">Active SLA</h2>
                  <p className="text-white text-2xl font-black drop-shadow-md">Patna Pharma Dist.</p>
                  <div className="flex gap-4 mt-4 text-[10px] uppercase font-bold text-white/50 tracking-widest">
                    <div><span className="text-white">14</span> Ongoing</div>
@@ -54,7 +55,7 @@ export default function Parcel() {
                  </div>
                </div>
 
-               <button className="w-full py-4 bg-[#FFD000]/10 border border-[#FFD000]/30 hover:bg-[#FFD000]/20 text-[#FFD000] rounded-[20px] font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(250,204,21,0.2)]">
+               <button className="w-full py-4 bg-[#FFC107]/10 border border-[#FFC107]/30 hover:bg-[#FFC107]/20 text-[#FFC107] rounded-[20px] font-black text-xs tracking-widest uppercase transition-all flex items-center justify-center gap-2 hover:shadow-[0_0_20px_rgba(255,193,7,0.2)]">
                  <Zap className="w-4 h-4" /> Bulk Dispatch (Excel Upload)
                </button>
 
@@ -72,7 +73,7 @@ export default function Parcel() {
                         </div>
                         <div>
                            <p className="text-white font-bold text-sm tracking-wide">{order.dest}</p>
-                           <p className="text-white/40 text-[10px] font-bold mt-0.5 tracking-wider uppercase">{order.status} • <span className="text-[#FFD000]">{order.id}</span></p>
+                           <p className="text-white/40 text-[10px] font-bold mt-0.5 tracking-wider uppercase">{order.status} • <span className="text-[#FFC107]">{order.id}</span></p>
                         </div>
                       </div>
                       <span className="text-white/30 text-[9px] font-black uppercase tracking-widest bg-white/5 border border-white/5 px-2 py-1.5 rounded-lg shadow-sm">{order.time}</span>
@@ -101,30 +102,22 @@ export default function Parcel() {
                </div>
 
                {/* Modern Neomorphic Form Area */}
-               <div className="bg-[#1A1A1A] border border-white/5 hover:border-white/10 rounded-[32px] p-6 shadow-2xl space-y-5 transition-colors duration-300">
-                  <div className="relative group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center pointer-events-none group-focus-within:bg-blue-500/20 transition-colors">
-                       <MapPin className="w-4 h-4 text-white/50 group-focus-within:text-blue-400 transition-colors" />
-                    </div>
-                    <input 
-                      type="text" 
-                      value={pickup} onChange={e => setPickup(e.target.value)}
-                      placeholder="Enter Pickup Location"
-                      className="block w-full pl-16 pr-4 py-5 border-none bg-white/[0.02] hover:bg-white/[0.04] focus:bg-white/[0.06] text-white rounded-[20px] text-sm font-medium tracking-wide outline-none transition-all placeholder:text-white/20"
-                    />
-                  </div>
+               <div className="bg-[#1A1A1A] border border-white/5 hover:border-white/10 rounded-[32px] p-6 shadow-2xl space-y-5 transition-colors duration-300 relative z-20">
+                  <LocationSearchInput 
+                    value={pickup}
+                    onChange={setPickup}
+                    onSelect={() => {}}
+                    placeholder="Enter Pickup Location"
+                    focusColor={{ border: 'border-white/20', activeBorder: 'border-blue-500/50', dot: 'bg-white/50 group-focus-within:bg-blue-400', ring: 'focus:ring-blue-500/20' }}
+                  />
                   
-                  <div className="relative group">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-white/5 rounded-full flex items-center justify-center pointer-events-none group-focus-within:bg-[#FFD000]/20 transition-colors">
-                       <Navigation className="w-4 h-4 text-white/50 group-focus-within:text-[#FFD000] transition-colors" />
-                    </div>
-                    <input 
-                      type="text" 
-                      value={drop} onChange={e => setDrop(e.target.value)}
-                      placeholder="Enter Delivery Address"
-                      className="block w-full pl-16 pr-4 py-5 border-none bg-white/[0.02] hover:bg-white/[0.04] focus:bg-white/[0.06] text-white rounded-[20px] text-sm font-medium tracking-wide outline-none transition-all placeholder:text-white/20"
-                    />
-                  </div>
+                  <LocationSearchInput 
+                    value={drop}
+                    onChange={setDrop}
+                    onSelect={() => {}}
+                    placeholder="Enter Delivery Address"
+                    focusColor={{ border: 'border-white/20', activeBorder: 'border-[#FFC107]/50', dot: 'bg-white/50 group-focus-within:bg-[#FFC107]', ring: 'focus:ring-[#FFC107]/20' }}
+                  />
 
                   {/* Weight Selector */}
                   <div className="pt-2">
@@ -213,7 +206,7 @@ export default function Parcel() {
                   {/* Secure Option */}
                    <div className="bg-[#1A1A1A] border border-white/5 rounded-[28px] p-6 hover:bg-white/[0.04] hover:border-white/10 transition-colors cursor-pointer group">
                      <div className="flex items-center gap-3 mb-2">
-                        <div className="w-10 h-10 rounded-[14px] bg-[#FFD000]/10 text-[#FFD000] flex items-center justify-center">
+                        <div className="w-10 h-10 rounded-[14px] bg-[#FFC107]/10 text-[#FFC107] flex items-center justify-center">
                            <ShieldCheck className="w-5 h-5" />
                         </div>
                         <h3 className="text-white font-black text-lg tracking-wide">Secure Box</h3>
@@ -234,7 +227,47 @@ export default function Parcel() {
                   <button onClick={() => setStep(1)} className="px-6 py-5 bg-[#1A1A1A] border border-white/10 text-white font-black text-xs uppercase tracking-widest rounded-[20px] hover:bg-white/10 transition-colors active:scale-95">
                      Back
                   </button>
-                  <button className="flex-1 relative overflow-hidden py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-black text-sm uppercase tracking-widest rounded-[20px] shadow-[0_0_30px_rgba(59,130,246,0.3)] hover:shadow-[0_0_40px_rgba(59,130,246,0.5)] hover:scale-[1.02] active:scale-95 transition-all group">
+                  <button 
+                     onClick={async () => {
+                       if (!pickup || !drop) return;
+                       try {
+                         const parcelBooking = {
+                           bookingId: 'PAR-' + Math.random().toString(36).substr(2, 9),
+                           customerId: currentUser?.uid || '',
+                           customerName: currentUser?.name || 'Guest',
+                           customerMobile: currentUser?.mobile || '',
+                           bookingType: 'custom',
+                           pickupName: pickup,
+                           dropName: drop,
+                           status: 'searching',
+                           rideOtp: Math.floor(1000 + Math.random() * 9000).toString(),
+                           createdAt: Date.now()
+                         };
+                         
+                         const { doc, setDoc } = await import('firebase/firestore');
+                         const { db } = await import('../lib/firebase');
+                         
+                         await setDoc(doc(db, 'bookings', parcelBooking.bookingId), parcelBooking);
+                         
+                         // Create transaction
+                         const txnId = 'TXN-' + Math.floor(100000 + Math.random() * 900000);
+                         await setDoc(doc(db, 'transactions', txnId), {
+                           transactionId: txnId,
+                           customerId: currentUser?.uid || '',
+                           title: 'Parcel Dispatch Reserved',
+                           amount: '-₹45',
+                           type: 'scheduled',
+                           date: 'Now',
+                           createdAt: Date.now()
+                         });
+                         
+                         window.location.href = '/book';
+                       } catch (e) {
+                         alert('Error booking parcel');
+                       }
+                     }}
+                     className="flex-1 relative overflow-hidden py-5 bg-gradient-to-r from-blue-500 to-indigo-600 text-white font-black text-sm uppercase tracking-widest rounded-[20px] shadow-[0_0_30px_rgba(59,130,246,0.3)] hover:shadow-[0_0_40px_rgba(59,130,246,0.5)] hover:scale-[1.02] active:scale-95 transition-all group"
+                  >
                      <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-700 ease-in-out skew-x-12" />
                      Initialize Dispatch
                   </button>

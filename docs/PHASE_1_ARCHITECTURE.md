@@ -1,7 +1,7 @@
-# PHASE 1: Complete System Architecture - RAHI Super App
+# PHASE 1: Complete System Architecture - RAPDO Super App
 
 ## 1. High-Level System Architecture
-RAHI utilizes a hybrid database approach (NoSQL + Relational) to handle high-frequency real-time spatial data (captian locations, active ride states) alongside robust ACID-compliant financial and historical records.
+RAPDO utilizes a hybrid database approach (NoSQL + Relational) to handle high-frequency real-time spatial data (captian locations, active ride states) alongside robust ACID-compliant financial and historical records.
 
 ### Diagrammatic Flow
 ```text

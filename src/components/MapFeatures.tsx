@@ -7,7 +7,7 @@ export function RouteDisplay({ origin, destination }: {
 }) {
   const map = useMap();
   const routesLib = useMapsLibrary('routes');
-  const polylinesRef = useRef<google.maps.Polyline[]>([]);
+  const dirRendererRef = useRef<google.maps.DirectionsRenderer | null>(null);
 
   // If routes library is dummy or missing, render simulated neon visual line
   const isDummyMap = !routesLib || !map || (map && typeof map.fitBounds === 'function' && map.fitBounds.toString().includes('() => {}'));
@@ -15,46 +15,47 @@ export function RouteDisplay({ origin, destination }: {
   useEffect(() => {
     if (isDummyMap || !routesLib || !map || !origin || !destination) return;
     
-    // Clear previous route
-    polylinesRef.current.forEach(p => p.setMap(null));
+    // Clear previous
+    if (dirRendererRef.current) {
+      dirRendererRef.current.setMap(null);
+    }
 
-    routesLib.Route.computeRoutes({
+    const { DirectionsService, DirectionsRenderer } = routesLib;
+    if (!DirectionsService || !DirectionsRenderer) return;
+
+    const directionsService = new DirectionsService();
+    const directionsRenderer = new DirectionsRenderer({
+      map,
+      suppressMarkers: true,
+      preserveViewport: false,
+      polylineOptions: {
+        strokeColor: "#FFC107",
+        strokeOpacity: 0.9,
+        strokeWeight: 5,
+        zIndex: 50,
+      }
+    });
+    
+    dirRendererRef.current = directionsRenderer;
+
+    directionsService.route({
       origin,
       destination,
-      travelMode: 'DRIVING',
-      fields: ['path', 'distanceMeters', 'durationMillis', 'viewport'],
-    }).then(({ routes }) => {
-      if (routes?.[0]) {
-        // High-end glowing yellow route
-        const newPolylines = routes[0].createPolylines();
-        newPolylines.forEach(p => {
-           p.setOptions({
-              strokeColor: '#FFD000',
-              strokeOpacity: 0.8,
-              strokeWeight: 6,
-              zIndex: 50,
-           });
-           p.setMap(map);
-        });
+      travelMode: google.maps.TravelMode.DRIVING
+    }, (result: any, status: any) => {
+      if (status === google.maps.DirectionsStatus.OK && result) {
+        directionsRenderer.setDirections(result);
         
-        // Add a subtle wider darker line underneath for glow/contrast
-        const glowPolylines = routes[0].createPolylines();
-        glowPolylines.forEach(p => {
-           p.setOptions({
-              strokeColor: '#FFA500',
-              strokeOpacity: 0.3,
-              strokeWeight: 14,
-              zIndex: 49,
-           });
-           p.setMap(map);
-        });
-
-        polylinesRef.current = [...newPolylines, ...glowPolylines];
-        if (routes[0].viewport) map.fitBounds(routes[0].viewport);
+        // Add animated polyline glow effect by using an overlay or shadow, but DirectionsRenderer is simple
+        // To make it look ultra tech, we could just stick with a sleek yellow #FFC107 path
       }
     });
 
-    return () => polylinesRef.current.forEach(p => p.setMap(null));
+    return () => {
+      if (dirRendererRef.current) {
+        dirRendererRef.current.setMap(null);
+      }
+    };
   }, [isDummyMap, routesLib, map, origin, destination]);
 
   if (isDummyMap) {

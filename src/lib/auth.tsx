@@ -47,10 +47,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       ],
       emergencyContacts: [
         { id: 'cont-1', name: 'Papa (Home)', phone: '+91 94310 12345' },
-        { id: 'cont-2', name: 'RAHI Safety Helpline', phone: '1800-345-6789' }
+        { id: 'cont-2', name: 'RAPDO Safety Helpline', phone: '1800-345-6789' }
       ],
       paymentMethods: [
-        { id: 'pay-1', type: 'upi' as const, details: 'rahi@axis', isDefault: true },
+        { id: 'pay-1', type: 'upi' as const, details: 'rapdo@axis', isDefault: true },
         { id: 'pay-2', type: 'card' as const, details: '•••• •••• •••• 5678', isDefault: false }
       ],
       rewards: [
@@ -62,7 +62,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       avatar: '🧑🏽'
     };
 
-    localStorage.setItem('rahi_auth_uid', 'demo-user-888');
+    localStorage.setItem('rapdo_auth_uid', 'demo-user-888');
 
     try {
       const userRef = doc(db, 'users', 'demo-user-888');
@@ -76,7 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   // Perform secure SMS Simulation and log user directly with fully connected Firestore document
-  const loginWithPhone = async (mobile: string, role: AppUser['role'], name = 'RAHI Passenger', email = 'passenger@rahi.in') => {
+  const loginWithPhone = async (mobile: string, role: AppUser['role'], name = 'RAPDO Passenger', email = 'passenger@rapdo.in') => {
     setLoading(true);
     const cleanNumber = mobile.replace(/[^0-9]/g, '');
     const uid = `phone_${cleanNumber}`;
@@ -88,10 +88,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     ];
     const defaultContacts = [
       { id: 'cont-1', name: 'Papa (Home)', phone: '+91 94310 12345' },
-      { id: 'cont-2', name: 'RAHI Safety Helpline', phone: '1800-345-6789' }
+      { id: 'cont-2', name: 'RAPDO Safety Helpline', phone: '1800-345-6789' }
     ];
     const defaultPayments: PaymentMethod[] = [
-      { id: 'pay-1', type: 'upi' as const, details: 'rahi@axis', isDefault: true },
+      { id: 'pay-1', type: 'upi' as const, details: 'rapdo@axis', isDefault: true },
       { id: 'pay-2', type: 'card' as const, details: '•••• •••• •••• 5678', isDefault: false }
     ];
     const defaultRewards: UserReward[] = [
@@ -127,7 +127,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      localStorage.setItem('rahi_auth_uid', uid);
+      localStorage.setItem('rapdo_auth_uid', uid);
       setCurrentUser(appUser);
     } catch (err) {
       console.warn("Firestore write restricted or offline (Bypassing cleanly using Local Storage):", err);
@@ -144,7 +144,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         currentLanguage: 'en',
         avatar: role === ('captain' as any) ? '👨🏽‍✈️' : '🧑🏽'
       };
-      localStorage.setItem('rahi_auth_uid', uid);
+      localStorage.setItem('rapdo_auth_uid', uid);
       setCurrentUser(appUser);
     } finally {
       setLoading(false);
@@ -152,7 +152,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   // Perform Email authentication with Firestore synchronization
-  const loginWithEmail = async (email: string, role: AppUser['role'], name = 'RAHI User', mobile = '+91 94310 00000') => {
+  const loginWithEmail = async (email: string, role: AppUser['role'], name = 'RAPDO User', mobile = '+91 94310 00000') => {
     setLoading(true);
     const cleanEmail = email.toLowerCase().replace(/[^a-z0-9]/g, '');
     const uid = `email_${cleanEmail}`;
@@ -164,10 +164,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     ];
     const defaultContacts = [
       { id: 'cont-1', name: 'Papa (Home)', phone: '+91 94310 12345' },
-      { id: 'cont-2', name: 'RAHI Safety Helpline', phone: '1800-345-6789' }
+      { id: 'cont-2', name: 'RAPDO Safety Helpline', phone: '1800-345-6789' }
     ];
     const defaultPayments: PaymentMethod[] = [
-      { id: 'pay-1', type: 'upi' as const, details: 'rahi@axis', isDefault: true },
+      { id: 'pay-1', type: 'upi' as const, details: 'rapdo@axis', isDefault: true },
       { id: 'pay-2', type: 'card' as const, details: '•••• •••• •••• 5678', isDefault: false }
     ];
     const defaultRewards: UserReward[] = [
@@ -203,7 +203,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         }
       }
 
-      localStorage.setItem('rahi_auth_uid', uid);
+      localStorage.setItem('rapdo_auth_uid', uid);
       setCurrentUser(appUser);
     } catch (err) {
       console.warn("Firestore database offline fallback:", err);
@@ -220,7 +220,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         currentLanguage: 'en',
         avatar: role === ('captain' as any) ? '👨🏽‍✈️' : '🧑🏽'
       };
-      localStorage.setItem('rahi_auth_uid', uid);
+      localStorage.setItem('rapdo_auth_uid', uid);
       setCurrentUser(appUser);
     } finally {
       setLoading(false);
@@ -258,10 +258,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             ],
             emergencyContacts: data.emergencyContacts || [
               { id: 'cont-1', name: 'Papa (Home)', phone: '+91 94310 12345' },
-              { id: 'cont-2', name: 'RAHI Safety Helpline', phone: '1800-345-6789' }
+              { id: 'cont-2', name: 'RAPDO Safety Helpline', phone: '1800-345-6789' }
             ],
             paymentMethods: data.paymentMethods || [
-              { id: 'pay-1', type: 'upi' as const, details: 'rahi@axis', isDefault: true },
+              { id: 'pay-1', type: 'upi' as const, details: 'rapdo@axis', isDefault: true },
               { id: 'pay-2', type: 'card' as const, details: '•••• •••• •••• 5678', isDefault: false }
             ],
             rewards: data.rewards || [
@@ -296,7 +296,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             cachedAccessToken = credential.accessToken;
           }
           const firebaseUser = result.user;
-          localStorage.setItem('rahi_auth_uid', firebaseUser.uid);
+          localStorage.setItem('rapdo_auth_uid', firebaseUser.uid);
 
           const userDocRef = doc(db, 'users', firebaseUser.uid);
           const userDoc = await getDoc(userDocRef);
@@ -305,7 +305,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (!userDoc.exists()) {
             appUser = {
               uid: firebaseUser.uid,
-              name: firebaseUser.displayName || 'RAHI Passenger',
+              name: firebaseUser.displayName || 'RAPDO Passenger',
               mobile: firebaseUser.phoneNumber || '+91 94310 11111',
               role: 'customer',
               createdAt: Date.now(),
@@ -325,10 +325,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        localStorage.setItem('rahi_auth_uid', firebaseUser.uid);
+        localStorage.setItem('rapdo_auth_uid', firebaseUser.uid);
         setupUserDocListener(firebaseUser.uid);
       } else {
-        const storedUid = localStorage.getItem('rahi_auth_uid');
+        const storedUid = localStorage.getItem('rapdo_auth_uid');
         if (storedUid) {
           // Listen to the stored uid document
           setupUserDocListener(storedUid);
@@ -388,7 +388,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!userDoc.exists()) {
           appUser = {
             uid: firebaseUser.uid,
-            name: firebaseUser.displayName || 'RAHI Passenger',
+            name: firebaseUser.displayName || 'RAPDO Passenger',
             mobile: firebaseUser.phoneNumber || '+91 94310 11111',
             role: role,
             createdAt: Date.now(),
@@ -405,14 +405,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         console.warn("Firestore read failed, fallback directly:", dbError);
         appUser = {
           uid: firebaseUser.uid,
-          name: firebaseUser.displayName || 'RAHI Passenger',
+          name: firebaseUser.displayName || 'RAPDO Passenger',
           mobile: firebaseUser.phoneNumber || '+91 94310 11111',
           role: role,
           createdAt: Date.now(),
         };
       }
       
-      localStorage.setItem('rahi_auth_uid', firebaseUser.uid);
+      localStorage.setItem('rapdo_auth_uid', firebaseUser.uid);
       setCurrentUser(appUser);
     } catch (error: any) {
       console.error("Popup/Redirect Auth failed:", error);
@@ -428,7 +428,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     } catch (e) {
       console.warn("Google sign out error:", e);
     }
-    localStorage.removeItem('rahi_auth_uid');
+    localStorage.removeItem('rapdo_auth_uid');
     cachedAccessToken = null;
     setCurrentUser(null);
   };

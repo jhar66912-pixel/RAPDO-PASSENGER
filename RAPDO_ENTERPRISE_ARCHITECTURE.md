@@ -1,7 +1,7 @@
-# RAHI Enterprise Ecosystem Architecture 🚀
+# RAPDO Enterprise Ecosystem Architecture 🚀
 
 ## Overview
-RAHI is a premium, scalable, AI-ready hyperlocal mobility and logistics startup ecosystem built for Bihar, India. Operating in low-network conditions with weak devices, the platform requires a fault-tolerant, highly optimized architecture using clean separations of concern.
+RAPDO is a premium, scalable, AI-ready hyperlocal mobility and logistics startup ecosystem built for Bihar, India. Operating in low-network conditions with weak devices, the platform requires a fault-tolerant, highly optimized architecture using clean separations of concern.
 
 ---
 
@@ -146,7 +146,7 @@ services/
 ---
 
 ## 13. Calendar Integration Strategy
-As per the user request, RAHI implements **Google Calendar Integration** allowing users to:
+As per the user request, RAPDO implements **Google Calendar Integration** allowing users to:
 1. Schedule future rides directly inside their Google Calendar.
 2. Receive automatic booking-dispatch flows based on calendar event timing (e.g. "Flight at 4 PM" schedules a bike at 1:30 PM).
 3. The platform requests `calendar.events` scope via Firebase Auth OAuthProvider and stores access tokens for scheduled task execution.

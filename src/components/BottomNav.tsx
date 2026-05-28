@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Package, Activity, Wallet, User, History } from 'lucide-react';
+import { Home, Package, Activity, Wallet, User, History, Navigation } from 'lucide-react';
 import { useLocation, Link } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { motion } from 'motion/react';
@@ -17,12 +17,12 @@ export default function BottomNav() {
       className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-[420px] h-20 bg-[#0f0f0f]/80 backdrop-blur-2xl border border-white/10 rounded-[40px] shadow-[0_20px_60px_rgba(0,0,0,0.5)] flex items-center justify-between px-4 z-50 overflow-visible"
     >
       <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent rounded-[40px] pointer-events-none" />
-      <NavItem to={isCaptain ? "/captain" : "/"} current={location.pathname} icon={<Home className="w-6 h-6" />} label="Home" activeColor="text-[#FFD000]" glowColor="shadow-[#FFD000]/60" />
-      <NavItem to="/book" current={location.pathname} icon={<Activity className="w-6 h-6" />} label="Ride" activeColor="text-blue-400" glowColor="shadow-blue-500/60" />
+      <NavItem to={isCaptain ? "/captain" : "/"} current={location.pathname} icon={<Home className="w-6 h-6" />} label="Home" activeColor="text-[#FFC107]" glowColor="shadow-[#FFC107]/60" />
+      <NavItem to="/book" current={location.pathname} icon={<Navigation className="w-6 h-6" />} label="Ride" activeColor="text-blue-400" glowColor="shadow-blue-500/60" />
       <NavItem to="/parcel" current={location.pathname} icon={<Package className="w-6 h-6" />} label="Parcel" activeColor="text-green-400" glowColor="shadow-green-500/60" />
       <NavItem to="/activity" current={location.pathname} icon={<History className="w-6 h-6" />} label="Activity" activeColor="text-orange-400" glowColor="shadow-orange-500/60" />
       <NavItem to="/wallet" current={location.pathname} icon={<Wallet className="w-6 h-6" />} label="Wallet" activeColor="text-purple-400" glowColor="shadow-purple-500/60" />
-      <NavItem to="/profile" current={location.pathname} icon={<User className="w-6 h-6" />} label="Profile" activeColor="text-[#FFD000]" glowColor="shadow-[#FFD000]/60" />
+      <NavItem to="/profile" current={location.pathname} icon={<User className="w-6 h-6" />} label="Profile" activeColor="text-[#FFC107]" glowColor="shadow-[#FFC107]/60" />
     </motion.div>
   );
 }

@@ -1,21 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 import { DEMO_ROUTES, Booking } from '../types';
-import { MapPin, Search, Navigation, Star, PhoneCall, Sparkles, Bike, PackageOpen, Mic, Calendar, X } from 'lucide-react';
+import { MapPin, Search, Navigation, Star, PhoneCall, Sparkles, Bike, PackageOpen, Mic, Calendar, X, LocateFixed, Target } from 'lucide-react';
 import { validateDistance } from '../lib/maps';
-import { Map, Marker, useMapsLibrary } from '../components/SmartMapView';
+import { Map, Marker, useMapsLibrary, MapCameraHandler } from '../components/SmartMapView';
 import { RouteDisplay } from '../components/MapFeatures';
+import { LocationSearchInput } from '../components/LocationSearchInput';
 import { collection, query, where, onSnapshot, setDoc, doc, updateDoc } from 'firebase/firestore';
 import { db } from '../lib/firebase';
 import BottomNav from '../components/BottomNav';
 
 export default function BookingPage() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { currentUser, loading: authLoading, getAccessToken } = useAuth();
   const [isInitializing, setIsInitializing] = useState(true);
   const [isScheduling, setIsScheduling] = useState(false);
+  const [isLocating, setIsLocating] = useState(false);
+  const [currentLocation, setCurrentLocation] = useState<google.maps.LatLngLiteral | null>(null);
   const [showScheduleModal, setShowScheduleModal] = useState(false);
   const [scheduleDate, setScheduleDate] = useState('');
   const [scheduleTime, setScheduleTime] = useState('');
@@ -37,6 +41,30 @@ export default function BookingPage() {
     }, 1200); // Premium brief loading pause
     return () => clearTimeout(timer);
   }, [authLoading]);
+
+  // Extract navigation parameters passed from components/overlays
+  useEffect(() => {
+    if (location.state) {
+      if (location.state.mode) {
+        setMode(location.state.mode);
+      }
+      if (location.state.pickup) {
+        setCustomPickup(location.state.pickup);
+      }
+      if (location.state.drop) {
+        setCustomDrop(location.state.drop);
+      }
+      if (location.state.pickupCoords) {
+        setPickupCoords(location.state.pickupCoords);
+      }
+      if (location.state.dropCoords) {
+        setDropCoords(location.state.dropCoords);
+      }
+      if (location.state.selectionMode) {
+        setSelectionMode(location.state.selectionMode);
+      }
+    }
+  }, [location]);
 
   const [mode, setMode] = useState<'fixed' | 'custom'>('fixed');
   const [selectedRouteId, setSelectedRouteId] = useState<string>('');
@@ -108,7 +136,14 @@ export default function BookingPage() {
        locationTimer = setInterval(() => {
            setRiderLocation(prev => {
                if (!prev) return pickupCoords || {lat: 25.7796, lng: 84.7499};
-               return { lat: prev.lat + 0.0005, lng: prev.lng + 0.0005 };
+               if (!pickupCoords) return { lat: prev.lat + 0.0005, lng: prev.lng + 0.0005 };
+               
+               const dLat = pickupCoords.lat - prev.lat;
+               const dLng = pickupCoords.lng - prev.lng;
+               if (Math.abs(dLat) < 0.0002 && Math.abs(dLng) < 0.0002) {
+                   return prev;
+               }
+               return { lat: prev.lat + dLat * 0.1, lng: prev.lng + dLng * 0.1 };
            });
        }, 1000);
 
@@ -129,8 +164,30 @@ export default function BookingPage() {
 
   // Marker SVGs
   const pickupIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="14" fill="#121212" stroke="#FAFAFA" stroke-width="2"/><circle cx="16" cy="16" r="6" fill="#fff"/></svg>`)}`;
-  const dropIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="14" fill="#FFD000" stroke="#121212" stroke-width="2"/><circle cx="16" cy="16" r="4" fill="#000"/></svg>`)}`;
-  const bikeIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="22" fill="#121212" stroke="#FFD000" stroke-width="4"/><text x="24" y="32" font-size="24" text-anchor="middle">🏍️</text></svg>`)}`;
+  const dropIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg"><circle cx="16" cy="16" r="14" fill="#FFC107" stroke="#121212" stroke-width="2"/><circle cx="16" cy="16" r="4" fill="#000"/></svg>`)}`;
+  const bikeIcon = `data:image/svg+xml;charset=UTF-8,${encodeURIComponent(`<svg width="48" height="48" viewBox="0 0 48 48" xmlns="http://www.w3.org/2000/svg"><circle cx="24" cy="24" r="22" fill="#121212" stroke="#FFC107" stroke-width="4"/><text x="24" y="32" font-size="24" text-anchor="middle">🏍️</text></svg>`)}`;
+
+  // Auto-locate
+  useEffect(() => {
+     if (mode === 'custom' && !currentLocation && navigator.geolocation) {
+         navigator.geolocation.getCurrentPosition(
+             (pos) => {
+                 const loc = { lat: pos.coords.latitude, lng: pos.coords.longitude };
+                 setCurrentLocation(loc);
+                 setPickupCoords(loc);
+                 if (geocodingLib) {
+                     const geocoder = new geocodingLib.Geocoder();
+                     geocoder.geocode({ location: loc }).then(res => {
+                         const addr = res.results[0]?.formatted_address || "Current Location";
+                         if (!customPickup) setCustomPickup(addr);
+                     });
+                 }
+             },
+             () => {}
+         );
+     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [mode, currentLocation]);
 
   const handleMapClick = (e: any) => {
      if (!geocodingLib || !e) return;
@@ -217,15 +274,34 @@ export default function BookingPage() {
 
   const handleBookCustom = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!customPickup || !customDrop) return;
+    if (!customPickup || !customDrop || !pickupCoords || !dropCoords) return;
     
-    // Mock distance validation logic
-    const distanceKm = customDrop.toLowerCase().includes('far') ? 40 : 15;
+    // Calculate distance using Haversine formula
+    const R = 6371; // Radius of the earth in km
+    const dLat = (dropCoords.lat - pickupCoords.lat) * (Math.PI / 180);
+    const dLon = (dropCoords.lng - pickupCoords.lng) * (Math.PI / 180);
+    const a = 
+      Math.sin(dLat/2) * Math.sin(dLat/2) +
+      Math.cos(pickupCoords.lat * (Math.PI / 180)) * Math.cos(dropCoords.lat * (Math.PI / 180)) * 
+      Math.sin(dLon/2) * Math.sin(dLon/2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    let distanceKm = R * c;
     
-    if (distanceKm > 30) {
-       showToast("RAHI service abhi sirf 30km locality tak available hai.", "error");
+    // Add 20% to account for road distance vs straight line
+    distanceKm = distanceKm * 1.2;
+
+    if (distanceKm > 100) {
+       showToast("RAPDO service abhi sirf 100km locality tak available hai.", "error");
        return;
     }
+    
+    // First 3 KM = ₹20, After that = ₹8 per KM
+    let fare = 20;
+    if (distanceKm > 3) {
+      fare += (distanceKm - 3) * 8;
+    }
+    
+    fare = Math.ceil(fare); // Round up
     
     const newBooking: Booking = {
       bookingId: Math.random().toString(36).substr(2, 9),
@@ -235,7 +311,8 @@ export default function BookingPage() {
       bookingType: 'custom',
       pickupName: customPickup,
       dropName: customDrop,
-      distanceKm: distanceKm,
+      distanceKm: parseFloat(distanceKm.toFixed(1)),
+      fare: fare,
       status: 'searching',
       rideOtp: Math.floor(1000 + Math.random() * 9000).toString(),
       createdAt: Date.now()
@@ -332,8 +409,8 @@ export default function BookingPage() {
           const endTime = new Date(startTime.getTime() + 60 * 60 * 1000);
 
           const event = {
-            summary: `🏍️ RAHI Dispatch: ${pickupStr} to ${dropStr}`,
-            description: `Scheduled via RAHI AI Super App. Estimated Fare: ₹${estFare}`,
+            summary: `🏍️ RAPDO Dispatch: ${pickupStr} to ${dropStr}`,
+            description: `Scheduled via RAPDO AI Super App. Estimated Fare: ₹${estFare}`,
             start: { dateTime: startTime.toISOString(), timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone },
             end: { dateTime: endTime.toISOString(), timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone },
             colorId: '5'
@@ -384,7 +461,7 @@ export default function BookingPage() {
           }
         `}</style>
         <div className="w-full max-w-md mx-auto min-h-screen bg-[#121212] shadow-[0_30px_60px_rgba(0,0,0,0.5)] relative flex flex-col">
-          <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-[#FFD000]/10 rounded-full blur-[80px] pointer-events-none mix-blend-screen" />
+          <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-[#FFC107]/10 rounded-full blur-[80px] pointer-events-none mix-blend-screen" />
           
           <div className="p-8 relative z-10 flex-1 overflow-y-auto no-scrollbar flex flex-col">
             {/* Header Skeleton */}
@@ -440,9 +517,9 @@ export default function BookingPage() {
               initial={{ opacity: 0, y: -40, scale: 0.9 }}
               animate={{ opacity: 1, y: 16, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9, y: -20 }}
-              className="absolute top-20 left-4 right-4 z-[99] p-4 rounded-2xl bg-[#121212]/95 backdrop-blur-2xl border border-[#FFD000]/20 shadow-[0_15px_35px_rgba(0,0,0,0.6)] flex items-center gap-3 animate-in fade-in"
+              className="absolute top-20 left-4 right-4 z-[99] p-4 rounded-2xl bg-[#121212]/95 backdrop-blur-2xl border border-[#FFC107]/20 shadow-[0_15px_35px_rgba(0,0,0,0.6)] flex items-center gap-3 animate-in fade-in"
             >
-              <div className="w-8 h-8 rounded-full bg-[#FFD000]/10 border border-[#FFD000]/30 flex items-center justify-center text-[#FFD000] shrink-0">
+              <div className="w-8 h-8 rounded-full bg-[#FFC107]/10 border border-[#FFC107]/30 flex items-center justify-center text-[#FFC107] shrink-0">
                 <Sparkles className="w-4 h-4" />
               </div>
               <p className="text-white text-xs font-bold leading-snug">{toast.message}</p>
@@ -465,7 +542,7 @@ export default function BookingPage() {
         </div>
 
         {/* Background Ambient Glow */}
-        <div className="absolute top-0 right-[-100px] w-[400px] h-[400px] bg-gradient-to-bl from-[#FFD000]/10 to-blue-500/5 rounded-full blur-[90px] pointer-events-none mix-blend-screen z-10" />
+        <div className="absolute top-0 right-[-100px] w-[400px] h-[400px] bg-gradient-to-bl from-[#FFC107]/10 to-blue-500/5 rounded-full blur-[90px] pointer-events-none mix-blend-screen z-10" />
         <div className="absolute bottom-0 left-[-100px] w-[300px] h-[300px] bg-blue-500/5 rounded-full blur-[80px] pointer-events-none mix-blend-screen z-10" />
 
         <div className="p-8 relative z-20 flex-1 overflow-y-auto no-scrollbar">
@@ -482,7 +559,7 @@ export default function BookingPage() {
                  <motion.span animate={{ rotate: [0, 15, -5, 10, 0] }} transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}>👋</motion.span>
               </h1>
             </div>
-            <div className="w-14 h-14 bg-gradient-to-br from-[#FFD000] to-[#F5B700] p-[2px] rounded-[20px] flex items-center justify-center shadow-[0_0_30px_rgba(255,208,0,0.3)] transform-gpu hover:scale-105 transition-all">
+            <div className="w-14 h-14 bg-gradient-to-br from-[#FFC107] to-[#FFB300] p-[2px] rounded-[20px] flex items-center justify-center shadow-[0_0_30px_rgba(255,193,7,0.3)] transform-gpu hover:scale-105 transition-all">
                <div className="bg-[#0A0A0A] w-full h-full rounded-[18px] flex items-center justify-center">
                   <span className="text-2xl drop-shadow-md">🧑🏽</span>
                </div>
@@ -495,17 +572,17 @@ export default function BookingPage() {
                initial={{ opacity: 0, scale: 0.95 }}
                animate={{ opacity: 1, scale: 1 }}
                whileHover={{ scale: 1.02 }}
-               className="bg-[#121212]/80 backdrop-blur-xl border border-[#FFD000]/30 hover:bg-[#1A1A1A] rounded-[28px] p-5 flex items-center gap-5 mb-8 shadow-[0_20px_40px_rgba(255,208,0,0.05)] relative overflow-hidden transition-all duration-300 group cursor-pointer"
+               className="bg-[#121212]/80 backdrop-blur-xl border border-[#FFC107]/30 hover:bg-[#1A1A1A] rounded-[28px] p-5 flex items-center gap-5 mb-8 shadow-[0_20px_40px_rgba(255,193,7,0.05)] relative overflow-hidden transition-all duration-300 group cursor-pointer"
             >
-              <div className="absolute inset-0 bg-gradient-to-r from-[#FFD000]/0 via-[#FFD000]/5 to-[#FFD000]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
-              <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-[#FFD000]/15 rounded-full blur-[20px] group-hover:bg-[#FFD000]/25 transition-all duration-500"></div>
+              <div className="absolute inset-0 bg-gradient-to-r from-[#FFC107]/0 via-[#FFC107]/5 to-[#FFC107]/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
+              <div className="absolute -right-4 -bottom-4 w-20 h-20 bg-[#FFC107]/15 rounded-full blur-[20px] group-hover:bg-[#FFC107]/25 transition-all duration-500"></div>
               
-              <div className="w-12 h-12 bg-[#FFD000]/10 rounded-[18px] flex items-center justify-center shrink-0 border border-[#FFD000]/30 group-hover:scale-110 shadow-inner transition-transform duration-300">
-                 <Sparkles className="text-[#FFD000] w-6 h-6 animate-pulse" />
+              <div className="w-12 h-12 bg-[#FFC107]/10 rounded-[18px] flex items-center justify-center shrink-0 border border-[#FFC107]/30 group-hover:scale-110 shadow-inner transition-transform duration-300">
+                 <Sparkles className="text-[#FFC107] w-6 h-6 animate-pulse" />
               </div>
               <div className="relative z-10 w-full flex justify-between items-center">
                  <div>
-                    <p className="text-[9px] text-[#FFD000] uppercase tracking-widest font-black mb-1">RAHI AI Insight</p>
+                    <p className="text-[9px] text-[#FFC107] uppercase tracking-widest font-black mb-1">RAPDO AI Insight</p>
                     <p className="text-sm text-white font-bold tracking-wide">Fares 15% lower now</p>
                  </div>
               </div>
@@ -531,6 +608,7 @@ export default function BookingPage() {
                      disableDefaultUI={true}
                      gestureHandling="greedy"
                    >
+                     <MapCameraHandler center={riderLocation || pickupCoords || null} />
                      {pickupCoords && dropCoords && (
                        <RouteDisplay origin={pickupCoords} destination={dropCoords} />
                      )}
@@ -555,7 +633,7 @@ export default function BookingPage() {
                     <div className="absolute -top-12 left-1/2 -translate-x-1/2 w-24 h-24 bg-[#0A0A0A] border border-white/10 rounded-full flex items-center justify-center shadow-[0_10px_30px_rgba(0,0,0,0.8)]">
                       <div className="w-16 h-16 rounded-full bg-[#1A1A1A] flex items-center justify-center border border-white/5 shadow-inner">
                           {bookingStatus.status === 'searching' 
-                             ? <Search className="w-8 h-8 text-[#FFD000] animate-ping" />
+                             ? <Search className="w-8 h-8 text-[#FFC107] animate-ping" />
                              : <Bike className="w-8 h-8 text-[#00DF89]" />
                           }
                       </div>
@@ -570,8 +648,8 @@ export default function BookingPage() {
                       
                       <div className="bg-[#1A1A1A] rounded-[24px] p-6 mt-4 border border-white/5 shadow-inner flex flex-col gap-4">
                          <div className="flex justify-between items-center pb-4 border-b border-white/5">
-                            <span className="text-[10px] text-white/40 uppercase tracking-widest font-black flex items-center gap-2"><Sparkles className="w-3 h-3 text-[#FFD000]" /> OTP PIN</span>
-                            <span className="text-4xl font-mono tracking-widest text-[#FFD000] font-black drop-shadow-[0_0_10px_rgba(255,208,0,0.4)]">{bookingStatus.rideOtp}</span>
+                            <span className="text-[10px] text-white/40 uppercase tracking-widest font-black flex items-center gap-2"><Sparkles className="w-3 h-3 text-[#FFC107]" /> OTP PIN</span>
+                            <span className="text-4xl font-mono tracking-widest text-[#FFC107] font-black drop-shadow-[0_0_10px_rgba(255,193,7,0.4)]">{bookingStatus.rideOtp}</span>
                          </div>
                          <div className="flex justify-between items-center">
                             <span className="text-[10px] text-white/40 uppercase tracking-widest font-black">Total Fare</span>
@@ -599,10 +677,10 @@ export default function BookingPage() {
                 
                 {/* Category selector */}
                 <div className="grid grid-cols-2 gap-4 mb-8">
-                   <button className="bg-[#121212] border border-white/5 p-5 rounded-[32px] flex flex-col items-center justify-center gap-4 hover:border-[#FFD000]/30 transition-all group shadow-[0_10px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_15px_40px_rgba(255,208,0,0.1)] relative overflow-hidden">
-                      <div className="absolute top-0 right-0 w-20 h-20 bg-[#FFD000]/5 rounded-full blur-[30px] group-hover:bg-[#FFD000]/10 transition-all"></div>
+                   <button className="bg-[#121212] border border-white/5 p-5 rounded-[32px] flex flex-col items-center justify-center gap-4 hover:border-[#FFC107]/30 transition-all group shadow-[0_10px_30px_rgba(0,0,0,0.2)] hover:shadow-[0_15px_40px_rgba(255,193,7,0.1)] relative overflow-hidden">
+                      <div className="absolute top-0 right-0 w-20 h-20 bg-[#FFC107]/5 rounded-full blur-[30px] group-hover:bg-[#FFC107]/10 transition-all"></div>
                       <div className="w-14 h-14 bg-[#1A1A1A] rounded-[20px] shadow-inner flex items-center justify-center group-hover:-translate-y-1 transition-transform duration-300 border border-white/5">
-                         <Bike className="text-[#FFD000] w-7 h-7 drop-shadow-md" />
+                         <Bike className="text-[#FFC107] w-7 h-7 drop-shadow-md" />
                       </div>
                       <span className="text-white font-black text-sm tracking-wide">Bike Ride</span>
                    </button>
@@ -621,13 +699,13 @@ export default function BookingPage() {
                   
                   <div className="flex gap-2 mb-8 p-1.5 bg-[#0A0A0A] rounded-[24px] border border-white/5 shadow-inner relative z-10">
                     <button 
-                      className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-[20px] text-xs uppercase tracking-widest font-black transition-all duration-300 ${mode === 'fixed' ? 'bg-[#FFD000] text-black shadow-[0_5px_15px_rgba(255,208,0,0.3)] scale-[1.02]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+                      className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-[20px] text-xs uppercase tracking-widest font-black transition-all duration-300 ${mode === 'fixed' ? 'bg-[#FFC107] text-black shadow-[0_5px_15px_rgba(255,193,7,0.3)] scale-[1.02]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
                       onClick={() => setMode('fixed')}
                     >
                       Routes
                     </button>
                     <button 
-                      className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-[20px] text-xs uppercase tracking-widest font-black transition-all duration-300 ${mode === 'custom' ? 'bg-[#FFD000] text-black shadow-[0_5px_15px_rgba(255,208,0,0.3)] scale-[1.02]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
+                      className={`flex-1 flex items-center justify-center gap-2 py-4 rounded-[20px] text-xs uppercase tracking-widest font-black transition-all duration-300 ${mode === 'custom' ? 'bg-[#FFC107] text-black shadow-[0_5px_15px_rgba(255,193,7,0.3)] scale-[1.02]' : 'text-white/40 hover:text-white hover:bg-white/5'}`}
                       onClick={() => setMode('custom')}
                     >
                       <Search className="w-4 h-4" /> Custom Map
@@ -641,7 +719,7 @@ export default function BookingPage() {
                           required
                           value={selectedRouteId}
                           onChange={(e) => setSelectedRouteId(e.target.value)}
-                          className="block w-full px-5 py-5 border border-white/5 bg-[#1A1A1A] hover:bg-[#1f1f1f] focus:bg-[#1f1f1f] text-white rounded-[24px] text-sm font-bold tracking-wide outline-none appearance-none transition-all shadow-inner focus:ring-2 focus:ring-[#FFD000]/30"
+                          className="block w-full px-5 py-5 border border-white/5 bg-[#1A1A1A] hover:bg-[#1f1f1f] focus:bg-[#1f1f1f] text-white rounded-[24px] text-sm font-bold tracking-wide outline-none appearance-none transition-all shadow-inner focus:ring-2 focus:ring-[#FFC107]/30"
                           style={{ colorScheme: 'dark' }}
                         >
                           <option value="" className="bg-[#1A1A1A]">-- Select Destination --</option>
@@ -657,14 +735,14 @@ export default function BookingPage() {
                         <motion.div 
                           initial={{ opacity: 0, y: 10, scale: 0.95 }}
                           animate={{ opacity: 1, y: 0, scale: 1 }}
-                          className="bg-gradient-to-br from-[#FFD000]/10 to-[#121212] p-6 rounded-[24px] border border-[#FFD000]/30 flex justify-between items-center shadow-[0_10px_30px_rgba(255,208,0,0.1)] group relative overflow-hidden"
+                          className="bg-gradient-to-br from-[#FFC107]/10 to-[#121212] p-6 rounded-[24px] border border-[#FFC107]/30 flex justify-between items-center shadow-[0_10px_30px_rgba(255,193,7,0.1)] group relative overflow-hidden"
                         >
-                           <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFD000]/10 blur-[40px] rounded-full"></div>
+                           <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFC107]/10 blur-[40px] rounded-full"></div>
                            <div className="relative z-10">
-                             <p className="text-[10px] font-black text-[#FFD000] uppercase tracking-widest mb-1 flex items-center gap-2"><Sparkles className="w-3 h-3" /> Guaranteed Fare</p>
+                             <p className="text-[10px] font-black text-[#FFC107] uppercase tracking-widest mb-1 flex items-center gap-2"><Sparkles className="w-3 h-3" /> Guaranteed Fare</p>
                              <p className="text-4xl font-black text-white tracking-tighter drop-shadow-md">₹{selectedRoute.fare}</p>
                            </div>
-                           <div className="relative z-10 w-14 h-14 bg-gradient-to-tr from-[#FFD000] to-[#F5B700] p-[1px] rounded-full shadow-[0_0_20px_rgba(255,208,0,0.3)] group-hover:scale-110 transition-transform">
+                           <div className="relative z-10 w-14 h-14 bg-gradient-to-tr from-[#FFC107] to-[#FFB300] p-[1px] rounded-full shadow-[0_0_20px_rgba(255,193,7,0.3)] group-hover:scale-110 transition-transform">
                               <div className="w-full h-full bg-[#121212] rounded-full flex items-center justify-center shadow-inner">
                                 <span className="text-xl">💰</span>
                               </div>
@@ -676,7 +754,7 @@ export default function BookingPage() {
                          <button
                            type="submit"
                            disabled={!selectedRouteId}
-                           className="flex-[2] group relative overflow-hidden py-5 bg-gradient-to-r from-[#FFD000] to-[#F5B700] text-black font-black text-[11px] uppercase tracking-widest rounded-[20px] shadow-[0_15px_30px_rgba(255,208,0,0.3)] hover:shadow-[0_20px_40px_rgba(255,208,0,0.4)] hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                           className="flex-[2] group relative overflow-hidden py-5 bg-gradient-to-r from-[#FFC107] to-[#FFB300] text-black font-black text-[11px] uppercase tracking-widest rounded-[20px] shadow-[0_15px_30px_rgba(255,193,7,0.3)] hover:shadow-[0_20px_40px_rgba(255,193,7,0.4)] hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
                          >
                            <div className="absolute inset-0 bg-white/30 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-[1.5s] ease-in-out skew-x-12" />
                            Initialize Ride
@@ -685,7 +763,7 @@ export default function BookingPage() {
                            type="button"
                            onClick={handleScheduleClick}
                            disabled={!selectedRouteId || isScheduling}
-                           className="flex-[1] group relative overflow-hidden py-5 bg-[#0A0A0A] text-white border border-white/10 font-black text-[11px] uppercase tracking-widest rounded-[20px] shadow-inner hover:bg-[#1A1A1A] hover:border-[#FFD000]/50 hover:text-[#FFD000] hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                           className="flex-[1] group relative overflow-hidden py-5 bg-[#0A0A0A] text-white border border-white/10 font-black text-[11px] uppercase tracking-widest rounded-[20px] shadow-inner hover:bg-[#1A1A1A] hover:border-[#FFC107]/50 hover:text-[#FFC107] hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
                          >
                            {isScheduling ? '...' : <Calendar className="w-5 h-5"/>}
                          </button>
@@ -693,16 +771,18 @@ export default function BookingPage() {
                     </form>
                   ) : (
                     <form onSubmit={handleBookCustom} className="space-y-6 relative z-10">
-                      <div className="h-56 w-full rounded-[24px] overflow-hidden border border-white/10 relative shadow-[0_10px_30px_rgba(0,0,0,0.5)] group cursor-pointer group-hover:border-[#FFD000]/30 transition-colors">
+                      <div className="h-56 w-full rounded-[24px] overflow-hidden border border-white/10 relative shadow-[0_10px_30px_rgba(0,0,0,0.5)] group cursor-pointer group-hover:border-[#FFC107]/30 transition-colors">
                          <div className="absolute inset-0 bg-gradient-to-t from-[#121212] to-transparent mix-blend-overlay opacity-50 z-20 pointer-events-none"></div>
                          <Map 
-                           defaultCenter={{lat: 25.7796, lng: 84.7499}}
+                           defaultCenter={currentLocation || pickupCoords || {lat: 25.7796, lng: 84.7499}}
+                           center={selectionMode === 'pickup' ? (pickupCoords || currentLocation || {lat: 25.7796, lng: 84.7499}) : (dropCoords || pickupCoords || currentLocation || {lat: 25.7796, lng: 84.7499})}
                            defaultZoom={12}
                            internalUsageAttributionIds={['gmp_mcp_codeassist_v1_aistudio']}
                            onClick={handleMapClick}
                            disableDefaultUI={true}
                            gestureHandling="greedy"
                          >
+                           <MapCameraHandler center={selectionMode === 'pickup' ? (pickupCoords || currentLocation || null) : (dropCoords || pickupCoords || currentLocation || null)} />
                            {pickupCoords && dropCoords && (
                              <RouteDisplay origin={pickupCoords} destination={dropCoords} />
                            )}
@@ -713,44 +793,128 @@ export default function BookingPage() {
                              <Marker position={dropCoords} icon={dropIcon} />
                            )}
                          </Map>
-                         <div className="absolute top-4 left-4 right-4 bg-[#0A0A0A]/90 backdrop-blur-xl px-4 py-3 rounded-2xl border border-[#FFD000]/20 text-center font-black text-[10px] uppercase tracking-widest pointer-events-none text-[#FFD000] shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
+                         <div className="absolute top-4 left-4 right-4 bg-[#0A0A0A]/90 backdrop-blur-xl px-4 py-3 rounded-2xl border border-[#FFC107]/20 text-center font-black text-[10px] uppercase tracking-widest pointer-events-none text-[#FFC107] shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
                             {selectionMode === 'pickup' ? '📍 Tap map to set Pickup' : '📍 Tap map to set Drop'}
                          </div>
+                         <motion.button
+                           type="button"
+                           whileTap={{ scale: 0.9 }}
+                           onClick={(e) => {
+                               e.preventDefault();
+                               if (!navigator.geolocation) {
+                                   showToast("Geolocation is not supported by your browser.", "error");
+                                   return;
+                               }
+                               
+                               setIsLocating(true);
+                               navigator.geolocation.getCurrentPosition(
+                                   (position) => {
+                                       const loc = { lat: position.coords.latitude, lng: position.coords.longitude };
+                                       setCurrentLocation(loc);
+                                       setPickupCoords(loc);
+                                       
+                                       // Reverse geocode
+                                       if (geocodingLib) {
+                                           const geocoder = new geocodingLib.Geocoder();
+                                           geocoder.geocode({ location: loc }).then(res => {
+                                               const addr = res.results[0]?.formatted_address || `${loc.lat.toFixed(4)}, ${loc.lng.toFixed(4)}`;
+                                               setCustomPickup(addr);
+                                           }).catch(() => {
+                                               setCustomPickup("Current Location");
+                                           });
+                                       } else {
+                                           setCustomPickup("Current Location");
+                                       }
+                                       
+                                       showToast("Location detected!", "success");
+                                       setIsLocating(false);
+                                       setSelectionMode('drop');
+                                   },
+                                   (error) => {
+                                       console.error(error);
+                                       showToast("Failed to get location. Please enable GPS.", "error");
+                                       setIsLocating(false);
+                                   },
+                                   { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+                               );
+                           }}
+                           className="absolute bottom-4 right-4 w-12 h-12 bg-[#121212]/90 backdrop-blur-md rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.8)] border border-white/20 flex items-center justify-center hover:border-[#FFC107] group transition-colors z-[30]"
+                         >
+                            <LocateFixed className={`w-6 h-6 text-white group-hover:text-[#FFC107] transition-colors ${isLocating ? 'animate-spin' : ''}`} />
+                         </motion.button>
                       </div>
    
                       <div className="space-y-4 relative">
-                        <div className="absolute left-6 top-8 bottom-8 w-0.5 bg-gradient-to-b from-white/20 to-[#FFD000]/50 border-dashed z-0"></div>
-                        <div className="relative group z-10">
-                           <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#121212] border border-white/20 rounded-full flex items-center justify-center shadow-inner group-focus-within:border-white/50 transition-colors">
-                              <div className="w-2 h-2 rounded-full bg-white/50 group-focus-within:bg-white"></div>
-                           </div>
-                           <input 
-                             type="text" required
-                             value={customPickup} onChange={e => setCustomPickup(e.target.value)}
-                             onFocus={() => setSelectionMode('pickup')}
-                             placeholder="Select Pickup Coordinates"
-                             className="block w-full pl-16 pr-4 py-5 border border-white/5 bg-[#1A1A1A] hover:bg-[#1f1f1f] focus:bg-[#1f1f1f] text-white rounded-[24px] text-sm font-bold tracking-wide outline-none transition-all placeholder:text-white/30 focus:ring-2 focus:ring-white/10 shadow-inner"
-                           />
-                        </div>
-                        <div className="relative group z-10">
-                           <div className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#121212] border border-[#FFD000]/30 rounded-full flex items-center justify-center shadow-inner group-focus-within:border-[#FFD000] transition-colors">
-                              <div className="w-2 h-2 rounded-full bg-[#FFD000]"></div>
-                           </div>
-                           <input 
-                             type="text" required
-                             value={customDrop} onChange={e => setCustomDrop(e.target.value)}
-                             onFocus={() => setSelectionMode('drop')}
-                             placeholder="Select Drop Coordinates"
-                             className="block w-full pl-16 pr-4 py-5 border border-white/5 bg-[#1A1A1A] hover:bg-[#1f1f1f] focus:bg-[#1f1f1f] text-white rounded-[24px] text-sm font-bold tracking-wide outline-none transition-all placeholder:text-white/30 focus:ring-2 focus:ring-[#FFD000]/20 shadow-inner"
-                           />
-                        </div>
+                        <div className="absolute left-6 top-8 bottom-8 w-0.5 bg-gradient-to-b from-white/20 to-[#FFC107]/50 border-dashed z-0"></div>
+                        
+                        <LocationSearchInput 
+                            value={customPickup}
+                            onChange={setCustomPickup}
+                            onSelect={(coords: any) => setPickupCoords(coords)}
+                            placeholder="Select Pickup Coordinates"
+                            focusColor={{ border: 'border-white/20', activeBorder: 'border-white/50', dot: 'bg-white/50 group-focus-within:bg-white', ring: 'focus:ring-white/10' }}
+                            setSelectionMode={setSelectionMode}
+                            mode="pickup"
+                        />
+                        
+                        <LocationSearchInput 
+                            value={customDrop}
+                            onChange={setCustomDrop}
+                            onSelect={(coords: any) => setDropCoords(coords)}
+                            placeholder="Select Drop Coordinates"
+                            focusColor={{ border: 'border-[#FFC107]/30', activeBorder: 'border-[#FFC107]', dot: 'bg-[#FFC107]', ring: 'focus:ring-[#FFC107]/20' }}
+                            setSelectionMode={setSelectionMode}
+                            mode="drop"
+                        />
                       </div>
+
+                      {pickupCoords && dropCoords && (
+                        <motion.div 
+                          initial={{ opacity: 0, y: 10, scale: 0.95 }}
+                          animate={{ opacity: 1, y: 0, scale: 1 }}
+                          className="bg-gradient-to-br from-[#FFC107]/10 to-[#121212] p-6 rounded-[24px] border border-[#FFC107]/30 flex justify-between items-center shadow-[0_10px_30px_rgba(255,193,7,0.1)] group relative overflow-hidden mt-4"
+                        >
+                           <div className="absolute top-0 right-0 w-32 h-32 bg-[#FFC107]/10 blur-[40px] rounded-full"></div>
+                           <div className="relative z-10">
+                             <p className="text-[10px] font-black text-[#FFC107] uppercase tracking-widest mb-1 flex items-center gap-2"><Sparkles className="w-3 h-3" /> Estimated Fare</p>
+                             <p className="text-4xl font-black text-white tracking-tighter drop-shadow-md">
+                               ₹{(() => {
+                                 const R = 6371; 
+                                 const dLat = (dropCoords.lat - pickupCoords.lat) * (Math.PI / 180);
+                                 const dLon = (dropCoords.lng - pickupCoords.lng) * (Math.PI / 180);
+                                 const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(pickupCoords.lat * (Math.PI / 180)) * Math.cos(dropCoords.lat * (Math.PI / 180)) * Math.sin(dLon/2) * Math.sin(dLon/2);
+                                 const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+                                 const distStr = (R * c * 1.2).toFixed(1);
+                                 let dist = parseFloat(distStr);
+                                 let fare = 20;
+                                 if (dist > 3) fare += (dist - 3) * 8;
+                                 return Math.ceil(fare);
+                               })()}
+                             </p>
+                             <p className="text-[9px] text-white/50 uppercase tracking-widest mt-1">
+                               {(() => {
+                                 const R = 6371; 
+                                 const dLat = (dropCoords.lat - pickupCoords.lat) * (Math.PI / 180);
+                                 const dLon = (dropCoords.lng - pickupCoords.lng) * (Math.PI / 180);
+                                 const a = Math.sin(dLat/2) * Math.sin(dLat/2) + Math.cos(pickupCoords.lat * (Math.PI / 180)) * Math.cos(dropCoords.lat * (Math.PI / 180)) * Math.sin(dLon/2) * Math.sin(dLon/2);
+                                 const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+                                 return (R * c * 1.2).toFixed(1) + " KM Distance";
+                               })()}
+                             </p>
+                           </div>
+                           <div className="relative z-10 w-14 h-14 bg-gradient-to-tr from-[#FFC107] to-[#FFB300] p-[1px] rounded-full shadow-[0_0_20px_rgba(255,193,7,0.3)] group-hover:scale-110 transition-transform">
+                              <div className="w-full h-full bg-[#121212] rounded-full flex items-center justify-center shadow-inner">
+                                <span className="text-xl">💰</span>
+                              </div>
+                           </div>
+                        </motion.div>
+                      )}
                       
                       <div className="flex gap-4 mt-8">
                          <button
                            type="submit"
                            disabled={!customPickup || !customDrop}
-                           className="flex-[2] group relative overflow-hidden py-5 bg-gradient-to-r from-[#FFD000] to-[#F5B700] text-black font-black text-[11px] uppercase tracking-widest rounded-[20px] shadow-[0_15px_30px_rgba(255,208,0,0.3)] hover:shadow-[0_20px_40px_rgba(255,208,0,0.4)] hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                           className="flex-[2] group relative overflow-hidden py-5 bg-gradient-to-r from-[#FFC107] to-[#FFB300] text-black font-black text-[11px] uppercase tracking-widest rounded-[20px] shadow-[0_15px_30px_rgba(255,193,7,0.3)] hover:shadow-[0_20px_40px_rgba(255,193,7,0.4)] hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
                          >
                            <div className="absolute inset-0 bg-white/30 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-[1.5s] ease-in-out skew-x-12" />
                            Initialize Ride
@@ -759,7 +923,7 @@ export default function BookingPage() {
                            type="button"
                            onClick={handleScheduleClick}
                            disabled={!customPickup || !customDrop || isScheduling}
-                           className="flex-[1] group relative overflow-hidden py-5 bg-[#0A0A0A] text-white border border-white/10 font-black text-[11px] uppercase tracking-widest rounded-[20px] shadow-inner hover:bg-[#1A1A1A] hover:border-[#FFD000]/50 hover:text-[#FFD000] hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
+                           className="flex-[1] group relative overflow-hidden py-5 bg-[#0A0A0A] text-white border border-white/10 font-black text-[11px] uppercase tracking-widest rounded-[20px] shadow-inner hover:bg-[#1A1A1A] hover:border-[#FFC107]/50 hover:text-[#FFC107] hover:scale-[1.02] active:scale-95 disabled:opacity-50 transition-all flex items-center justify-center gap-2"
                          >
                            <Calendar className="w-5 h-5"/>
                          </button>
@@ -772,6 +936,7 @@ export default function BookingPage() {
                 <motion.div 
                    whileHover={{ scale: 1.02 }}
                    whileTap={{ scale: 0.98 }}
+                   onClick={() => navigate('/ai-help')}
                    className="mt-8 p-5 rounded-[28px] bg-[#121212]/80 border border-white/5 flex items-center gap-5 hover:border-blue-500/30 transition-all backdrop-blur-md cursor-pointer group shadow-[0_10px_30px_rgba(0,0,0,0.2)] relative overflow-hidden"
                 >
                    <div className="absolute inset-0 bg-gradient-to-r from-blue-500/5 to-purple-500/5 mix-blend-screen pointer-events-none"></div>
@@ -795,11 +960,11 @@ export default function BookingPage() {
       {showRating && (
          <div className="fixed inset-0 bg-[#0A0A0A]/95 backdrop-blur-3xl z-[100] flex items-center justify-center p-4 animate-in fade-in duration-300">
            <div className="bg-[#121212] rounded-[48px] p-10 max-w-sm w-full shadow-[0_40px_80px_rgba(0,0,0,1)] border border-white/5 transform scale-100 transition-transform relative overflow-hidden flex flex-col items-center">
-              <div className="absolute top-0 left-0 w-full h-[6px] bg-gradient-to-r from-[#FFD000]/20 via-[#FFD000] to-[#FFD000]/20" />
-              <div className="absolute top-[-50px] right-[-50px] w-48 h-48 bg-[#FFD000]/10 rounded-full blur-[50px] pointer-events-none"></div>
+              <div className="absolute top-0 left-0 w-full h-[6px] bg-gradient-to-r from-[#FFC107]/20 via-[#FFC107] to-[#FFC107]/20" />
+              <div className="absolute top-[-50px] right-[-50px] w-48 h-48 bg-[#FFC107]/10 rounded-full blur-[50px] pointer-events-none"></div>
  
-              <div className="w-20 h-20 bg-[#1A1A1A] rounded-full border border-[#FFD000]/20 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(255,208,0,0.1)]">
-                 <Star className="w-10 h-10 text-[#FFD000] fill-[#FFD000]" />
+              <div className="w-20 h-20 bg-[#1A1A1A] rounded-full border border-[#FFC107]/20 flex items-center justify-center mb-6 shadow-[0_0_30px_rgba(255,193,7,0.1)]">
+                 <Star className="w-10 h-10 text-[#FFC107] fill-[#FFC107]" />
               </div>
 
               <h3 className="text-3xl font-black text-white text-center mb-1 tracking-tight">Trip Evaluation</h3>
@@ -808,7 +973,7 @@ export default function BookingPage() {
               <div className="flex justify-center gap-2 mb-10">
                  {[1,2,3,4,5].map(s => (
                     <button key={s} onClick={() => setRatingVal(s)} className="hover:scale-125 hover:-translate-y-2 transition-all duration-300 p-2">
-                       <Star className={`w-10 h-10 transition-colors ${ratingVal >= s ? 'text-[#FFD000] fill-[#FFD000] drop-shadow-[0_0_15px_rgba(255,208,0,0.5)]' : 'text-white/5'}`} />
+                       <Star className={`w-10 h-10 transition-colors ${ratingVal >= s ? 'text-[#FFC107] fill-[#FFC107] drop-shadow-[0_0_15px_rgba(255,193,7,0.5)]' : 'text-white/5'}`} />
                     </button>
                  ))}
               </div>
@@ -817,9 +982,9 @@ export default function BookingPage() {
                 placeholder="Share your experience intel..."
                 value={comment}
                 onChange={e => setComment(e.target.value)}
-                className="w-full bg-[#0A0A0A] border border-white/5 text-white placeholder:text-white/20 rounded-[24px] p-5 min-h-[120px] mb-8 focus:ring-2 focus:ring-[#FFD000]/30 transition-all resize-none shadow-inner text-sm tracking-wide outline-none"
+                className="w-full bg-[#0A0A0A] border border-white/5 text-white placeholder:text-white/20 rounded-[24px] p-5 min-h-[120px] mb-8 focus:ring-2 focus:ring-[#FFC107]/30 transition-all resize-none shadow-inner text-sm tracking-wide outline-none"
               />
-              <button onClick={submitRating} className="w-full py-5 bg-gradient-to-r from-[#FFD000] to-[#F5B700] text-black font-black text-sm uppercase tracking-widest rounded-[20px] shadow-[0_15px_40px_rgba(255,208,0,0.3)] hover:scale-[1.02] active:scale-95 transition-all">
+              <button onClick={submitRating} className="w-full py-5 bg-gradient-to-r from-[#FFC107] to-[#FFB300] text-black font-black text-sm uppercase tracking-widest rounded-[20px] shadow-[0_15px_40px_rgba(255,193,7,0.3)] hover:scale-[1.02] active:scale-95 transition-all">
                  Confirm Rating
               </button>
            </div>
@@ -829,8 +994,8 @@ export default function BookingPage() {
       {/* Custom Native Date/Time Schedule Picker Overlay */}
       {showScheduleModal && (
          <div className="fixed inset-0 bg-[#0A0A0A]/95 backdrop-blur-3xl z-[100] flex items-center justify-center p-4 animate-in fade-in duration-300">
-            <div className="bg-[#121212] rounded-[42px] border border-[#FFD000]/25 p-8 max-w-sm w-full text-center shadow-[0_30px_80px_rgba(255,208,0,0.15)] relative overflow-hidden flex flex-col">
-               <div className="absolute top-0 left-0 w-full h-[5px] bg-gradient-to-r from-[#FFD000] via-[#F5B700] to-[#FFD000]"></div>
+            <div className="bg-[#121212] rounded-[42px] border border-[#FFC107]/25 p-8 max-w-sm w-full text-center shadow-[0_30px_80px_rgba(255,193,7,0.15)] relative overflow-hidden flex flex-col">
+               <div className="absolute top-0 left-0 w-full h-[5px] bg-gradient-to-r from-[#FFC107] via-[#FFB300] to-[#FFC107]"></div>
                <button 
                  type="button" onClick={() => setShowScheduleModal(false)}
                  className="absolute top-6 right-6 text-white/40 hover:text-white w-10 h-10 rounded-full bg-[#1A1A1A] border border-white/5 flex items-center justify-center shadow-inner hover:bg-white/5 transition-colors"
@@ -839,7 +1004,7 @@ export default function BookingPage() {
                </button>
                
                <h3 className="text-3xl font-black text-white mb-2 mt-4 tracking-tight">Schedule Dispatch</h3>
-               <p className="text-[#FFD000] text-[9px] font-black uppercase tracking-widest mb-8">AI Timing Synchronization</p>
+               <p className="text-[#FFC107] text-[9px] font-black uppercase tracking-widest mb-8">AI Timing Synchronization</p>
  
                <form onSubmit={handleNativeSchedule} className="space-y-6 text-left">
                   <div className="bg-[#1A1A1A] p-5 rounded-[28px] border border-white/5 shadow-inner">
@@ -847,13 +1012,13 @@ export default function BookingPage() {
                      <div className="grid grid-cols-2 gap-2 p-1.5 bg-[#0A0A0A] rounded-[20px] border border-white/5">
                         <button 
                           type="button" onClick={() => setScheduleServiceType('bike')}
-                          className={`py-3 px-3 rounded-[16px] text-[10px] font-black uppercase tracking-widest transition-all ${scheduleServiceType === 'bike' ? 'bg-[#FFD000] text-black shadow-lg' : 'text-white/30 hover:text-white'}`}
+                          className={`py-3 px-3 rounded-[16px] text-[10px] font-black uppercase tracking-widest transition-all ${scheduleServiceType === 'bike' ? 'bg-[#FFC107] text-black shadow-lg' : 'text-white/30 hover:text-white'}`}
                         >
                            🏍️ RIDE
                         </button>
                         <button 
                           type="button" onClick={() => setScheduleServiceType('parcel')}
-                          className={`py-3 px-3 rounded-[16px] text-[10px] font-black uppercase tracking-widest transition-all ${scheduleServiceType === 'parcel' ? 'bg-[#FFD000] text-black shadow-lg' : 'text-white/30 hover:text-white'}`}
+                          className={`py-3 px-3 rounded-[16px] text-[10px] font-black uppercase tracking-widest transition-all ${scheduleServiceType === 'parcel' ? 'bg-[#FFC107] text-black shadow-lg' : 'text-white/30 hover:text-white'}`}
                         >
                            📦 PARCEL
                         </button>
@@ -869,7 +1034,7 @@ export default function BookingPage() {
                          min={new Date().toISOString().split("T")[0]}
                          value={scheduleDate}
                          onChange={e => setScheduleDate(e.target.value)}
-                         className="block w-full px-5 py-4 bg-[#1A1A1A] border border-white/5 rounded-[20px] text-xs font-mono font-bold outline-none text-white focus:border-[#FFD000]/50 focus:ring-1 focus:ring-[#FFD000]/50 shadow-inner transition-all hover:bg-[#1f1f1f]"
+                         className="block w-full px-5 py-4 bg-[#1A1A1A] border border-white/5 rounded-[20px] text-xs font-mono font-bold outline-none text-white focus:border-[#FFC107]/50 focus:ring-1 focus:ring-[#FFC107]/50 shadow-inner transition-all hover:bg-[#1f1f1f]"
                          style={{ colorScheme: 'dark' }}
                        />
                     </div>
@@ -881,7 +1046,7 @@ export default function BookingPage() {
                          required
                          value={scheduleTime}
                          onChange={e => setScheduleTime(e.target.value)}
-                         className="block w-full px-5 py-4 bg-[#1A1A1A] border border-white/5 rounded-[20px] text-xs font-mono font-bold outline-none text-white focus:border-[#FFD000]/50 focus:ring-1 focus:ring-[#FFD000]/50 shadow-inner transition-all hover:bg-[#1f1f1f]"
+                         className="block w-full px-5 py-4 bg-[#1A1A1A] border border-white/5 rounded-[20px] text-xs font-mono font-bold outline-none text-white focus:border-[#FFC107]/50 focus:ring-1 focus:ring-[#FFC107]/50 shadow-inner transition-all hover:bg-[#1f1f1f]"
                          style={{ colorScheme: 'dark' }}
                        />
                     </div>
@@ -891,7 +1056,7 @@ export default function BookingPage() {
                      <button 
                        type="submit"
                        disabled={isScheduling}
-                       className="w-full py-5 bg-gradient-to-r from-[#FFD000] to-[#F5B700] text-black font-black text-[11px] uppercase tracking-widest rounded-[20px] transition-all shadow-[0_15px_30px_rgba(255,208,0,0.2)] hover:shadow-[0_20px_40px_rgba(255,208,0,0.4)] hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 group overflow-hidden relative"
+                       className="w-full py-5 bg-gradient-to-r from-[#FFC107] to-[#FFB300] text-black font-black text-[11px] uppercase tracking-widest rounded-[20px] transition-all shadow-[0_15px_30px_rgba(255,193,7,0.2)] hover:shadow-[0_20px_40px_rgba(255,193,7,0.4)] hover:scale-[1.02] active:scale-95 flex items-center justify-center gap-2 group overflow-hidden relative"
                      >
                         <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out skew-x-12" />
                         <Calendar className="w-4 h-4" /> Finalize Schedule

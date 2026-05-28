@@ -61,7 +61,7 @@ export default function Wallet() {
           setBalance(data.walletBalance !== undefined ? data.walletBalance : 450);
           setMethods(data.paymentMethods || [
              { id: 'pay-1', type: 'card', details: 'SBI Platinum •••• 4212', isDefault: true },
-             { id: 'pay-2', type: 'upi', details: 'rahi@ybl', isDefault: false }
+             { id: 'pay-2', type: 'upi', details: 'rapdo@ybl', isDefault: false }
           ]);
        }
     });
@@ -202,9 +202,9 @@ export default function Wallet() {
               initial={{ opacity: 0, y: -40, scale: 0.9 }}
               animate={{ opacity: 1, y: 16, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9, y: -20 }}
-              className="absolute top-20 left-4 right-4 z-50 p-4 rounded-2xl bg-[#121212]/95 backdrop-blur-2xl border border-[#FFD000]/20 shadow-[0_15px_35px_rgba(0,0,0,0.6)] flex items-center gap-3"
+              className="absolute top-20 left-4 right-4 z-50 p-4 rounded-2xl bg-[#121212]/95 backdrop-blur-2xl border border-[#FFC107]/20 shadow-[0_15px_35px_rgba(0,0,0,0.6)] flex items-center gap-3"
             >
-              <div className="w-8 h-8 rounded-full bg-[#FFD000]/10 border border-[#FFD000]/30 flex items-center justify-center text-[#FFD000] shrink-0">
+              <div className="w-8 h-8 rounded-full bg-[#FFC107]/10 border border-[#FFC107]/30 flex items-center justify-center text-[#FFC107] shrink-0">
                 <Sparkles className="w-4 h-4" />
               </div>
               <p className="text-white text-xs font-bold leading-snug">{toast.message}</p>
@@ -252,7 +252,7 @@ export default function Wallet() {
                          </div>
                          <span className="text-white/50 text-[10px] font-bold uppercase tracking-widest">Available Credit</span>
                       </div>
-                      <span className="text-white/20 text-[10px] font-black tracking-[0.2em] uppercase">RAHI PAY</span>
+                      <span className="text-white/20 text-[10px] font-black tracking-[0.2em] uppercase">RAPDO PAY</span>
                    </div>
                    
                    <div>
@@ -267,7 +267,7 @@ export default function Wallet() {
 
           {/* Quick Action Buttons */}
           <div className="flex gap-4 mb-10 shrink-0">
-             <button onClick={() => setShowAddFunds(true)} className={`flex-grow py-5 text-black text-[11px] uppercase tracking-widest font-black rounded-[24px] shadow-lg hover:scale-[1.02] active:scale-95 transition-all flex flex-col items-center justify-center gap-2 ${currentUser?.role === 'captain' ? 'bg-[#00DF89] shadow-[#00DF89]/15' : 'bg-[#FFD000] shadow-[#FFD000]/15'}`}>
+             <button onClick={() => setShowAddFunds(true)} className={`flex-grow py-5 text-black text-[11px] uppercase tracking-widest font-black rounded-[24px] shadow-lg hover:scale-[1.02] active:scale-95 transition-all flex flex-col items-center justify-center gap-2 ${currentUser?.role === 'captain' ? 'bg-[#00DF89] shadow-[#00DF89]/15' : 'bg-[#FFC107] shadow-[#FFC107]/15'}`}>
                 {currentUser?.role === 'captain' ? <ArrowUpRight className="w-5 h-5" /> : <PlusCircle className="w-5 h-5" />} 
                 {currentUser?.role === 'captain' ? 'Withdraw Funds' : 'Add Funds'}
              </button>
@@ -287,7 +287,7 @@ export default function Wallet() {
                             {met.type === 'upi' ? (
                                <div className="flex font-black text-[10px] text-emerald-400">UPI</div>
                             ) : (
-                               <CreditCard className="w-5 h-5 text-[#FFD000]" />
+                               <CreditCard className="w-5 h-5 text-[#FFC107]" />
                             )}
                          </div>
                          <div>
@@ -296,7 +296,7 @@ export default function Wallet() {
                          </div>
                       </div>
                       {met.isDefault && (
-                         <span className="text-[8px] bg-purple-500/10 text-[#FFD000] border border-[#FFD000]/20 font-bold px-2 py-1 rounded uppercase tracking-wider">Default</span>
+                         <span className="text-[8px] bg-purple-500/10 text-[#FFC107] border border-[#FFC107]/20 font-bold px-2 py-1 rounded uppercase tracking-wider">Default</span>
                       )}
                    </div>
                 ))}
@@ -348,7 +348,7 @@ export default function Wallet() {
                   <div>
                      <label className="block text-white/40 text-[9px] font-black uppercase tracking-widest mb-2">{currentUser?.role === 'captain' ? 'Withdraw Amount' : 'Deposit Amount'}</label>
                      <div className="relative">
-                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-black text-[#FFD000]">₹</span>
+                        <span className="absolute left-4 top-1/2 -translate-y-1/2 text-2xl font-black text-[#FFC107]">₹</span>
                         <input 
                           type="number"
                           required
@@ -375,7 +375,7 @@ export default function Wallet() {
                   <button 
                     type="submit"
                     disabled={loading}
-                    className="w-full py-4 bg-[#FFD000] text-black font-black text-[11px] uppercase tracking-widest rounded-xl transition-all shadow-lg active:scale-95 hover:scale-[1.01]"
+                    className="w-full py-4 bg-[#FFC107] text-black font-black text-[11px] uppercase tracking-widest rounded-xl transition-all shadow-lg active:scale-95 hover:scale-[1.01]"
                   >
                      Confirm Settlement
                   </button>
@@ -401,13 +401,13 @@ export default function Wallet() {
                <div className="flex gap-2 p-1 bg-[#1A1A1A] rounded-xl border border-white/5 mb-6">
                   <button 
                     type="button" onClick={() => setMethodType('upi')}
-                    className={`flex-1 py-2.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${methodType === 'upi' ? 'bg-[#FFD000] text-black font-black' : 'text-white/40'}`}
+                    className={`flex-1 py-2.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${methodType === 'upi' ? 'bg-[#FFC107] text-black font-black' : 'text-white/40'}`}
                   >
                      UPI Address
                   </button>
                   <button 
                     type="button" onClick={() => setMethodType('card')}
-                    className={`flex-1 py-2.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${methodType === 'card' ? 'bg-[#FFD000] text-black font-black' : 'text-white/40'}`}
+                    className={`flex-1 py-2.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${methodType === 'card' ? 'bg-[#FFC107] text-black font-black' : 'text-white/40'}`}
                   >
                      Credit/Debit Card
                   </button>
@@ -456,7 +456,7 @@ export default function Wallet() {
                   <button 
                     type="submit"
                     disabled={loading}
-                    className="w-full mt-4 py-4 bg-[#FFD000] text-black font-black text-[11px] uppercase tracking-widest rounded-xl transition-all shadow-lg active:scale-95"
+                    className="w-full mt-4 py-4 bg-[#FFC107] text-black font-black text-[11px] uppercase tracking-widest rounded-xl transition-all shadow-lg active:scale-95"
                   >
                      Secure Link Gateway
                   </button>

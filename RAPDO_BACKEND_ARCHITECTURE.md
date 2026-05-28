@@ -1,7 +1,7 @@
-# RAHI Backend Architecture 🚀
+# RAPDO Backend Architecture 🚀
 
 ## Overview
-The RAHI backend architecture is designed as a scalable, real-time, serverless infrastructure utilizing Firebase and Node.js. It perfectly serves a hyperlocal mobility and logistics startup ecosystem running primarily on mobile apps while ensuring low-latency tracking, secure payments, and fault transparency.
+The RAPDO backend architecture is designed as a scalable, real-time, serverless infrastructure utilizing Firebase and Node.js. It perfectly serves a hyperlocal mobility and logistics startup ecosystem running primarily on mobile apps while ensuring low-latency tracking, secure payments, and fault transparency.
 
 ## Technology Stack 🛠
 - **Auth**: Firebase Authentication (Phone, Google Sign-In)

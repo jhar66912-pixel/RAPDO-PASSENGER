@@ -26,20 +26,20 @@ app.use(express.json());
 // Secure Fallback API Key
 const DEEPSEEK_API_KEY = process.env.DEEPSEEK_API_KEY || "sk-a6dc50d79c874cb39b8a88a3305a32d1";
 
-// RAHI Bihar Premium System Prompt
+// RAPDO Bihar Premium System Prompt
 const MASTER_SYSTEM_PROMPT = `
-You are the "RAHI Help AI Assistant", a premium conversational customer support intelligence integrated into RAHI (Bihar's leading bike-taxi, parcel delivery, and hyperlocal logistics platform).
+You are the "RAPDO Help AI Assistant", a premium conversational customer support intelligence integrated into RAPDO (Bihar's leading bike-taxi, parcel delivery, and hyperlocal logistics platform).
 
 App Tone & Brand Guidelines:
 - Mood: Ultra-friendly, respectful, clever, fast, and Bihar-local.
 - Theme: Matte Black, Luxury Yellow, Premium Modern UI.
 - Direct Address: Use "Aap", "Bhai", "Sir", or "Bhaiya" respectfully. Conversational Hinglish/Hindi is highly preferred.
-- Start standard greetings with: "Namaste 👋 RAHI Help AI me aapka swagat hai. Main aapki ride, parcel, aur payments related help kar sakta hoon."
+- Start standard greetings with: "Namaste 👋 RAPDO Help AI me aapka swagat hai. Main aapki ride, parcel, aur payments related help kar sakta hoon."
 
 Linguistic Translation Support:
 - Handle common Hinglish questions with deep context.
-- Example: "Patna se Hajipur ka price list?" -> Guide them on RAHI rates or offer quick estimation checks.
-- Example: "Parcel late hai, Captain nahi aaya" -> Give parcel assistance, check tracking formats (RAHI-PRCL-XXXX), and offer support.
+- Example: "Patna se Hajipur ka price list?" -> Guide them on RAPDO rates or offer quick estimation checks.
+- Example: "Parcel late hai, Captain nahi aaya" -> Give parcel assistance, check tracking formats (RAPDO-PRCL-XXXX), and offer support.
 
 Geographic Intelligence:
 - You know core Bihar cities and bypass hubs: Patna (Boring Road, Bailey Road, Gandhi Maidan), Darbhanga (Darbhanga Tower, LNMU), Samastipur, Muzaffarpur (Mithanpura), Gaya.
@@ -47,7 +47,7 @@ Geographic Intelligence:
 
 Operational Controls & Human Escalation Rules:
 - If users complain about severe payment failures or express extreme anger, trigger the escalation logic.
-- Guide them to dial RAHI SOS squad at +91 8252988672 or submit a Support Ticket right inside the AI Assistant tab.
+- Guide them to dial RAPDO SOS squad at +91 8252988672 or submit a Support Ticket right inside the AI Assistant tab.
 - NEVER hallucinate fake booking references, fake live drivers, or expose confidential system metadata.
 `;
 
@@ -56,11 +56,11 @@ const sessionHistoryCache: Record<string, Array<{ role: string; content: string 
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {
-  res.json({ status: "healthy", timestamp: Date.now(), service: "RAHI Help AI Backend Proxy" });
+  res.json({ status: "healthy", timestamp: Date.now(), service: "RAPDO Help AI Backend Proxy" });
 });
 
 // DeepSeek Secure Proxy Chat Endpoint
-app.post("/api/rahi-ai/chat", async (req, res): Promise<any> => {
+app.post("/api/rapdo-ai/chat", async (req, res): Promise<any> => {
   const { sessionId, messages, prompt } = req.body;
 
   try {
@@ -131,7 +131,7 @@ app.post("/api/rahi-ai/chat", async (req, res): Promise<any> => {
       choices: [{
         message: {
           role: "assistant",
-          content: "Namaste bhaiya! Server slow chal raha hai ya network issue hai. Aap direct call karke ya WhatsApp group se booking status confirm kar sakte hain: +91 8252988672 (RAHI Office)."
+          content: "Namaste bhaiya! Server slow chal raha hai ya network issue hai. Aap direct call karke ya WhatsApp group se booking status confirm kar sakte hain: +91 8252988672 (RAPDO Office)."
         }
       }]
     });
@@ -155,10 +155,10 @@ async function initializeServer() {
   }
 
   app.listen(PORT, "0.0.0.0", () => {
-    console.log(`[RAHI Full-stack Server] Booted successfully on http://0.0.0.0:${PORT}`);
+    console.log(`[RAPDO Full-stack Server] Booted successfully on http://0.0.0.0:${PORT}`);
   });
 }
 
 initializeServer().catch(err => {
-  console.error("Critical error starting RAHI Node integration server:", err);
+  console.error("Critical error starting RAPDO Node integration server:", err);
 });

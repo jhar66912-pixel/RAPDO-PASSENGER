@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router-dom';
 const PRODUCTS = [
   {
     id: 1,
-    name: 'RAHI Black Elite Pass',
+    name: 'RAPDO Black Elite Pass',
     description: 'Priority matching, zero surge pricing, and absolute luxury for every ride.',
     price: 4999,
     imageUrl: 'https://images.unsplash.com/photo-1616423640778-28d1b53229bd?auto=format&fit=crop&q=80&w=600&h=800',
@@ -135,7 +135,7 @@ export default function PremiumPayment() {
 
                <div className="space-y-4 mb-8">
                   <div className="flex justify-between items-center text-sm">
-                     <span className="text-white/60">RAHI Black Elite Pass</span>
+                     <span className="text-white/60">RAPDO Black Elite Pass</span>
                      <span className="font-bold">₹4,999.00</span>
                   </div>
                   <div className="flex justify-between items-center text-sm">

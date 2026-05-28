@@ -18,7 +18,7 @@ lib/
 Stack
  ├── Positioned (Top, Left, Right)
  │    └── SafeArea
- │         └── RahiGlassCard (BackdropFilter + Blur)
+ │         └── RapdoGlassCard (BackdropFilter + Blur)
  │              ├── Row (Main Axis Alignment: SpaceBetween)
  │              │    ├── Logo (Text with Yellow indicator)
  │              │    ├── DesktopNavItems (Centered Row) -> Hidden on Mobile

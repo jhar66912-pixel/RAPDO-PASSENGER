@@ -16,8 +16,8 @@ export default defineConfig(() => {
         registerType: 'autoUpdate',
         includeAssets: ['favicon.ico', 'apple-touch-icon.png', 'masked-icon.svg'],
         manifest: {
-          name: 'RAHI Mobility',
-          short_name: 'RAHI',
+          name: 'RAPDO Mobility',
+          short_name: 'RAPDO',
           description: 'Premium Bihar-focused mobility super app',
           theme_color: '#0A0A0A',
           background_color: '#0A0A0A',

@@ -1,7 +1,7 @@
-# PHASE 3: React Admin Dashboard Structure - RAHI Super App
+# PHASE 3: React Admin Dashboard Structure - RAPDO Super App
 
 ## 1. Dashboard Overview
-The RAHI Admin Dashboard is an operational control panel built in React.js. It manages the entire hyperlocal mobility and parcel delivery ecosystem for Tier-2 cities. High-contrast themes (Black/Yellow/White) are used for operational clarity.
+The RAPDO Admin Dashboard is an operational control panel built in React.js. It manages the entire hyperlocal mobility and parcel delivery ecosystem for Tier-2 cities. High-contrast themes (Black/Yellow/White) are used for operational clarity.
 
 ### Core Modules
 * **Ride Monitoring:** Live map view of all active trips and dispatch statuses.

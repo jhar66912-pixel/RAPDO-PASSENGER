@@ -1,6 +1,6 @@
 # PHASE 4: AI-Powered Dispatch & Logistics Engine
 
-## 1. The RAHI AI Dispatch Concept
+## 1. The RAPDO AI Dispatch Concept
 
 Traditional ride-hailing platforms rely on a simple "nearest neighbor" algorithm (radial search based on Haversine distance). This often fails in Tier-2 Indian cities due to:
 
@@ -8,7 +8,7 @@ Traditional ride-hailing platforms rely on a simple "nearest neighbor" algorithm
 - High cancellation rates when a driver doesn't want to go to a specific drop location.
 - Underutilized captains who are returning empty from drop-offs.
 
-**RAHI's AI-Native Approach:**
+**RAPDO's AI-Native Approach:**
 We fetch a batch of nearby captains using PostGIS/Firestore, calculate real-world ETAs via Google Maps APIs, and feed this context array into the **Gemini API**. Gemini acts as the central intelligence to decide who _actually_ gets the ride, optimizing for human behavior, traffic, and earnings.
 
 ---
@@ -50,7 +50,7 @@ This is the core prompt sent to the Gemini model to decide the optimal dispatch 
 ### System Instructions
 
 ```text
-You are the RAHI Dispatch AI Engine. Your goal is to assign a ride or parcel to the most optimal captain.
+You are the RAPDO Dispatch AI Engine. Your goal is to assign a ride or parcel to the most optimal captain.
 You must optimize for:
 1. Lowest wait time for the customer.
 2. Lowest likelihood of captain cancellation.

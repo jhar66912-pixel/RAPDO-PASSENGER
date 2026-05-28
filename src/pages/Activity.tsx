@@ -90,7 +90,7 @@ export default function Activity() {
              title: data.title || 'Funds transaction',
              date: data.date || 'Just Now',
              price: data.amount || '₹0',
-             pickup: 'RAHI Vault Wallet',
+             pickup: 'RAPDO Vault Wallet',
              drop: data.type === 'credit' ? 'Wallet Cash Transmitted' : 'Gateway Settlement',
              status: 'completed' as const,
              createdAt: data.createdAt || Date.now()
@@ -161,9 +161,9 @@ export default function Activity() {
               initial={{ opacity: 0, y: -40, scale: 0.9 }}
               animate={{ opacity: 1, y: 16, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9, y: -20 }}
-              className="absolute top-20 left-4 right-4 z-[99] p-4 rounded-2xl bg-[#121212]/95 backdrop-blur-2xl border border-[#FFD000]/20 shadow-[0_15px_35px_rgba(0,0,0,0.6)] flex items-center gap-3 animate-in fade-in"
+              className="absolute top-20 left-4 right-4 z-[99] p-4 rounded-2xl bg-[#121212]/95 backdrop-blur-2xl border border-[#FFC107]/20 shadow-[0_15px_35px_rgba(0,0,0,0.6)] flex items-center gap-3 animate-in fade-in"
             >
-              <div className="w-8 h-8 rounded-full bg-[#FFD000]/10 border border-[#FFD000]/30 flex items-center justify-center text-[#FFD000] shrink-0">
+              <div className="w-8 h-8 rounded-full bg-[#FFC107]/10 border border-[#FFC107]/30 flex items-center justify-center text-[#FFC107] shrink-0">
                 <Sparkles className="w-4 h-4" />
               </div>
               <p className="text-white text-xs font-bold leading-snug">{toast.message}</p>
@@ -204,7 +204,7 @@ export default function Activity() {
                 <button
                   key={t}
                   onClick={() => setTab(t)}
-                  className={`flex-1 py-3 text-[9px] font-black uppercase tracking-widest rounded-full transition-all duration-300 ${tab === t ? 'bg-gradient-to-r from-[#FFD000] to-[#F5B700] text-black shadow-lg scale-[1.02]' : 'text-white/40 hover:text-white'}`}
+                  className={`flex-1 py-3 text-[9px] font-black uppercase tracking-widest rounded-full transition-all duration-300 ${tab === t ? 'bg-gradient-to-r from-[#FFC107] to-[#FFB300] text-black shadow-lg scale-[1.02]' : 'text-white/40 hover:text-white'}`}
                 >
                    {t}
                 </button>
@@ -214,7 +214,7 @@ export default function Activity() {
           {/* Loader */}
           {loading ? (
              <div className="flex-1 flex flex-col items-center justify-center p-8">
-                <Loader2 className="w-8 h-8 text-[#FFD000] animate-spin mb-3" />
+                <Loader2 className="w-8 h-8 text-[#FFC107] animate-spin mb-3" />
                 <p className="text-xs text-white/30 font-black tracking-widest uppercase">Loading Timeline Logs...</p>
              </div>
           ) : filteredItems.length === 0 ? (
@@ -245,8 +245,8 @@ export default function Activity() {
                          <div className="flex justify-between items-start mb-5">
                             <div className="flex items-center gap-3">
                                {trip.type === 'ride' ? (
-                                 <div className="w-12 h-12 rounded-[16px] bg-[#FFD000]/10 flex items-center justify-center">
-                                    <Navigation className="w-5 h-5 text-[#FFD000]" />
+                                 <div className="w-12 h-12 rounded-[16px] bg-[#FFC107]/10 flex items-center justify-center">
+                                    <Navigation className="w-5 h-5 text-[#FFC107]" />
                                  </div>
                                ) : trip.type === 'parcel' ? (
                                  <div className="w-12 h-12 rounded-[16px] bg-blue-500/10 flex items-center justify-center">
@@ -283,7 +283,7 @@ export default function Activity() {
                             </div>
                             <div className="flex items-center gap-4">
                                <div className="w-6 h-6 rounded-full bg-white/5 flex items-center justify-center shrink-0">
-                                  <div className="w-1.5 h-1.5 bg-[#FFD000] rounded-full"></div>
+                                  <div className="w-1.5 h-1.5 bg-[#FFC107] rounded-full"></div>
                                </div>
                                <p className="text-white text-sm font-black tracking-wide truncate max-w-[220px]">{trip.drop}</p>
                             </div>
@@ -294,7 +294,7 @@ export default function Activity() {
                             <div className="mt-6 pt-4 border-t border-white/5 flex gap-3">
                                <button 
                                  onClick={() => handleRebook(trip)}
-                                 className="flex-1 py-3 bg-white/5 hover:bg-white/10 rounded-xl text-[9px] font-black uppercase tracking-widest text-[#FFD000] transition-colors active:scale-95"
+                                 className="flex-1 py-3 bg-white/5 hover:bg-white/10 rounded-xl text-[9px] font-black uppercase tracking-widest text-[#FFC107] transition-colors active:scale-95"
                                >
                                   Rebook Route
                                </button>
@@ -327,12 +327,12 @@ export default function Activity() {
                   <X className="w-4 h-4" />
                </button>
                
-               <div className="w-14 h-14 rounded-full bg-[#FFD000]/10 flex items-center justify-center mb-3">
-                  <CheckCircle2 className="w-8 h-8 text-[#FFD000]" />
+               <div className="w-14 h-14 rounded-full bg-[#FFC107]/10 flex items-center justify-center mb-3">
+                  <CheckCircle2 className="w-8 h-8 text-[#FFC107]" />
                </div>
 
                <h3 className="text-2xl font-black text-white tracking-tight">E-Receipt</h3>
-               <p className="text-emerald-400 text-[10px] font-black uppercase tracking-widest my-1 mb-8">Verified RAHI Transaction</p>
+               <p className="text-emerald-400 text-[10px] font-black uppercase tracking-widest my-1 mb-8">Verified RAPDO Transaction</p>
 
                <div className="w-full bg-[#1A1A1A] rounded-2xl p-5 border border-white/5 space-y-4 text-left">
                   <div className="flex justify-between border-b border-white/5 pb-2">
@@ -341,7 +341,7 @@ export default function Activity() {
                   </div>
                   <div className="flex justify-between border-b border-white/5 pb-2">
                      <span className="text-[9px] text-white/40 uppercase tracking-widest font-bold">Service Category</span>
-                     <span className="text-xs text-[#FFD000] font-black uppercase tracking-wider">{activeReceipt.type === 'ride' ? 'Bike Commute' : 'Package Dispatch'}</span>
+                     <span className="text-xs text-[#FFC107] font-black uppercase tracking-wider">{activeReceipt.type === 'ride' ? 'Bike Commute' : 'Package Dispatch'}</span>
                   </div>
                   <div className="flex justify-between border-b border-white/5 pb-2">
                      <span className="text-[9px] text-white/40 uppercase tracking-widest font-bold">Total Fare Settled</span>
@@ -357,7 +357,7 @@ export default function Activity() {
                   </div>
                </div>
 
-               <p className="text-white/20 text-[8px] font-black uppercase tracking-[0.2em] mt-8">RAHI Super App • Patna, Bihar</p>
+               <p className="text-white/20 text-[8px] font-black uppercase tracking-[0.2em] mt-8">RAPDO Super App • Patna, Bihar</p>
                
                <button 
                  onClick={() => {

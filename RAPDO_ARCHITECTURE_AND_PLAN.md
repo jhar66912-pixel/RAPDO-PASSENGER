@@ -1,9 +1,9 @@
-# RAHI Super App – AI-Native Product Architecture & Implementation Plan
+# RAPDO Super App – AI-Native Product Architecture & Implementation Plan
 
-Based on the RAHI Super App PRD, here is the comprehensive, production-ready startup architecture and implementation plan.
+Based on the RAPDO Super App PRD, here is the comprehensive, production-ready startup architecture and implementation plan.
 
 ## Vision Summary
-RAHI is an AI-native mobility and hyperlocal logistics ecosystem for Tier-2 and Tier-3 India. 
+RAPDO is an AI-native mobility and hyperlocal logistics ecosystem for Tier-2 and Tier-3 India. 
 Key differentiators: Affordable, Fast, Localized, Trustworthy, Lightweight, Hindi-first, AI-driven.
 
 ---
@@ -111,9 +111,9 @@ src/
 
 **Color Palette:**
 *   Primary Black: `#0F0F0F`
-*   Luxury Yellow: `#FFD000`
+*   Luxury Yellow: `#FFC107`
 *   Soft White: `#FAFAFA`
-*   Accent Gold: `#F5B700`
+*   Accent Gold: `#FFB300`
 
 **UI Philosophy:** Glassmorphism, deep shadows, large tap targets for Tier-2 users.
 
@@ -150,7 +150,7 @@ Container(
 
 **1. Booking Intent / Voice Processing (Hindi/Hinglish)**
 ```text
-System: "You are the RAHI AI. Convert informal Hindi/Hinglish voice queries into strict JSON.
+System: "You are the RAPDO AI. Convert informal Hindi/Hinglish voice queries into strict JSON.
 Input: 'Mahaveer Chowk se station jana hai.'
 Output: { 'intent': 'book_ride', 'pickup': 'Mahaveer Chowk', 'drop': 'Station', 'vehicle': 'bike' }"
 ```

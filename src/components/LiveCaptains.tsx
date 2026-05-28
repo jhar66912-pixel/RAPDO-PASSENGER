@@ -43,7 +43,7 @@ export function LiveCaptains() {
            {captains.map(cap => {
               if (cap.status === 'offline') return null;
               
-              const strokeColor = cap.status === 'online' ? '#FFD000' : '#10B981';
+              const strokeColor = cap.status === 'online' ? '#FFC107' : '#10B981';
               const iconEmoji = cap.type === 'bike' ? '🏍️' : cap.type === 'auto' ? '🛺' : '🚘';
               const etaBadge = cap.eta ? `
                  <g transform="translate(18, -12)">

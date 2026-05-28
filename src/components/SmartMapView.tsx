@@ -40,6 +40,87 @@ const BIHAR_STATION_NODES = [
   { name: 'Dalsinghsarai Depot', lat: 25.6800, lng: 85.9300, isHub: false },
 ];
 
+const RAPDO_PREMIUM_DARK_MAP_STYLE = [
+  { elementType: "geometry", stylers: [{ color: "#242f3e" }] },
+  { elementType: "labels.text.stroke", stylers: [{ color: "#242f3e" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#746855" }] },
+  {
+    featureType: "administrative.locality",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#d59563" }],
+  },
+  {
+    featureType: "poi",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#d59563" }],
+  },
+  {
+    featureType: "poi.park",
+    elementType: "geometry",
+    stylers: [{ color: "#263c3f" }],
+  },
+  {
+    featureType: "poi.park",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#6b9a76" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry",
+    stylers: [{ color: "#38414e" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#212a37" }],
+  },
+  {
+    featureType: "road",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#9ca5b3" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry",
+    stylers: [{ color: "#746855" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#1f2835" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#f3d19c" }],
+  },
+  {
+    featureType: "transit",
+    elementType: "geometry",
+    stylers: [{ color: "#2f3948" }],
+  },
+  {
+    featureType: "transit.station",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#d59563" }],
+  },
+  {
+    featureType: "water",
+    elementType: "geometry",
+    stylers: [{ color: "#17263c" }],
+  },
+  {
+    featureType: "water",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#515c6d" }],
+  },
+  {
+    featureType: "water",
+    elementType: "labels.text.stroke",
+    stylers: [{ color: "#17263c" }],
+  },
+];
+
 // Helper to check if API key is a placeholder or invalid
 export const hasValidApiKey = (key?: string): boolean => {
   if (!key) return false;
@@ -205,6 +286,8 @@ export function Map({
         defaultZoom={defaultZoom}
         onClick={onClick}
         id={id}
+        disableDefaultUI={true}
+        styles={RAPDO_PREMIUM_DARK_MAP_STYLE}
         {...props}
       >
         {children}
@@ -222,11 +305,11 @@ export function Map({
       style={{ minHeight: '100%' }}
     >
       {/* Laser neon tech grid lines overlay */}
-      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,208,0,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,208,0,0.02)_1px,transparent_1px)] bg-[size:24px_24px]" />
+      <div className="absolute inset-0 bg-[linear-gradient(rgba(255,193,7,0.02)_1px,transparent_1px),linear-gradient(90deg,rgba(255,193,7,0.02)_1px,transparent_1px)] bg-[size:24px_24px]" />
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(18,18,22,0.3)_0%,#090A0C_95%)] pointer-events-none" />
 
       {/* Dynamic scanline radar effect */}
-      <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#FFD000]/20 to-transparent animate-pulse pointer-events-none" style={{ animationDuration: '6s' }} />
+      <div className="absolute top-0 inset-x-0 h-[2px] bg-gradient-to-r from-transparent via-[#FFC107]/20 to-transparent animate-pulse pointer-events-none" style={{ animationDuration: '6s' }} />
 
       {/* Connect corridor lines between Bihar nodes */}
       <svg className="absolute inset-0 w-full h-full pointer-events-none stroke-current" style={{ color: 'rgba(255, 208, 0, 0.04)' }}>
@@ -258,9 +341,9 @@ export function Map({
             className="absolute pointer-events-none"
             style={{ left: `${xy.x}%`, top: `${xy.y}%`, transform: 'translate(-50%, -50%)' }}
           >
-            <div className={`w-2 h-2 rounded-full relative ${station.isHub ? 'bg-[#FFD000]' : 'bg-white/20'}`}>
+            <div className={`w-2 h-2 rounded-full relative ${station.isHub ? 'bg-[#FFC107]' : 'bg-white/20'}`}>
               {station.isHub && (
-                <div className="absolute -inset-1.5 bg-[#FFD000]/30 rounded-full animate-ping pointer-events-none" />
+                <div className="absolute -inset-1.5 bg-[#FFC107]/30 rounded-full animate-ping pointer-events-none" />
               )}
             </div>
             {/* Subtle name badge visible nearby */}
@@ -276,11 +359,11 @@ export function Map({
         <svg className="absolute inset-0 w-full h-full pointer-events-none">
           <defs>
             <linearGradient id="neonGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-              <stop offset="0%" stopColor="#FFD000" stopOpacity="0.8" />
+              <stop offset="0%" stopColor="#FFC107" stopOpacity="0.8" />
               <stop offset="100%" stopColor="#FFA500" stopOpacity="0.8" />
             </linearGradient>
             <filter id="shadowGlow" x="-20%" y="-20%" width="140%" height="140%">
-              <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="#FFD000" floodOpacity="0.5" />
+              <feDropShadow dx="0" dy="0" stdDeviation="4" floodColor="#FFC107" floodOpacity="0.5" />
             </filter>
           </defs>
           
@@ -409,6 +492,33 @@ export function useMap(): any {
 
 export function useMapsLibrary(name: string): any {
   const isRealMap = useContext(APIKeyValidContext);
+  
+  // Memoize dummy libraries to prevent reference changes on every render
+  const dummyGeocoding = useRef({
+    Geocoder: class {
+      geocode({ address, location }: any, cb?: any) {
+        if (cb) {
+          cb([{ geometry: { location: { lat: () => 25.8500, lng: () => 85.7800 } }, formatted_address: "Simulated Location" }], 'OK');
+        }
+        return Promise.resolve({
+          results: [{ geometry: { location: { lat: 25.85, lng: 85.78 } }, formatted_address: "Simulated Location" }]
+        });
+      }
+    }
+  });
+
+  const dummyRoutes = useRef({
+    DirectionsService: class {
+      route(request: any, callback: any) {
+        callback({}, 'OK');
+      }
+    },
+    DirectionsRenderer: class {
+      setMap() {}
+      setDirections() {}
+    }
+  });
+
   if (isRealMap) {
     try {
       const realLib = GoogleMapsRealLibrary.useMapsLibrary(name as any);
@@ -418,29 +528,32 @@ export function useMapsLibrary(name: string): any {
 
   // Dummy mock library to prevent undefined method crashes
   if (name === 'geocoding') {
-    return {
-      Geocoder: class {
-        geocode({ address, location }: any, cb: any) {
-          cb([{ geometry: { location: { lat: () => 25.8500, lng: () => 85.7800 } } }], 'OK');
-        }
-      }
-    };
+    return dummyGeocoding.current;
   }
   if (name === 'routes') {
-    return {
-      Route: {
-        computeRoutes: async () => ({
-          routes: [{
-            createPolylines: () => [],
-            viewport: null,
-          }]
-        })
-      }
-    };
+    return dummyRoutes.current;
   }
   return null;
 }
 
+// Component to ensure completely smooth hardware-accelerated map camera tracking like Uber
+export function MapCameraHandler({ center, bounds }: { center: google.maps.LatLngLiteral | null; bounds?: google.maps.LatLngBounds | null }) {
+  const map = useMap();
+  const isRealMap = useContext(APIKeyValidContext);
+
+  useEffect(() => {
+    if (!map) return;
+    
+    // For smooth panning when the object updates (live tracking)
+    if (center && isRealMap) {
+      if (typeof map.panTo === 'function') {
+        map.panTo(center);
+      }
+    }
+  }, [center, map, isRealMap]);
+
+  return null;
+}
 // Drop-in wrapper component to support RouteDisplay in MapFeatures
 export function SimulatedRouteDisplay({ origin, destination }: any) {
   const ctx = useContext(SimulatedMapContext);

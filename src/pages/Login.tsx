@@ -188,7 +188,7 @@ export default function Login() {
       } else {
         await loginWithEmail(emailAddress, role, name, mobileNumber);
       }
-      showToast(`🔥 RAHI super ecosystem me swagat hai, ${name}!`, "success");
+      showToast(`🔥 RAPDO super ecosystem me swagat hai, ${name}!`, "success");
       
       if ((role as string) === 'captain') {
         navigate('/captain');
@@ -219,7 +219,7 @@ export default function Login() {
       if (isNewAccount) {
         setStage('profile');
       } else {
-        await loginWithEmail(emailAddress, role, "RAHI User");
+        await loginWithEmail(emailAddress, role, "RAPDO User");
         showToast("Swagat hai! Loyalty profile synchronized successfully.", "success");
         if ((role as string) === 'captain') {
           navigate('/captain');
@@ -292,9 +292,9 @@ export default function Login() {
             initial={{ opacity: 0, y: -40, scale: 0.9 }}
             animate={{ opacity: 1, y: 16, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9, y: -20 }}
-            className="absolute top-6 left-4 right-4 z-[99] max-w-sm mx-auto p-4 rounded-2xl bg-[#121212]/95 backdrop-blur-2xl border border-[#FFD000]/20 shadow-[0_15px_35px_rgba(0,0,0,0.6)] flex items-center gap-3"
+            className="absolute top-6 left-4 right-4 z-[99] max-w-sm mx-auto p-4 rounded-2xl bg-[#121212]/95 backdrop-blur-2xl border border-[#FFC107]/20 shadow-[0_15px_35px_rgba(0,0,0,0.6)] flex items-center gap-3"
           >
-            <div className="w-8 h-8 rounded-full bg-[#FFD000]/10 border border-[#FFD000]/30 flex items-center justify-center text-[#FFD000] shrink-0 animate-pulse">
+            <div className="w-8 h-8 rounded-full bg-[#FFC107]/10 border border-[#FFC107]/30 flex items-center justify-center text-[#FFC107] shrink-0 animate-pulse">
               <Sparkles className="w-4 h-4" />
             </div>
             <p className="text-white text-xs font-bold leading-snug">{toast.message}</p>
@@ -303,11 +303,11 @@ export default function Login() {
       </AnimatePresence>
 
       {/* Futuristic Ambient Orbs */}
-      <div className="absolute top-1/4 -right-20 w-[450px] h-[450px] bg-[#FFD000]/10 rounded-full blur-[130px] pointer-events-none mix-blend-screen" />
+      <div className="absolute top-1/4 -right-20 w-[450px] h-[450px] bg-[#FFC107]/10 rounded-full blur-[130px] pointer-events-none mix-blend-screen" />
       <div className="absolute -bottom-20 -left-20 w-[450px] h-[450px] bg-[#D4AF37]/5 rounded-full blur-[130px] pointer-events-none mix-blend-screen" />
       <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.03] mix-blend-overlay"></div>
       
-      <div className="w-full max-w-sm rounded-[40px] p-[2px] shadow-[0_45px_100px_rgba(0,0,0,0.95)] relative z-10 bg-gradient-to-br from-[#FFD000]/25 via-white/5 to-white/0">
+      <div className="w-full max-w-sm rounded-[40px] p-[2px] shadow-[0_45px_100px_rgba(0,0,0,0.95)] relative z-10 bg-gradient-to-br from-[#FFC107]/25 via-white/5 to-white/0">
         <div className="bg-[#121212]/92 backdrop-blur-3xl rounded-[38px] p-8 border border-white/5 h-full relative overflow-hidden min-h-[500px] flex flex-col justify-center">
           
           <AnimatePresence mode="wait">
@@ -322,18 +322,18 @@ export default function Login() {
                 transition={{ duration: 0.8 }}
                 className="text-center py-8 flex flex-col items-center justify-center h-full"
               >
-                <div className="relative w-32 h-32 mx-auto mb-8 rounded-full bg-gradient-to-br from-[#2D2D2D] to-[#0A0A0A] p-[2px] shadow-[0_25px_50px_rgba(0,0,0,0.9),0_0_50px_rgba(255,208,0,0.3)] border border-[#FFD000]/35 flex items-center justify-center animate-pulse">
-                  <div className="absolute inset-0 bg-gradient-to-bl from-[#FFD000]/25 to-transparent rounded-full pointer-events-none" />
+                <div className="relative w-32 h-32 mx-auto mb-8 rounded-full bg-gradient-to-br from-[#2D2D2D] to-[#0A0A0A] p-[2px] shadow-[0_25px_50px_rgba(0,0,0,0.9),0_0_50px_rgba(255,193,7,0.3)] border border-[#FFC107]/35 flex items-center justify-center animate-pulse">
+                  <div className="absolute inset-0 bg-gradient-to-bl from-[#FFC107]/25 to-transparent rounded-full pointer-events-none" />
                   <div className="w-full h-full rounded-full bg-[#070707] flex items-center justify-center relative overflow-hidden">
-                    <img src="/logo.svg" alt="RAHI Super App Logo" className="w-[140%] h-[140%] object-contain scale-[1.3] relative z-10" />
+                    <img src="https://i.ibb.co/x8RS5DQV/Chat-GPT-Image-May-28-2026-01-48-34-PM.png" alt="RAPDO Super App Logo" className="w-[140%] h-[140%] object-contain scale-[1.3] relative z-10" />
                   </div>
                 </div>
                 
                 <h1 className="text-5xl font-extrabold tracking-tighter text-white">
-                  RAHI<span className="text-[#FFD000]">.</span>
+                  RAPDO<span className="text-[#FFC107]">.</span>
                 </h1>
-                <p className="text-[#FFD000] text-[10px] font-black tracking-[0.3em] uppercase mt-4 mb-2">Bihar's Mobility Revolution</p>
-                <div className="w-12 h-[2px] bg-gradient-to-r from-transparent via-[#FFD000] to-transparent mx-auto mt-2"></div>
+                <p className="text-[#FFC107] text-[10px] font-black tracking-[0.3em] uppercase mt-4 mb-2">Bihar's Mobility Revolution</p>
+                <div className="w-12 h-[2px] bg-gradient-to-r from-transparent via-[#FFC107] to-transparent mx-auto mt-2"></div>
                 <p className="text-white/40 text-xs mt-3 select-none">Fast • Fair • Local</p>
               </motion.div>
             )}
@@ -350,7 +350,7 @@ export default function Login() {
               >
                 <div>
                   <h3 className="text-3xl font-black text-white leading-tight">Safar Shuru <br/>Karein!</h3>
-                  <p className="text-white/40 text-xs font-bold uppercase tracking-wider mt-2">Pick your RAHI identity to get started</p>
+                  <p className="text-white/40 text-xs font-bold uppercase tracking-wider mt-2">Pick your RAPDO identity to get started</p>
                 </div>
 
                 <div className="space-y-4 pt-4">
@@ -361,16 +361,16 @@ export default function Login() {
                       setRole('customer');
                       setStage('credentials');
                     }}
-                    className={`w-full group text-left p-5 rounded-[24px] border transition-all flex items-center gap-4 ${role === 'customer' ? 'bg-[#FFD000]/10 border-[#FFD000] shadow-[0_10px_25px_rgba(255,208,0,0.15)]' : 'bg-[#181818]/80 border-white/5 hover:border-white/10 hover:bg-[#1E1E1E]'}`}
+                    className={`w-full group text-left p-5 rounded-[24px] border transition-all flex items-center gap-4 ${role === 'customer' ? 'bg-[#FFC107]/10 border-[#FFC107] shadow-[0_10px_25px_rgba(255,193,7,0.15)]' : 'bg-[#181818]/80 border-white/5 hover:border-white/10 hover:bg-[#1E1E1E]'}`}
                   >
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FFD000] to-[#E5BB00] flex items-center justify-center text-black shadow-lg">
+                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FFC107] to-[#E5BB00] flex items-center justify-center text-black shadow-lg">
                       <User className="w-6 h-6 stroke-[2.5]" />
                     </div>
                     <div className="flex-1">
                       <h4 className="text-sm font-black text-white uppercase tracking-wider leading-none">Passenger Commute</h4>
                       <p className="text-[10px] text-white/50 font-bold mt-1 leading-snug">Book Bike-taxi, auto, cabs & quick express parcel deliveries in Bihar</p>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-white/30 group-hover:text-[#FFD000] group-hover:translate-x-1 transition-all" />
+                    <ArrowRight className="w-5 h-5 text-white/30 group-hover:text-[#FFC107] group-hover:translate-x-1 transition-all" />
                   </button>
 
                   {/* Option 2: Driver Captain */}
@@ -385,7 +385,7 @@ export default function Login() {
                       <Smartphone className="w-6 h-6 stroke-[2.5]" />
                     </div>
                     <div className="flex-1">
-                      <h4 className="text-sm font-black text-white uppercase tracking-wider leading-none">RAHI Captain</h4>
+                      <h4 className="text-sm font-black text-white uppercase tracking-wider leading-none">RAPDO Captain</h4>
                       <p className="text-[10px] text-white/50 font-bold mt-1 leading-snug">Register your bike/auto, drive, earn maximum payout & support Patna local commute!</p>
                     </div>
                     <ArrowRight className="w-5 h-5 text-white/30 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
@@ -395,7 +395,7 @@ export default function Login() {
 
                 <div className="pt-2 border-t border-white/5">
                   <p className="text-[10px] text-center text-white/30 uppercase tracking-widest font-black leading-relaxed flex items-center justify-center gap-2">
-                    <ShieldCheck className="w-4 h-4 text-[#FFD000]/60" /> Zero-friction security protocol
+                    <ShieldCheck className="w-4 h-4 text-[#FFC107]/60" /> Zero-friction security protocol
                   </p>
                 </div>
               </motion.div>
@@ -413,13 +413,13 @@ export default function Login() {
                 <div>
                   <button 
                     onClick={() => setStage('welcome')} 
-                    className="text-[10px] font-black text-[#FFD000] uppercase tracking-widest hover:underline mb-2 flex items-center gap-1"
+                    className="text-[10px] font-black text-[#FFC107] uppercase tracking-widest hover:underline mb-2 flex items-center gap-1"
                   >
                     ← Pehle back jaien
                   </button>
                   <h3 className="text-2xl font-black text-white leading-tight">Verification</h3>
                   <p className="text-white/40 text-[10px] font-bold uppercase tracking-wider mt-1">
-                    Authenticating as <span className="text-[#FFD000]">{(role as string) === 'captain' ? 'RAHI Captain' : 'Passenger Rider'}</span>
+                    Authenticating as <span className="text-[#FFC107]">{(role as string) === 'captain' ? 'RAPDO Captain' : 'Passenger Rider'}</span>
                   </p>
                 </div>
 
@@ -427,13 +427,13 @@ export default function Login() {
                 <div className="grid grid-cols-2 p-1 bg-[#1A1A1A] rounded-2xl border border-white/5">
                   <button
                     onClick={() => setAuthMethod('phone')}
-                    className={`py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${authMethod === 'phone' ? 'bg-[#FFD000] text-black shadow-md' : 'text-white/40 hover:text-white'}`}
+                    className={`py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${authMethod === 'phone' ? 'bg-[#FFC107] text-black shadow-md' : 'text-white/40 hover:text-white'}`}
                   >
                     Phone OTP
                   </button>
                   <button
                     onClick={() => setAuthMethod('email')}
-                    className={`py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${authMethod === 'email' ? 'bg-[#FFD000] text-black shadow-md' : 'text-white/40 hover:text-white'}`}
+                    className={`py-2.5 rounded-xl font-black text-[10px] uppercase tracking-widest transition-all ${authMethod === 'email' ? 'bg-[#FFC107] text-black shadow-md' : 'text-white/40 hover:text-white'}`}
                   >
                     Email ID
                   </button>
@@ -458,7 +458,7 @@ export default function Login() {
                           <span className="truncate pr-2">{unauthorizedDomain}</span>
                           <button 
                             onClick={handleClipboardCopy}
-                            className="text-[9px] uppercase font-bold px-2 py-1 bg-[#FFD000]/10 text-[#FFD000] rounded hover:bg-[#FFD000]/25 transition-all shrink-0"
+                            className="text-[9px] uppercase font-bold px-2 py-1 bg-[#FFC107]/10 text-[#FFC107] rounded hover:bg-[#FFC107]/25 transition-all shrink-0"
                           >
                             Copy Host
                           </button>
@@ -470,7 +470,7 @@ export default function Login() {
                           href={`https://console.firebase.google.com/project/${firebaseConfig.projectId}/authentication/providers`} 
                           target="_blank" 
                           rel="noreferrer" 
-                          className="w-full inline-flex py-2 px-3 bg-[#FFD000] text-black font-black uppercase text-[9px] tracking-wider rounded justify-center items-center gap-1.5"
+                          className="w-full inline-flex py-2 px-3 bg-[#FFC107] text-black font-black uppercase text-[9px] tracking-wider rounded justify-center items-center gap-1.5"
                         >
                           <ExternalLink className="w-3 h-3" /> Go to Firebase Console
                         </a>
@@ -484,9 +484,9 @@ export default function Login() {
                   <form onSubmit={submitPhoneRequest} className="space-y-4">
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-white/40 uppercase tracking-widest pl-1">ENTER PHONE NUMBER (INDIA)</label>
-                      <div className="flex bg-[#181818] rounded-2xl border border-white/5 p-1 items-center shadow-inner focus-within:border-[#FFD000]/40 transition-all">
+                      <div className="flex bg-[#181818] rounded-2xl border border-white/5 p-1 items-center shadow-inner focus-within:border-[#FFC107]/40 transition-all">
                         <div className="flex items-center gap-2 pl-3 pr-2 border-r border-white/5 select-none font-bold text-sm text-white/70">
-                          <Phone className="w-4 h-4 text-[#FFD000]" />
+                          <Phone className="w-4 h-4 text-[#FFC107]" />
                           <span>+91</span>
                         </div>
                         <input
@@ -502,7 +502,7 @@ export default function Login() {
 
                     <button
                       type="submit"
-                      className="group w-full py-4.5 bg-gradient-to-br from-[#FFD000] to-[#E5BB00] hover:shadow-[0_10px_25px_rgba(255,208,0,0.25)] hover:border-[#FFD000]/40 border border-transparent text-black font-black text-xs uppercase tracking-widest rounded-2xl transition-all flex items-center justify-center gap-2"
+                      className="group w-full py-4.5 bg-gradient-to-br from-[#FFC107] to-[#E5BB00] hover:shadow-[0_10px_25px_rgba(255,193,7,0.25)] hover:border-[#FFC107]/40 border border-transparent text-black font-black text-xs uppercase tracking-widest rounded-2xl transition-all flex items-center justify-center gap-2"
                     >
                       Bhejiye OTP (Send Verification) <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                     </button>
@@ -514,8 +514,8 @@ export default function Login() {
                   <form onSubmit={handleEmailLoginSubmit} className="space-y-4">
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-white/40 uppercase tracking-widest pl-1">EMAIL ADDRESS</label>
-                      <div className="flex bg-[#181818] rounded-2xl border border-white/5 p-1 items-center shadow-inner focus-within:border-[#FFD000]/40 transition-all">
-                        <Mail className="w-4 h-4 text-[#FFD000] ml-3" />
+                      <div className="flex bg-[#181818] rounded-2xl border border-white/5 p-1 items-center shadow-inner focus-within:border-[#FFC107]/40 transition-all">
+                        <Mail className="w-4 h-4 text-[#FFC107] ml-3" />
                         <input
                           type="email"
                           placeholder="adarsh_commuter@kalam.in"
@@ -528,8 +528,8 @@ export default function Login() {
 
                     <div className="space-y-2">
                       <label className="text-[10px] font-black text-white/40 uppercase tracking-widest pl-1">PASSWORD</label>
-                      <div className="flex bg-[#181818] rounded-2xl border border-white/5 p-1 items-center shadow-inner focus-within:border-[#FFD000]/40 transition-all">
-                        <Lock className="w-4 h-4 text-[#FFD000] ml-3" />
+                      <div className="flex bg-[#181818] rounded-2xl border border-white/5 p-1 items-center shadow-inner focus-within:border-[#FFC107]/40 transition-all">
+                        <Lock className="w-4 h-4 text-[#FFC107] ml-3" />
                         <input
                           type="password"
                           placeholder="••••••••"
@@ -546,7 +546,7 @@ export default function Login() {
                         id="new_acc_check" 
                         checked={isNewAccount}
                         onChange={(e) => setIsNewAccount(e.target.checked)}
-                        className="w-4 h-4 rounded border-white/10 accent-[#FFD000] cursor-pointer"
+                        className="w-4 h-4 rounded border-white/10 accent-[#FFC107] cursor-pointer"
                       />
                       <label htmlFor="new_acc_check" className="text-[10px] font-bold text-white/60 cursor-pointer uppercase tracking-wider">
                         Naya Account Banayein (Register profile)
@@ -556,7 +556,7 @@ export default function Login() {
                     <button
                       type="submit"
                       disabled={isLoading}
-                      className="w-full py-4.5 bg-gradient-to-br from-[#FFD000] to-[#E5BB00] text-black font-black text-xs uppercase tracking-widest rounded-2xl transition-all flex items-center justify-center gap-2"
+                      className="w-full py-4.5 bg-gradient-to-br from-[#FFC107] to-[#E5BB00] text-black font-black text-xs uppercase tracking-widest rounded-2xl transition-all flex items-center justify-center gap-2"
                     >
                       {isLoading ? 'Processing...' : isNewAccount ? 'Register Profile' : 'Sign In Safely'} 
                       <ArrowRight className="w-4 h-4" />
@@ -575,7 +575,7 @@ export default function Login() {
                   type="button"
                   onClick={handleGoogleLogin}
                   disabled={isLoading}
-                  className="w-full py-4 px-6 bg-[#161616] hover:bg-[#1E1E1E] border border-white/5 hover:border-[#FFD000]/25 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-sm transition-all flex justify-center items-center gap-3 active:scale-95"
+                  className="w-full py-4 px-6 bg-[#161616] hover:bg-[#1E1E1E] border border-white/5 hover:border-[#FFC107]/25 text-white font-black text-xs uppercase tracking-widest rounded-2xl shadow-sm transition-all flex justify-center items-center gap-3 active:scale-95"
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="shrink-0">
                     <path d="M22.56 12.25C22.56 11.47 22.49 10.72 22.36 10H12V14.26H17.92C17.66 15.63 16.89 16.79 15.72 17.57V20.34H19.28C21.36 18.42 22.56 15.6 22.56 12.25Z" fill="#4285F4"/>
@@ -596,7 +596,7 @@ export default function Login() {
                      <button
                        type="button"
                        onClick={() => handleBypassLogin('customer')}
-                       className="py-3 px-3 rounded-2xl bg-[#FFD000]/5 hover:bg-[#FFD000]/10 border border-[#FFD000]/10 text-[#FFD000] font-black text-[9px] uppercase tracking-widest text-center transition-all duration-300"
+                       className="py-3 px-3 rounded-2xl bg-[#FFC107]/5 hover:bg-[#FFC107]/10 border border-[#FFC107]/10 text-[#FFC107] font-black text-[9px] uppercase tracking-widest text-center transition-all duration-300"
                      >
                        ⚡ Customer Bypass
                      </button>
@@ -625,7 +625,7 @@ export default function Login() {
                 <div>
                   <button 
                     onClick={() => setStage('credentials')} 
-                    className="text-[10px] font-black text-[#FFD000] uppercase tracking-widest hover:underline mb-2 flex items-center gap-1"
+                    className="text-[10px] font-black text-[#FFC107] uppercase tracking-widest hover:underline mb-2 flex items-center gap-1"
                   >
                     ← Pichla Number
                   </button>
@@ -636,10 +636,10 @@ export default function Login() {
                 </div>
 
                 {/* OTP Sim Notification helper banner */}
-                <div className="bg-[#FFD000]/5 border border-[#FFD000]/10 rounded-2xl p-4 flex gap-3 items-center">
-                  <Bookmark className="w-5 h-5 text-[#FFD000]" />
+                <div className="bg-[#FFC107]/5 border border-[#FFC107]/10 rounded-2xl p-4 flex gap-3 items-center">
+                  <Bookmark className="w-5 h-5 text-[#FFC107]" />
                   <div className="text-[10px] leading-relaxed">
-                    <p className="text-[#FFD000] font-black leading-none uppercase">Simulated Code Recieved:</p>
+                    <p className="text-[#FFC107] font-black leading-none uppercase">Simulated Code Recieved:</p>
                     <p className="text-white/70 font-bold mt-1">
                       Enter code <span className="font-mono text-white underline text-xs">{generatedSimCode}</span> or <span className="font-mono text-white underline text-xs">123456</span> to register as new user profile.
                     </p>
@@ -657,7 +657,7 @@ export default function Login() {
                       value={data}
                       onChange={(e) => handleOtpChange(e.target.value, index)}
                       onKeyDown={(e) => handleOtpKeyDown(e, index)}
-                      className="w-12 h-14 bg-[#181818] border border-white/5 focus:border-[#FFD000] text-center text-xl font-mono font-black text-white rounded-2xl outline-none shadow-inner transition-all transform focus:scale-105"
+                      className="w-12 h-14 bg-[#181818] border border-white/5 focus:border-[#FFC107] text-center text-xl font-mono font-black text-white rounded-2xl outline-none shadow-inner transition-all transform focus:scale-105"
                     />
                   ))}
                 </div>
@@ -667,18 +667,18 @@ export default function Login() {
                   <button
                     onClick={() => verifyOtpSubmission()}
                     disabled={isVerifyingOtp}
-                    className="w-full py-4.5 bg-gradient-to-br from-[#FFD000] to-[#E5BB00] hover:shadow-[0_10px_20px_rgba(255,208,0,0.25)] text-black font-black text-xs uppercase tracking-widest rounded-2xl transition-all flex items-center justify-center gap-2 shadow-[0_4px_15px_rgba(0,0,0,0.3)]"
+                    className="w-full py-4.5 bg-gradient-to-br from-[#FFC107] to-[#E5BB00] hover:shadow-[0_10px_20px_rgba(255,193,7,0.25)] text-black font-black text-xs uppercase tracking-widest rounded-2xl transition-all flex items-center justify-center gap-2 shadow-[0_4px_15px_rgba(0,0,0,0.3)]"
                   >
                     {isVerifyingOtp ? 'Verifying...' : 'Verify & Continue'} <ArrowRight className="w-4 h-4" />
                   </button>
 
                   <div className="flex items-center justify-between px-1">
                     <div className="flex items-center gap-1.5 font-bold text-[10px] text-white/40 uppercase tracking-wider">
-                      <Clock className="w-3.5 h-3.5 text-[#FFD000]/60" /> 
+                      <Clock className="w-3.5 h-3.5 text-[#FFC107]/60" /> 
                       {otpTimer > 0 ? (
                         <span>Resend in {otpTimer}s</span>
                       ) : (
-                        <span className="text-[#FFD000]">Ready to Send</span>
+                        <span className="text-[#FFC107]">Ready to Send</span>
                       )}
                     </div>
 
@@ -686,7 +686,7 @@ export default function Login() {
                       type="button"
                       disabled={!canResendOtp}
                       onClick={handleOtpResend}
-                      className={`text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 transition-all ${canResendOtp ? 'text-[#FFD000] hover:underline' : 'text-white/20 cursor-not-allowed'}`}
+                      className={`text-[10px] font-black uppercase tracking-widest flex items-center gap-1.5 transition-all ${canResendOtp ? 'text-[#FFC107] hover:underline' : 'text-white/20 cursor-not-allowed'}`}
                     >
                       <RefreshCw className="w-3.5 h-3.5 animate-spin" style={{ animationDuration: '6s' }} /> Resend Code
                     </button>
@@ -723,7 +723,7 @@ export default function Login() {
                           key={emoji}
                           type="button"
                           onClick={() => setSelectedAvatar(emoji)}
-                          className={`w-10 h-10 text-2xl flex items-center justify-center rounded-xl transition-all ${selectedAvatar === emoji ? 'bg-[#FFD000] scale-110 shadow-lg' : 'hover:bg-white/5 bg-transparent'}`}
+                          className={`w-10 h-10 text-2xl flex items-center justify-center rounded-xl transition-all ${selectedAvatar === emoji ? 'bg-[#FFC107] scale-110 shadow-lg' : 'hover:bg-white/5 bg-transparent'}`}
                         >
                           {emoji}
                         </button>
@@ -734,8 +734,8 @@ export default function Login() {
                   {/* Name Input */}
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-white/40 uppercase tracking-widest pl-1">FULL NAME (APNA NAAM)</label>
-                    <div className="flex bg-[#181818] rounded-2xl border border-white/5 p-1 items-center shadow-inner focus-within:border-[#FFD000]/40 transition-all">
-                      <User className="w-4 h-4 text-[#FFD000] ml-3" />
+                    <div className="flex bg-[#181818] rounded-2xl border border-white/5 p-1 items-center shadow-inner focus-within:border-[#FFC107]/40 transition-all">
+                      <User className="w-4 h-4 text-[#FFC107] ml-3" />
                       <input
                         type="text"
                         required
@@ -750,11 +750,11 @@ export default function Login() {
                   {/* Optional Email input */}
                   <div className="space-y-2">
                     <label className="text-[10px] font-black text-white/40 uppercase tracking-widest pl-1">EMAIL ID (OPTIONAL)</label>
-                    <div className="flex bg-[#181818] rounded-2xl border border-white/5 p-1 items-center shadow-inner focus-within:border-[#FFD000]/30 transition-all">
-                      <Mail className="w-4 h-4 text-[#FFD000]/50 ml-3" />
+                    <div className="flex bg-[#181818] rounded-2xl border border-white/5 p-1 items-center shadow-inner focus-within:border-[#FFC107]/30 transition-all">
+                      <Mail className="w-4 h-4 text-[#FFC107]/50 ml-3" />
                       <input
                         type="email"
-                        placeholder="commuter@rahi.in"
+                        placeholder="commuter@rapdo.in"
                         value={emailAddress}
                         onChange={(e) => setEmailAddress(e.target.value)}
                         className="flex-grow bg-transparent outline-none border-none py-3 px-3 text-sm text-white font-bold placeholder:text-neutral-700 font-sans"
@@ -769,14 +769,14 @@ export default function Login() {
                       <button
                         type="button"
                         onClick={() => setSelectedLang('en')}
-                        className={`py-2 rounded-xl text-[10px] uppercase font-black tracking-widest flex items-center justify-center gap-1.5 transition-all ${selectedLang === 'en' ? 'bg-[#FFD000] text-black font-black font-sans' : 'text-white/40 hover:text-white'}`}
+                        className={`py-2 rounded-xl text-[10px] uppercase font-black tracking-widest flex items-center justify-center gap-1.5 transition-all ${selectedLang === 'en' ? 'bg-[#FFC107] text-black font-black font-sans' : 'text-white/40 hover:text-white'}`}
                       >
                         <Languages className="w-3.5 h-3.5" /> English / Hinglish
                       </button>
                       <button
                         type="button"
                         onClick={() => setSelectedLang('hi')}
-                        className={`py-2 rounded-xl text-[10px] uppercase font-black tracking-widest flex items-center justify-center gap-1.5 transition-all ${selectedLang === 'hi' ? 'bg-[#FFD000] text-black font-black font-sans' : 'text-white/40 hover:text-white'}`}
+                        className={`py-2 rounded-xl text-[10px] uppercase font-black tracking-widest flex items-center justify-center gap-1.5 transition-all ${selectedLang === 'hi' ? 'bg-[#FFC107] text-black font-black font-sans' : 'text-white/40 hover:text-white'}`}
                       >
                         <Languages className="w-3.5 h-3.5" /> हिन्दी (Hindi)
                       </button>
@@ -787,9 +787,9 @@ export default function Login() {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="w-full py-4.5 bg-gradient-to-br from-[#FFD000] to-[#E5BB00] text-black font-black text-xs uppercase tracking-widest rounded-2xl hover:shadow-[0_10px_20px_rgba(255,208,0,0.25)] transition-all flex items-center justify-center gap-2"
+                    className="w-full py-4.5 bg-gradient-to-br from-[#FFC107] to-[#E5BB00] text-black font-black text-xs uppercase tracking-widest rounded-2xl hover:shadow-[0_10px_20px_rgba(255,193,7,0.25)] transition-all flex items-center justify-center gap-2"
                   >
-                    {isLoading ? 'Creating Profile...' : 'Set Up RAHI Commute Profile'} <ArrowRight className="w-4 h-4" />
+                    {isLoading ? 'Creating Profile...' : 'Set Up RAPDO Commute Profile'} <ArrowRight className="w-4 h-4" />
                   </button>
 
                 </form>

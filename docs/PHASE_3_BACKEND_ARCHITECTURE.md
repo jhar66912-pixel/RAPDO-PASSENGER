@@ -1,4 +1,4 @@
-# PHASE 3: Scalable Backend Architecture - RAHI Super App
+# PHASE 3: Scalable Backend Architecture - RAPDO Super App
 
 ## 1. Core Technology Stack
 
@@ -38,7 +38,7 @@ A **Modular Monolith** architecture is highly recommended for the Tier-2 startup
 
 ## 3. Database Strategy: The Hybrid Approach
 
-To achieve high scale with low cloud costs, RAHI splits data between PostgreSQL and Firestore.
+To achieve high scale with low cloud costs, RAPDO splits data between PostgreSQL and Firestore.
 
 ### A. PostgreSQL (The Source of Truth)
 Handles billing, historical data, wallets, and static user profiles.

@@ -107,7 +107,7 @@ export default function AiHelp() {
     setMessages([
       {
         id: "sys_welcome",
-        text: `Pranaam bhaiya! RAHI Help AI Assistant me aapka swagat hai. 🙏\n\nMain aapki ride estimations, parcel transport progress, dynamic pricing ya driver updates me help kar sakta hu.\n\nType karein jaise ki: "Bhai Patna se Hajipur ka price kya hai?" ya "Mera parcel kahan pahucha?". Ask me anything!`,
+        text: `Pranaam bhaiya! RAPDO Help AI Assistant me aapka swagat hai. 🙏\n\nMain aapki ride estimations, parcel transport progress, dynamic pricing ya driver updates me help kar sakta hu.\n\nType karein jaise ki: "Bhai Patna se Hajipur ka price kya hai?" ya "Mera parcel kahan pahucha?". Ask me anything!`,
         role: "assistant",
         timestamp: Date.now()
       }
@@ -144,7 +144,7 @@ export default function AiHelp() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/rahi-ai/chat", {
+      const response = await fetch("/api/rapdo-ai/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -197,7 +197,7 @@ export default function AiHelp() {
         customCard = {
           type: "escalation",
           title: "Support Dispatch Desk",
-          details: "RAHI Headquarters is online.",
+          details: "RAPDO Headquarters is online.",
           actionLabel: "SOS Hotline: +91 8252988672",
           actionUrl: "tel:8252988672"
         };
@@ -225,7 +225,7 @@ export default function AiHelp() {
       setMessages((prev) => 
         prev.map((m) => (m.id === userMessage.id ? { ...m, status: "failed" } : m)).concat({
           id: `reply_err_${Date.now()}`,
-          text: "Pranam bhai! RAHI network me thoda interruption hai. Par aap direct SOS call pe humari emergency support team se baat kar sakte hain: +91 8252988672.",
+          text: "Pranam bhai! RAPDO network me thoda interruption hai. Par aap direct SOS call pe humari emergency support team se baat kar sakte hain: +91 8252988672.",
           role: "assistant",
           timestamp: Date.now(),
           customCard: {
@@ -294,7 +294,7 @@ export default function AiHelp() {
       // Append success indicator message into chat stream instantly
       setMessages(prev => [...prev, {
         id: `ticket_ack_${Date.now()}`,
-        text: `✅ Ticket create ho chuka hai! Ticket ID: ${ticketRef.id}. Hamara Support Specialist (RAHI team) aapse jaldi hi call pe contact karega. Chinta mat kijiye bhaiya, sab secure hai.`,
+        text: `✅ Ticket create ho chuka hai! Ticket ID: ${ticketRef.id}. Hamara Support Specialist (RAPDO team) aapse jaldi hi call pe contact karega. Chinta mat kijiye bhaiya, sab secure hai.`,
         role: "assistant",
         timestamp: Date.now()
       }]);
@@ -321,14 +321,46 @@ export default function AiHelp() {
 
   const simulateSpeechToText = () => {
     setIsRecording(true);
-    playSynthesizedChime("send"); // Just a sound to indicate recording started
+    playSynthesizedChime("send"); // Sound to indicate recording started
     
-    // Simulate recording delay and then speech converted to text
-    setTimeout(() => {
+    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
+    if (!SpeechRecognition) {
+      // Seamless fallback if Speech API is unsupported in current preview environment
+      setTimeout(() => {
+        setInputValue("Patna Junction jane me kitna time lagega?");
+        setIsRecording(false);
+        playSynthesizedChime("receive");
+      }, 2000);
+      return;
+    }
+
+    const recognition = new SpeechRecognition();
+    recognition.lang = 'hi-IN'; // Tune speech listener for Hindi / Hinglish voice queries!
+    recognition.continuous = false;
+    recognition.interimResults = false;
+
+    recognition.onresult = (event: any) => {
+      const trans = event.results[0]?.[0]?.transcript;
+      if (trans) {
+        setInputValue(trans);
+      }
+    };
+
+    recognition.onerror = (e: any) => {
+      console.warn("Speech API Error, firing safe fallback text:", e);
       setInputValue("Patna Junction jane me kitna time lagega?");
+    };
+
+    recognition.onend = () => {
       setIsRecording(false);
       playSynthesizedChime("receive");
-    }, 2500);
+    };
+
+    try {
+      recognition.start();
+    } catch (e) {
+      setIsRecording(false);
+    }
   };
 
   return (
@@ -346,7 +378,7 @@ export default function AiHelp() {
       </div>
 
       {/* Decorative Blur Spheres */}
-      <div className="absolute top-[10%] right-[-10vw] w-[50vw] h-[50vw] bg-[#FFD000]/5 rounded-full blur-[120px] pointer-events-none z-0" />
+      <div className="absolute top-[10%] right-[-10vw] w-[50vw] h-[50vw] bg-[#FFC107]/5 rounded-full blur-[120px] pointer-events-none z-0" />
       <div className="absolute bottom-[20%] left-[-15vw] w-[45vw] h-[45vw] bg-yellow-500/5 rounded-full blur-[100px] pointer-events-none z-0" />
 
       {/* Main Container Header */}
@@ -354,14 +386,14 @@ export default function AiHelp() {
         <div className="max-w-4xl mx-auto bg-[#101010]/80 backdrop-blur-2xl border border-white/5 p-4 rounded-3xl flex items-center justify-between shadow-[0_15px_30px_rgba(0,0,0,0.5)]">
           <div className="flex items-center gap-3">
             <div className="relative">
-              <div className="absolute -inset-1 bg-[#FFD000]/30 rounded-full blur-md animate-pulse"></div>
-              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#101010] to-black flex items-center justify-center border border-[#FFD000]/40 relative z-10 font-black text-black">
-                 <Sparkles className="w-5 h-5 text-[#FFD000]" />
+              <div className="absolute -inset-1 bg-[#FFC107]/30 rounded-full blur-md animate-pulse"></div>
+              <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#101010] to-black flex items-center justify-center border border-[#FFC107]/40 relative z-10 font-black text-black overflow-hidden shadow-inner">
+                 <img src="https://i.ibb.co/x8RS5DQV/Chat-GPT-Image-May-28-2026-01-48-34-PM.png" alt="RAPDO AI" className="w-[150%] h-[150%] object-contain scale-[1.25] relative z-10" />
               </div>
             </div>
             <div>
               <h2 className="text-sm font-black tracking-widest uppercase text-white flex items-center gap-2">
-                RAHI Help AI <span className="text-[9px] bg-[#FFD000] text-black font-extrabold px-1.5 py-0.5 rounded">GEMINI PRO</span>
+                RAPDO Help AI <span className="text-[9px] bg-[#FFC107] text-black font-extrabold px-1.5 py-0.5 rounded">GEMINI PRO</span>
               </h2>
               <p className="text-[10px] text-white/50 font-bold uppercase tracking-wide">
                 Bihar Express Commutes Support Desk
@@ -379,7 +411,7 @@ export default function AiHelp() {
             </button>
             <a
               href="tel:8252988672"
-              className="px-4 py-2 bg-[#FFD000] text-black text-[11px] font-black uppercase tracking-wider rounded-full hover:bg-yellow-400 active:scale-95 transition-all flex items-center gap-1.5 shadow-[0_0_15px_rgba(250,204,21,0.25)]"
+              className="px-4 py-2 bg-[#FFC107] text-black text-[11px] font-black uppercase tracking-wider rounded-full hover:bg-yellow-400 active:scale-95 transition-all flex items-center gap-1.5 shadow-[0_0_15px_rgba(255,193,7,0.25)]"
             >
               <PhoneCall className="w-3 h-3" /> SOS LINE
             </a>
@@ -407,8 +439,8 @@ export default function AiHelp() {
                 className={`flex gap-3 ${isUser ? "justify-end" : "justify-start"}`}
               >
                 {!isUser && (
-                  <div className="w-8 h-8 rounded-full bg-[#121212] border border-white/10 flex items-center justify-center shrink-0 shadow-sm text-yellow-400">
-                    <Sparkles className="w-4 h-4" />
+                  <div className="w-8 h-8 rounded-full bg-[#121212] border border-white/10 flex items-center justify-center shrink-0 shadow-sm text-yellow-400 overflow-hidden relative">
+                    <img src="https://i.ibb.co/x8RS5DQV/Chat-GPT-Image-May-28-2026-01-48-34-PM.png" alt="RAPDO" className="w-[150%] h-[150%] object-contain scale-[1.25] absolute" />
                   </div>
                 )}
 
@@ -416,7 +448,7 @@ export default function AiHelp() {
                   <div
                     className={`p-4 rounded-3xl text-sm leading-relaxed backdrop-blur-3xl shadow-lg relative ${
                       isUser
-                        ? "bg-[#181818] text-white border border-[#FFD000]/15 rounded-tr-none"
+                        ? "bg-[#181818] text-white border border-[#FFC107]/15 rounded-tr-none"
                         : "bg-[#101010]/95 text-white/90 border border-white/5 rounded-tl-none"
                     }`}
                   >
@@ -432,10 +464,10 @@ export default function AiHelp() {
                     <motion.div
                       initial={{ scale: 0.95, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      className="bg-gradient-to-br from-[#151515] to-[#0D0D0D] border border-[#FFD000]/10 rounded-2xl p-4 shadow-xl flex items-center justify-between gap-4 self-start w-full mt-1.5"
+                      className="bg-gradient-to-br from-[#151515] to-[#0D0D0D] border border-[#FFC107]/10 rounded-2xl p-4 shadow-xl flex items-center justify-between gap-4 self-start w-full mt-1.5"
                     >
                       <div className="flex items-center gap-3">
-                        <div className="w-10 h-10 rounded-xl bg-[#FFD000]/10 border border-[#FFD000]/25 flex items-center justify-center text-[#FFD000] shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-[#FFC107]/10 border border-[#FFC107]/25 flex items-center justify-center text-[#FFC107] shrink-0">
                           {message.customCard.type === "fare" && <Scale className="w-5 h-5" />}
                           {message.customCard.type === "parcel" && <Package className="w-5 h-5" />}
                           {message.customCard.type === "escalation" && <BadgeAlert className="w-5 h-5" />}
@@ -451,7 +483,7 @@ export default function AiHelp() {
                         message.customCard.actionUrl.startsWith("tel:") ? (
                           <a
                             href={message.customCard.actionUrl}
-                            className="px-3.5 py-2 bg-[#FFD000] text-black text-[10px] font-black uppercase tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shrink-0"
+                            className="px-3.5 py-2 bg-[#FFC107] text-black text-[10px] font-black uppercase tracking-widest rounded-xl hover:scale-105 active:scale-95 transition-all shrink-0"
                           >
                             {message.customCard.actionLabel}
                           </a>
@@ -469,7 +501,7 @@ export default function AiHelp() {
                 </div>
 
                 {isUser && (
-                  <div className="w-8 h-8 rounded-full bg-[#202020] border border-[#FFD000]/20 flex items-center justify-center shrink-0 shadow-sm text-white font-black text-[10px] uppercase">
+                  <div className="w-8 h-8 rounded-full bg-[#202020] border border-[#FFC107]/20 flex items-center justify-center shrink-0 shadow-sm text-white font-black text-[10px] uppercase">
                     {currentUser?.name?.charAt(0) || "U"}
                   </div>
                 )}
@@ -484,13 +516,13 @@ export default function AiHelp() {
               animate={{ opacity: 1 }}
               className="flex gap-3 justify-start items-center"
             >
-              <div className="w-8 h-8 rounded-full bg-[#121212] border border-white/10 flex items-center justify-center shrink-0 text-yellow-400">
-                <Sparkles className="w-4 h-4 animate-spin duration-3000" />
+              <div className="w-8 h-8 rounded-full bg-[#121212] border border-white/10 flex items-center justify-center shrink-0 text-yellow-400 overflow-hidden relative shadow-sm">
+                <img src="https://i.ibb.co/x8RS5DQV/Chat-GPT-Image-May-28-2026-01-48-34-PM.png" alt="RAPDO" className="w-[150%] h-[150%] object-contain scale-[1.25] absolute animate-pulse duration-1000" />
               </div>
               <div className="bg-[#121212]/90 border border-white/5 p-4 rounded-3xl rounded-tl-none flex gap-1 items-center justify-center">
-                <div className="w-2 h-2 rounded-full bg-[#FFD000]/60 animate-bounce" style={{ animationDelay: "0s" }} />
-                <div className="w-2 h-2 rounded-full bg-[#FFD000]/80 animate-bounce" style={{ animationDelay: "0.15s" }} />
-                <div className="w-2 h-2 rounded-full bg-[#FFD000] animate-bounce" style={{ animationDelay: "0.3s" }} />
+                <div className="w-2 h-2 rounded-full bg-[#FFC107]/60 animate-bounce" style={{ animationDelay: "0s" }} />
+                <div className="w-2 h-2 rounded-full bg-[#FFC107]/80 animate-bounce" style={{ animationDelay: "0.15s" }} />
+                <div className="w-2 h-2 rounded-full bg-[#FFC107] animate-bounce" style={{ animationDelay: "0.3s" }} />
               </div>
             </motion.div>
           )}
@@ -508,7 +540,7 @@ export default function AiHelp() {
               <div className="absolute top-0 right-0 w-24 h-24 bg-red-500/5 rounded-full blur-[40px]" />
               <div className="flex justify-between items-center mb-3">
                 <h3 className="text-white text-xs font-black uppercase tracking-wider flex items-center gap-1.5 text-red-400">
-                  <BadgeAlert className="w-4 h-4" /> Connect to RAHI HQ Specialist
+                  <BadgeAlert className="w-4 h-4" /> Connect to RAPDO HQ Specialist
                 </h3>
                 <button
                   onClick={() => setTicketState(prev => ({ ...prev, showForm: false }))}
@@ -525,7 +557,7 @@ export default function AiHelp() {
                     <select
                       value={ticketState.issue}
                       onChange={(e) => setTicketState(prev => ({ ...prev, issue: e.target.value }))}
-                      className="w-full bg-[#1A1A1A] border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#FFD000]/50"
+                      className="w-full bg-[#1A1A1A] border border-white/10 rounded-xl px-3 py-2.5 text-xs text-white focus:outline-none focus:border-[#FFC107]/50"
                     >
                       <option value="Ride Fare Dispute">Ride Fare Dispute</option>
                       <option value="Captain Delay/Arrested">Captain Delay/Unprofessional</option>
@@ -552,7 +584,7 @@ export default function AiHelp() {
                     value={ticketState.desc}
                     onChange={(e) => setTicketState(prev => ({ ...prev, desc: e.target.value }))}
                     placeholder="Bhaiya, please short me details batayein taaki team member turant help karein..."
-                    className="w-full h-20 bg-[#1A1A1A] border border-white/10 rounded-xl p-3 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#FFD000]/50 resize-none"
+                    className="w-full h-20 bg-[#1A1A1A] border border-white/10 rounded-xl p-3 text-xs text-white placeholder-white/30 focus:outline-none focus:border-[#FFC107]/50 resize-none"
                   />
                 </div>
 
@@ -583,7 +615,7 @@ export default function AiHelp() {
                 <button
                   key={idx}
                   onClick={() => handleQuerySubmit(chip.text)}
-                  className="px-4 py-2.5 bg-[#121212] border border-white/5 hover:border-[#FFD000]/40 text-white/80 hover:text-white rounded-full font-bold text-[11px] whitespace-nowrap transition-all duration-300"
+                  className="px-4 py-2.5 bg-[#121212] border border-white/5 hover:border-[#FFC107]/40 text-white/80 hover:text-white rounded-full font-bold text-[11px] whitespace-nowrap transition-all duration-300"
                 >
                   ⚡ {chip.short}
                 </button>
@@ -615,7 +647,7 @@ export default function AiHelp() {
               </motion.div>
 
               <h3 className="relative z-10 text-2xl font-black text-white tracking-widest uppercase mb-2 drop-shadow-lg">Listening...</h3>
-              <p className="relative z-10 text-blue-300/80 text-sm font-bold tracking-widest uppercase animate-pulse">Speak to RAHI Helper</p>
+              <p className="relative z-10 text-blue-300/80 text-sm font-bold tracking-widest uppercase animate-pulse">Speak to RAPDO Helper</p>
               
               {/* Audio visualizer simulation */}
               <div className="flex gap-2 mt-12 relative z-10 items-end h-16">
@@ -668,7 +700,7 @@ export default function AiHelp() {
           <button
             onClick={() => handleQuerySubmit(inputValue)}
             disabled={!inputValue.trim()}
-            className="w-10 h-10 rounded-full bg-[#FFD000] text-black hover:bg-yellow-400 active:scale-95 transition-all flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(250,204,21,0.3)] disabled:opacity-40 disabled:cursor-not-allowed"
+            className="w-10 h-10 rounded-full bg-[#FFC107] text-black hover:bg-yellow-400 active:scale-95 transition-all flex items-center justify-center shrink-0 shadow-[0_0_12px_rgba(255,193,7,0.3)] disabled:opacity-40 disabled:cursor-not-allowed"
           >
             <Send className="w-4 h-4 ml-0.5" />
           </button>

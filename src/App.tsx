@@ -1,6 +1,7 @@
 import React, { ReactNode } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import Home from './pages/Home';
 import Login from './pages/Login';
 import Booking from './pages/Booking';
@@ -18,6 +19,13 @@ import CaptainDashboard from './pages/CaptainDashboard';
 import PremiumPayment from './pages/PremiumPayment';
 import DesignSystem from './pages/DesignSystem';
 
+import Terms from './pages/Terms';
+import Privacy from './pages/Privacy';
+import SafetyCenter from './pages/SafetyCenter';
+import TrustGuard from './pages/TrustGuard';
+import Contact from './pages/Contact';
+import SosEmergency from './pages/SosEmergency';
+
 function ProtectedRoute({ children, role }: { children: ReactNode; role: string }) {
   const { currentUser, loading } = useAuth();
   if (loading) return <>{children}</>;
@@ -34,7 +42,7 @@ export default function App() {
     <APIProvider apiKey={apiKey} version="weekly">
       <AuthProvider>
         <Router>
-          <div className="min-h-screen bg-[#0A0A0A] text-white flex flex-col font-sans relative selection:bg-[#FFD000]/30 selection:text-white pb-20 md:pb-0">
+          <div className="min-h-screen bg-[#0A0A0A] text-white flex flex-col font-sans relative selection:bg-[#FFC107]/30 selection:text-white pb-20 md:pb-0">
              <div className="fixed inset-0 pointer-events-none z-[-1] bg-[url('https://www.transparenttextures.com/patterns/stardust.png')] opacity-[0.03] mix-blend-overlay"></div>
             <Navbar />
             <main className="flex-grow flex flex-col relative z-0 md:pt-28 pt-20">
@@ -74,6 +82,15 @@ export default function App() {
                 <Route path="/pricing" element={<Pricing />} />
                 <Route path="/premium-checkout" element={<PremiumPayment />} />
                 <Route path="/design-system" element={<DesignSystem />} />
+                
+                {/* Legal & Trust Pages */}
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route path="/safety" element={<SafetyCenter />} />
+                <Route path="/trust" element={<TrustGuard />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/sos" element={<SosEmergency />} />
+
                 <Route path="/captain" element={
                   <ProtectedRoute role="captain">
                     <CaptainDashboard />
@@ -81,6 +98,7 @@ export default function App() {
                 } />
               </Routes>
             </main>
+            <Footer />
           </div>
         </Router>
       </AuthProvider>

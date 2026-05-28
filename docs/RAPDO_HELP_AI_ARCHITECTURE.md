@@ -1,7 +1,7 @@
-# RAHI Help AI Architecture Specification
+# RAPDO Help AI Architecture Specification
 ### Enterprise Conversational AI Design for Hyperlocal Bihar Transit (Tier-2/Tier-3 India)
 
-This document details the secure, performance-optimized, and context-aware conversational AI architecture for **RAHI Help AI**, bridging the frontend (Flutter Passenger App / Web client) and the highly modern **DeepSeek AI API Chat Completions Engine** via a secure, stateless proxy layer.
+This document details the secure, performance-optimized, and context-aware conversational AI architecture for **RAPDO Help AI**, bridging the frontend (Flutter Passenger App / Web client) and the highly modern **DeepSeek AI API Chat Completions Engine** via a secure, stateless proxy layer.
 
 ---
 
@@ -31,7 +31,7 @@ The data stream guarantees that the high-stakes DeepSeek API key is **never expo
 ### Detailed Sequence
 1. **User Initiation:** Passenger asks: *“Bhai, Patna Junction se Gandhi Maidan ka bike fare kitna hoga?”*
 2. **Context Enrichment:** The Client App appends the current session ID, user language prefix (`hi` or `en`), and any relevant transaction snapshot (e.g., Active Booking details) to the secure payload.
-3. **Stateless Proxy Transit:** Request lands on Node.js `/api/rahi-ai/chat` endpoint.
+3. **Stateless Proxy Transit:** Request lands on Node.js `/api/rapdo-ai/chat` endpoint.
 4. **Memory Verification:** Server fetches the last 10 messages from session-state (or memory cache) to preserve short-term conversation context.
 5. **Gateway Routing:** The server encapsulates the query with the **Master System Prompt** (detailed below) and executes an authenticated request against DeepSeek’s secure API.
 6. **Optimized Dispatch:** Response is validated, cached for repetitive queries, and piped back to the user with standard markdown structures plus quick action cards.
@@ -40,7 +40,7 @@ The data stream guarantees that the high-stakes DeepSeek API key is **never expo
 
 ## 2. Conversation Memory & Token Retention Policies
 
-To provide a cohesive dialogue flow, RAHI utilizes an active **sliding-window memory pool** with high-efficiency garbage-collection limits.
+To provide a cohesive dialogue flow, RAPDO utilizes an active **sliding-window memory pool** with high-efficiency garbage-collection limits.
 
 *   **Window Size Limit:** Last 10 messages per active user session.
 *   **Target Scope:** Prevents context drift while keeping token budgets extremely low (typical token cost is reduced by up to 60%).
@@ -59,7 +59,7 @@ Tier-2 and Tier-3 cities across Bihar (Samastipur, Darbhanga, Begusarai, Hajipur
 *   **Key Vernacular Phrases & Token Maps:**
     *   *“Bhai ride kitna time me aayega?”* → Intent: ETARequest. Action: Pull nearest rider tracking bounds.
     *   *“Hamara parcel late chal raha hai.”* → Intent: ParcelStatus. Action: Scan active delivery pipeline.
-    *   *“Driver cancel kar diya!”* → Intent: DisputeCancellation. Action: Flag ride ID, trigger penalty ledger analysis, automatically present "Refund to RAHI Wallet" card.
+    *   *“Driver cancel kar diya!”* → Intent: DisputeCancellation. Action: Flag ride ID, trigger penalty ledger analysis, automatically present "Refund to RAPDO Wallet" card.
     *   *“Boring Road se Patna Junction ka auto se sasta hai?”* → Intent: FareEstimate. Action: Return cost comparison checklist.
 
 ---
@@ -90,7 +90,7 @@ If the conversational confidence threshold falls below `0.65` or the user makes 
 
 To guard systemic infrastructure against API DOS attacks and ensure secure, unrevealed keys:
 
-*   **Strict CORS Policy:** Node.js backend allows requests *only* originating from trusted RAHI workspace origins.
+*   **Strict CORS Policy:** Node.js backend allows requests *only* originating from trusted RAPDO workspace origins.
 *   **IP-Based Rate Limiting:** Maximum 15 chat queries pre-authorized per user per minute.
 *   **Abuse Screening:** Inputs containing code blocks, malicious payloads, or excessive string lengths (greater than 400 characters) are automatically filtered and blocked.
 *   **API Key Rotation:** The DeepSeek Key is dynamically sourced from environment variables (`DEEPSEEK_API_KEY`) on the hosting server, acting as a complete black box to browser dev tools.

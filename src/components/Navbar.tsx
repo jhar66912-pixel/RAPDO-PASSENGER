@@ -44,9 +44,9 @@ export default function Navbar() {
     { name: "Home", path: "/" },
     { name: "Book Ride", path: "/book" },
     { name: "Send Parcel", path: "/parcel" },
-    { name: "Pricing System", path: "/pricing" },
+    { name: "Safety & Trust", path: "/safety" },
+    { name: "Legal & Support", path: "/contact" },
     { name: "Help AI", path: "/ai-help" },
-    { name: "Safety", path: "/#safety" },
   ];
 
   return (
@@ -58,10 +58,10 @@ export default function Navbar() {
           {/* Logo */}
           <div className="flex-shrink-0 flex items-center">
             <Link to="/" className="flex items-center group">
-              <div className="relative w-10 h-10 rounded-full bg-gradient-to-br from-[#1A1A1A] to-[#050505] p-[1px] shadow-[0_0_15px_rgba(255,208,0,0.2)] border border-white/10 flex items-center justify-center overflow-hidden group-hover:shadow-[0_0_20px_rgba(255,208,0,0.4)] group-hover:border-white/20 transition-all">
-                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-[#FFD000]/10 rounded-full pointer-events-none" />
+              <div className="relative w-10 h-10 rounded-full bg-gradient-to-br from-[#1A1A1A] to-[#050505] p-[1px] shadow-[0_0_15px_rgba(255,193,7,0.2)] border border-white/10 flex items-center justify-center overflow-hidden group-hover:shadow-[0_0_20px_rgba(255,193,7,0.4)] group-hover:border-white/20 transition-all">
+                <div className="absolute inset-0 bg-gradient-to-tr from-transparent via-white/5 to-[#FFC107]/10 rounded-full pointer-events-none" />
                 <div className="w-full h-full rounded-full bg-[#0A0A0A] flex items-center justify-center relative overflow-hidden shadow-inner">
-                  <img src="/logo.svg" alt="RAHI Premium" className="w-[150%] h-[150%] object-contain drop-shadow-[0_2px_4px_rgba(255,208,0,0.3)] scale-[1.25] relative z-10" />
+                  <img src="https://i.ibb.co/x8RS5DQV/Chat-GPT-Image-May-28-2026-01-48-34-PM.png" alt="RAPDO Premium" className="w-[150%] h-[150%] object-contain drop-shadow-[0_2px_4px_rgba(255,193,7,0.3)] scale-[1.25] transition-all duration-500 ease-out group-hover:scale-[1.35] relative z-10" />
                 </div>
               </div>
             </Link>
@@ -78,11 +78,11 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   to={link.path}
-                  className={`px-5 py-2.5 rounded-full text-xs uppercase tracking-widest font-black transition-all duration-500 ease-out relative group ${isActive ? "text-[#FFD000]" : "text-white/50 hover:text-white"}`}
+                  className={`px-5 py-2.5 rounded-full text-xs uppercase tracking-widest font-black transition-all duration-500 ease-out relative group ${isActive ? "text-[#FFC107]" : "text-white/50 hover:text-white"}`}
                 >
                   <span className="relative z-10">{link.name}</span>
                   {isActive && (
-                    <div className="absolute inset-0 bg-[#FFD000]/10 rounded-full blur-sm"></div>
+                    <div className="absolute inset-0 bg-[#FFC107]/10 rounded-full blur-sm"></div>
                   )}
                   <div className={`absolute inset-0 bg-white/5 rounded-full scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300 ease-out ${isActive ? 'hidden' : 'block'}`}></div>
                 </Link>
@@ -95,7 +95,7 @@ export default function Navbar() {
             {/* Premium Call Button */}
             <a
               href="tel:8252988672"
-              className="group relative flex items-center gap-2 px-5 py-2.5 bg-[#121212] border border-white/10 text-white font-bold text-xs uppercase tracking-widest rounded-full hover:border-[#FFD000]/50 hover:bg-[#1A1A1A] transition-all outline-none overflow-hidden"
+              className="group relative flex items-center gap-2 px-5 py-2.5 bg-[#121212] border border-white/10 text-white font-bold text-xs uppercase tracking-widest rounded-full hover:border-[#FFC107]/50 hover:bg-[#1A1A1A] transition-all outline-none overflow-hidden"
             >
                <Phone className="w-3.5 h-3.5" />
                <span className="relative z-10">SOS</span>
@@ -110,7 +110,7 @@ export default function Navbar() {
                   }
                   className="flex items-center gap-3 p-1.5 pr-4 bg-[#121212] border border-white/10 rounded-full hover:bg-white/5 hover:border-white/20 transition-all focus:outline-none shadow-inner group"
                 >
-                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#FFD000] to-[#F5B700] flex items-center justify-center text-black font-black text-xs relative shadow-[0_0_15px_rgba(255,208,0,0.3)]">
+                  <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-[#FFC107] to-[#FFB300] flex items-center justify-center text-black font-black text-xs relative shadow-[0_0_15px_rgba(255,193,7,0.3)]">
                     {currentUser.name?.charAt(0).toUpperCase() || "U"}
                   </div>
                   <div className="flex flex-col items-start pr-1 hidden lg:flex">
@@ -119,7 +119,7 @@ export default function Navbar() {
                     </span>
                   </div>
                   <ChevronDown
-                    className={`w-3.5 h-3.5 text-[#FFD000] transition-transform duration-300 ${isProfileDropdownOpen ? "rotate-180" : ""}`}
+                    className={`w-3.5 h-3.5 text-[#FFC107] transition-transform duration-300 ${isProfileDropdownOpen ? "rotate-180" : ""}`}
                   />
                 </button>
 
@@ -127,14 +127,14 @@ export default function Navbar() {
                 {isProfileDropdownOpen && (
                   <div className="absolute right-0 mt-4 w-64 bg-[#121212]/95 backdrop-blur-3xl border border-white/10 rounded-[32px] shadow-[0_30px_60px_rgba(0,0,0,0.8)] py-3 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-300 origin-top-right">
                     <div className="px-5 py-4 border-b border-white/5 flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#FFD000] to-[#F5B700] flex items-center justify-center text-black font-black text-lg shrink-0 shadow-[0_0_20px_rgba(255,208,0,0.3)]">
+                      <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#FFC107] to-[#FFB300] flex items-center justify-center text-black font-black text-lg shrink-0 shadow-[0_0_20px_rgba(255,193,7,0.3)]">
                         {currentUser.name?.charAt(0).toUpperCase() || "U"}
                       </div>
                       <div className="overflow-hidden">
                         <p className="text-white text-sm font-black tracking-wide truncate">
                           {currentUser.name}
                         </p>
-                        <p className="text-[#FFD000] text-[10px] uppercase tracking-widest font-bold">
+                        <p className="text-[#FFC107] text-[10px] uppercase tracking-widest font-bold">
                           Premium Member
                         </p>
                       </div>
@@ -145,19 +145,19 @@ export default function Navbar() {
                         to="/profile"
                         className="flex items-center gap-3 px-4 py-3 text-sm text-white/60 font-bold rounded-[20px] hover:bg-white/5 hover:text-white transition-all group"
                       >
-                        <User className="w-4 h-4 group-hover:text-[#FFD000] transition-colors" /> My Identity
+                        <User className="w-4 h-4 group-hover:text-[#FFC107] transition-colors" /> My Identity
                       </Link>
                       <Link
                         to="/wallet"
                         className="flex items-center gap-3 px-4 py-3 text-sm text-white/60 font-bold rounded-[20px] hover:bg-white/5 hover:text-white transition-all group"
                       >
-                        <Wallet className="w-4 h-4 group-hover:text-[#FFD000] transition-colors" /> Asset Hub
+                        <Wallet className="w-4 h-4 group-hover:text-[#FFC107] transition-colors" /> Asset Hub
                       </Link>
                       <Link
                         to="/activity"
                         className="flex items-center gap-3 px-4 py-3 text-sm text-white/60 font-bold rounded-[20px] hover:bg-white/5 hover:text-white transition-all group"
                       >
-                        <Activity className="w-4 h-4 group-hover:text-[#FFD000] transition-colors" /> Timeline
+                        <Activity className="w-4 h-4 group-hover:text-[#FFC107] transition-colors" /> Timeline
                       </Link>
                     </div>
 
@@ -175,7 +175,7 @@ export default function Navbar() {
             ) : (
               <Link
                 to="/login"
-                className="group flex items-center gap-2 px-6 py-2.5 bg-gradient-to-br from-[#FFD000] to-[#F5B700] text-black text-xs uppercase tracking-widest font-black rounded-full shadow-[0_0_20px_rgba(255,208,0,0.2)] hover:shadow-[0_0_30px_rgba(255,208,0,0.4)] hover:scale-105 active:scale-95 transition-all"
+                className="group flex items-center gap-2 px-6 py-2.5 bg-gradient-to-br from-[#FFC107] to-[#FFB300] text-black text-xs uppercase tracking-widest font-black rounded-full shadow-[0_0_20px_rgba(255,193,7,0.2)] hover:shadow-[0_0_30px_rgba(255,193,7,0.4)] hover:scale-105 active:scale-95 transition-all"
               >
                  Authorize
               </Link>
@@ -186,7 +186,7 @@ export default function Navbar() {
           <div className="md:hidden flex items-center">
             <button
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="p-2.5 text-white/70 hover:text-[#FFD000] bg-[#121212] border border-white/10 rounded-full transition-all active:scale-95"
+              className="p-2.5 text-white/70 hover:text-[#FFC107] bg-[#121212] border border-white/10 rounded-full transition-all active:scale-95"
             >
               {isMobileMenuOpen ? (
                 <X className="w-5 h-5" />
@@ -205,14 +205,14 @@ export default function Navbar() {
               {/* User Block for Mobile */}
               {currentUser ? (
                  <div className="flex items-center gap-4 p-5 bg-[#121212] rounded-[24px] border border-white/5 mb-2">
-                    <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#FFD000] to-[#F5B700] flex items-center justify-center text-black font-black text-lg">
+                    <div className="w-12 h-12 rounded-full bg-gradient-to-tr from-[#FFC107] to-[#FFB300] flex items-center justify-center text-black font-black text-lg">
                       {currentUser.name?.charAt(0).toUpperCase() || "U"}
                     </div>
                     <div>
                       <p className="text-white font-bold tracking-wide">
                         {currentUser.name}
                       </p>
-                      <p className="text-[#FFD000] text-[10px] uppercase font-bold tracking-widest">
+                      <p className="text-[#FFC107] text-[10px] uppercase font-bold tracking-widest">
                         Premium Member
                       </p>
                     </div>
@@ -223,7 +223,7 @@ export default function Navbar() {
                 <Link
                   key={link.name}
                   to={link.path}
-                  className="px-5 py-4 text-white/50 font-black text-sm uppercase tracking-widest rounded-[20px] hover:bg-white/5 hover:text-[#FFD000] transition-colors"
+                  className="px-5 py-4 text-white/50 font-black text-sm uppercase tracking-widest rounded-[20px] hover:bg-white/5 hover:text-[#FFC107] transition-colors"
                 >
                   {link.name}
                 </Link>
@@ -248,7 +248,7 @@ export default function Navbar() {
                 ) : (
                   <Link
                     to="/login"
-                    className="w-full flex items-center justify-center gap-2 py-4 bg-gradient-to-br from-[#FFD000] to-[#F5B700] text-black text-xs uppercase tracking-widest font-black rounded-[20px] shadow-[0_0_20px_rgba(255,208,0,0.3)] hover:scale-[1.02] active:scale-95 transition-all"
+                    className="w-full flex items-center justify-center gap-2 py-4 bg-gradient-to-br from-[#FFC107] to-[#FFB300] text-black text-xs uppercase tracking-widest font-black rounded-[20px] shadow-[0_0_20px_rgba(255,193,7,0.3)] hover:scale-[1.02] active:scale-95 transition-all"
                   >
                     Authorize Session
                   </Link>

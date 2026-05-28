@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useAuth } from '../lib/auth';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   Shield, CreditCard, Clock, Star, Settings, MessageSquare, ChevronRight, 
   MapPin, Gift, Crown, Zap, AlertOctagon, Share2, Plus, Trash, X, Send, 
@@ -18,6 +18,7 @@ type ToastType = {
 
 export default function Profile() {
   const { currentUser, logout } = useAuth();
+  const navigate = useNavigate();
   
   // Custom states for sub-screens
   const [activeSubmenu, setActiveSubmenu] = useState<'main' | 'edit-profile' | 'addresses' | 'contacts' | 'payments' | 'rewards' | 'safety' | 'support' | 'settings'>('main');
@@ -46,7 +47,7 @@ export default function Profile() {
 
   // Live support chat states
   const [chatMessages, setChatMessages] = useState<Array<{ sender: 'user' | 'support'; text: string; time: string }>>([
-    { sender: 'support', text: 'Arrey pranam bhaiya! Hum hain Lallan, RAHI Support Sathi. Ka dikkat aa raha hai batayiye, Patna ke traffic me hum hi sabse tez hain!', time: 'Now' }
+    { sender: 'support', text: 'Arrey pranam bhaiya! Hum hain Lallan, RAPDO Support Sathi. Ka dikkat aa raha hai batayiye, Patna ke traffic me hum hi sabse tez hain!', time: 'Now' }
   ]);
   const [chatInput, setChatInput] = useState('');
   const [langPreference, setLangPreference] = useState<'en' | 'hi'>('en');
@@ -136,7 +137,7 @@ export default function Profile() {
       await setDoc(userRef, { savedAddresses: updatedAddresses }, { merge: true });
       setNewAddrLabel('');
       setNewAddrVal('');
-      showToast('Address linked securely to your RAHI account', 'success');
+      showToast('Address linked securely to your RAPDO account', 'success');
     } catch (err: any) {
       showToast('Unable to secure address', 'error');
     }
@@ -322,13 +323,13 @@ export default function Profile() {
       } else if (lower.includes('otp') || lower.includes('pin')) {
         response = "Chinta mat kijiye! Ride shuru karne se pehle driver ko aapka Ride PIN (4 digit) dena hota hai. Apni OTP screen par check karein.";
       } else if (lower.includes('cancel') || lower.includes('refund')) {
-        response = "Arrey! Agar cancellation ho gaya hai toh paise seedhe aapke RAHI Pay Vault wallet me 5 minute me wapas bhej diye jayenge. Vault balance check karein!";
+        response = "Arrey! Agar cancellation ho gaya hai toh paise seedhe aapke RAPDO Pay Vault wallet me 5 minute me wapas bhej diye jayenge. Vault balance check karein!";
       } else if (lower.includes('bhojpuri') || lower.includes('bhasha')) {
         response = "Kaa haal ba bhaiya! Humka Bhojpuri, Maithili aur Angika sab aawela. Aapke poora sahyog milega Bihar ke digital badlaav me.";
       } else if (lower.includes('safety') || lower.includes('sos') || lower.includes('police')) {
         response = "Safety Center me direct SOS button dabate hi humare special command room aur local Patna/Bihar police ko alert chala jata hai, trip live share kijiye!";
       } else {
-        response = "Arrey shabaash! RAHI Bihar ki apni sabse tez, safe aur swadeshi ride service hai. Bhaiya koi ticket file karna chahein toh neeche dijiye, hum turant help karenge!";
+        response = "Arrey shabaash! RAPDO Bihar ki apni sabse tez, safe aur swadeshi ride service hai. Bhaiya koi ticket file karna chahein toh neeche dijiye, hum turant help karenge!";
       }
       setChatMessages(prev => [...prev, { sender: 'support', text: response, time: nowStr }]);
     }, 1000);
@@ -351,7 +352,7 @@ export default function Profile() {
       };
 
       await addDoc(collection(db, 'support_tickets'), ticket);
-      showToast('🎫 Support ticket #RAHI-' + Math.floor(1000+Math.random()*9000) + ' saved! Helper dispatched.', 'success');
+      showToast('🎫 Support ticket #RAPDO-' + Math.floor(1000+Math.random()*9000) + ' saved! Helper dispatched.', 'success');
       setTicketIssue('');
       setTicketDesc('');
     } catch (err) {
@@ -366,7 +367,7 @@ export default function Profile() {
       <div className="w-full max-w-md mx-auto min-h-screen bg-[#121212] shadow-2xl relative flex flex-col overflow-x-hidden min-h-screen pb-24">
         
         {/* Dynamic Holographic Aura Background */}
-        <div className="absolute top-0 left-0 w-full h-[400px] bg-gradient-to-b from-[#FFD000]/10 via-[#FFD000]/5 to-transparent pointer-events-none" />
+        <div className="absolute top-0 left-0 w-full h-[400px] bg-gradient-to-b from-[#FFC107]/10 via-[#FFC107]/5 to-transparent pointer-events-none" />
         <div className="absolute top-[-50px] right-[-50px] w-[200px] h-[200px] bg-purple-500/10 rounded-full blur-[60px] mix-blend-screen pointer-events-none" />
 
         {/* Global Toast Notification */}
@@ -398,7 +399,7 @@ export default function Profile() {
                      <Settings className="w-4 h-4 text-white/70" />
                   </button>
                   <button onClick={() => {
-                    navigator.clipboard.writeText('Join Bihar\'s premium custom taxi network! Register now on RAHI.');
+                    navigator.clipboard.writeText('Join Bihar\'s premium custom taxi network! Register now on RAPDO.');
                     showToast('Sharing link copied to your clipboard!', 'info');
                   }} className="w-10 h-10 bg-white/5 rounded-full flex items-center justify-center border border-white/10 hover:bg-white/10 transition-colors">
                      <Share2 className="w-4 h-4 text-white/70" />
@@ -409,8 +410,8 @@ export default function Profile() {
             {/* Profile Avatar Card */}
             <div className="flex flex-col items-center mb-8 group cursor-pointer" onClick={() => setActiveSubmenu('edit-profile')}>
                <div className="relative inline-block">
-                  <div className="absolute inset-0 bg-gradient-to-br from-[#FFD000] to-purple-500 rounded-full blur-[20px] opacity-40 group-hover:opacity-70 group-hover:scale-110 transition-all duration-500"></div>
-                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#FFD000] to-[#F5B700] p-[3px] relative z-10 shadow-xl">
+                  <div className="absolute inset-0 bg-gradient-to-br from-[#FFC107] to-purple-500 rounded-full blur-[20px] opacity-40 group-hover:opacity-70 group-hover:scale-110 transition-all duration-500"></div>
+                  <div className="w-24 h-24 rounded-full bg-gradient-to-br from-[#FFC107] to-[#FFB300] p-[3px] relative z-10 shadow-xl">
                      <div className="w-full h-full bg-[#121212] rounded-full flex items-center justify-center overflow-hidden border-4 border-[#121212]">
                         <span className="text-4xl group-hover:scale-110 transition-all duration-300">{currentUser?.avatar || '🧑🏽'}</span>
                      </div>
@@ -424,7 +425,7 @@ export default function Profile() {
                
                <h2 className="text-2xl font-black text-white mt-4 tracking-tight flex items-center gap-2">
                  {currentUser?.name || 'Rahul Kumar'} 
-                 <span className="text-xs text-[#FFD000] font-black uppercase tracking-wider bg-white/5 px-2 py-1 rounded-md">Edit</span>
+                 <span className="text-xs text-[#FFC107] font-black uppercase tracking-wider bg-white/5 px-2 py-1 rounded-md">Edit</span>
                </h2>
                <p className="text-white/40 text-xs font-bold tracking-widest mt-1">
                  {currentUser?.mobile ? `+91 ${currentUser.mobile}` : '+91 94310 XXXXX'}
@@ -432,16 +433,16 @@ export default function Profile() {
             </div>
 
             {/* Tesla-style Membership Credit Card */}
-            <div className="relative w-full h-[150px] rounded-[32px] p-[1px] bg-gradient-to-br from-[#FFD000]/60 via-[#FFD000]/20 to-transparent mb-8 overflow-hidden shadow-[0_20px_40px_-15px_rgba(255,208,0,0.25)]">
+            <div className="relative w-full h-[150px] rounded-[32px] p-[1px] bg-gradient-to-br from-[#FFC107]/60 via-[#FFC107]/20 to-transparent mb-8 overflow-hidden shadow-[0_20px_40px_-15px_rgba(255,193,7,0.25)]">
                <div className="absolute inset-0 bg-[#0A0A0A] rounded-[31px]">
                   <div className="absolute top-0 right-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] opacity-10"></div>
-                  <div className="absolute top-[-50px] right-[-50px] w-32 h-32 bg-[#FFD000]/20 rounded-full blur-[40px]"></div>
+                  <div className="absolute top-[-50px] right-[-50px] w-32 h-32 bg-[#FFC107]/20 rounded-full blur-[40px]"></div>
                   
                   <div className="relative z-10 p-6 h-full flex flex-col justify-between">
                      <div className="flex justify-between items-start">
                         <div className="flex items-center gap-2">
-                           <Crown className="w-5 h-5 text-[#FFD000]" />
-                           <span className="text-[#FFD000] text-xs font-black tracking-widest uppercase">RAHI Gold Medalist</span>
+                           <Crown className="w-5 h-5 text-[#FFC107]" />
+                           <span className="text-[#FFC107] text-xs font-black tracking-widest uppercase">RAPDO Gold Medalist</span>
                         </div>
                         <span className="text-white/30 text-[9px] tracking-widest font-black">VALID THRU 12/26</span>
                      </div>
@@ -451,7 +452,7 @@ export default function Profile() {
                            <p className="text-white/40 text-[9px] font-black uppercase tracking-widest mb-1">Vault Pay Balance</p>
                            <p className="text-3xl font-black text-white tracking-tighter">₹450.00</p>
                         </div>
-                        <Link to="/wallet" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#FFD000] hover:text-black transition-all cursor-pointer text-white">
+                        <Link to="/wallet" className="w-10 h-10 rounded-full bg-white/10 flex items-center justify-center hover:bg-[#FFC107] hover:text-black transition-all cursor-pointer text-white">
                            <ChevronRight className="w-5 h-5" />
                         </Link>
                      </div>
@@ -491,14 +492,14 @@ export default function Profile() {
                     const confirmed = window.confirm("Bhaiya, kya aap sach me logout karna chahte hain?");
                     if (confirmed) {
                       logout();
-                      showToast('Logged out of RAHI ecosystem safely.', 'info');
+                      showToast('Logged out of RAPDO ecosystem safely.', 'info');
                     }
                   }} 
                   className="px-6 py-3.5 rounded-2xl bg-red-500/10 text-red-500 font-black text-xs uppercase tracking-widest inline-flex items-center justify-center gap-2 hover:bg-red-500/20 active:scale-95 transition-all"
                >
                   <AlertOctagon className="w-4 h-4" /> Sign Out Securely
                </button>
-               <p className="text-white/20 text-[9px] font-black tracking-widest mt-6 uppercase">RAHI Super App v3.0 | RAHI Technologies</p>
+               <p className="text-white/20 text-[9px] font-black tracking-widest mt-6 uppercase">RAPDO Super App v3.0 | RAPDO Technologies</p>
             </div>
           </div>
         )}
@@ -512,7 +513,7 @@ export default function Profile() {
                 <button onClick={() => setActiveSubmenu('main')} className="w-10 h-10 bg-white/5 border border-white/5 rounded-full flex items-center justify-center">
                    <ArrowLeft className="w-5 h-5 text-white/70" />
                 </button>
-                <h3 className="text-lg font-black uppercase tracking-widest text-[#FFD000]">Configure Identity</h3>
+                <h3 className="text-lg font-black uppercase tracking-widest text-[#FFC107]">Configure Identity</h3>
              </div>
 
              <form onSubmit={handleSaveProfile} className="space-y-6 flex-grow">
@@ -523,7 +524,7 @@ export default function Profile() {
                          <button 
                            type="button" key={e} 
                            onClick={() => setEditAvatar(e)}
-                           className={`w-10 h-10 rounded-full text-xl flex items-center justify-center transition-all ${editAvatar === e ? 'bg-[#FFD000] scale-110 shadow-lg' : 'hover:bg-white/5'}`}
+                           className={`w-10 h-10 rounded-full text-xl flex items-center justify-center transition-all ${editAvatar === e ? 'bg-[#FFC107] scale-110 shadow-lg' : 'hover:bg-white/5'}`}
                          >
                             {e}
                          </button>
@@ -553,7 +554,7 @@ export default function Profile() {
 
                 <button 
                    type="submit" 
-                   className="w-full py-5 bg-gradient-to-r from-[#FFD000] to-[#F5B700] text-black font-black text-xs uppercase tracking-widest rounded-2xl shadow-[0_10px_30px_rgba(255,208,0,0.2)] hover:scale-[1.02] active:scale-95 transition-all mt-8"
+                   className="w-full py-5 bg-gradient-to-r from-[#FFC107] to-[#FFB300] text-black font-black text-xs uppercase tracking-widest rounded-2xl shadow-[0_10px_30px_rgba(255,193,7,0.2)] hover:scale-[1.02] active:scale-95 transition-all mt-8"
                 >
                    Save credentials
                 </button>
@@ -570,7 +571,7 @@ export default function Profile() {
                 <button onClick={() => setActiveSubmenu('main')} className="w-10 h-10 bg-white/5 border border-white/5 rounded-full flex items-center justify-center">
                    <ArrowLeft className="w-5 h-5 text-white/70" />
                 </button>
-                <h3 className="text-lg font-black uppercase tracking-widest text-[#FFD000]">Saved Addresses</h3>
+                <h3 className="text-lg font-black uppercase tracking-widest text-[#FFC107]">Saved Addresses</h3>
              </div>
 
              {/* Existing Addresses */}
@@ -579,9 +580,9 @@ export default function Profile() {
                    <p className="text-center text-xs text-white/30 italic">No saved locations found. Create one below!</p>
                 ) : (
                    (currentUser?.savedAddresses || []).map(addr => (
-                      <div key={addr.id} className="p-5 bg-white/[0.02] border border-white/5 rounded-2xl flex justify-between items-start group hover:border-[#FFD000]/10 transition-colors">
+                      <div key={addr.id} className="p-5 bg-white/[0.02] border border-white/5 rounded-2xl flex justify-between items-start group hover:border-[#FFC107]/10 transition-colors">
                          <div className="space-y-1">
-                            <h4 className="text-xs font-black text-[#FFD000] uppercase tracking-wider">{addr.label}</h4>
+                            <h4 className="text-xs font-black text-[#FFC107] uppercase tracking-wider">{addr.label}</h4>
                             <p className="text-white/60 text-xs leading-relaxed max-w-[220px]">{addr.address}</p>
                          </div>
                          <button 
@@ -624,7 +625,7 @@ export default function Profile() {
                 <button onClick={() => setActiveSubmenu('main')} className="w-10 h-10 bg-white/5 border border-white/5 rounded-full flex items-center justify-center">
                    <ArrowLeft className="w-5 h-5 text-white/70" />
                 </button>
-                <h3 className="text-lg font-black uppercase tracking-widest text-[#FFD000]">Emergency Contacts</h3>
+                <h3 className="text-lg font-black uppercase tracking-widest text-[#FFC107]">Emergency Contacts</h3>
              </div>
 
              {/* Existing contacts */}
@@ -667,7 +668,7 @@ export default function Profile() {
                   value={newContactPhone} onChange={e => setNewContactPhone(e.target.value)}
                   className="block w-full px-4 py-3 bg-white/[0.02] border border-white/10 rounded-xl text-xs font-bold outline-none text-white font-mono"
                 />
-                <button type="submit" className="w-full py-4 bg-[#FFD000] text-black font-black text-[10px] uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 hover:scale-[1.01]">
+                <button type="submit" className="w-full py-4 bg-[#FFC107] text-black font-black text-[10px] uppercase tracking-widest rounded-xl transition-all flex items-center justify-center gap-2 hover:scale-[1.01]">
                    <Plus className="w-4 h-4" /> Link Safety Contact
                 </button>
              </form>
@@ -683,7 +684,7 @@ export default function Profile() {
                 <button onClick={() => setActiveSubmenu('main')} className="w-10 h-10 bg-white/5 border border-white/5 rounded-full flex items-center justify-center">
                    <ArrowLeft className="w-5 h-5 text-white/70" />
                 </button>
-                <h3 className="text-lg font-black uppercase tracking-widest text-[#FFD000]">UPI & Gateways</h3>
+                <h3 className="text-lg font-black uppercase tracking-widest text-[#FFC107]">UPI & Gateways</h3>
              </div>
 
              {/* List current payment methods */}
@@ -814,7 +815,7 @@ export default function Profile() {
                 <button onClick={() => setActiveSubmenu('main')} className="w-10 h-10 bg-white/5 border border-white/5 rounded-full flex items-center justify-center">
                    <ArrowLeft className="w-5 h-5 text-white/70" />
                 </button>
-                <h3 className="text-lg font-black uppercase tracking-widest text-[#FFD000]">Rewards Hub</h3>
+                <h3 className="text-lg font-black uppercase tracking-widest text-[#FFC107]">Rewards Hub</h3>
              </div>
 
              {/* Dynamic scratch cards grid */}
@@ -822,11 +823,11 @@ export default function Profile() {
                 {(currentUser?.rewards || []).map(rew => (
                    <div key={rew.id} className="relative group rounded-[28px] overflow-hidden border border-white/5 shadow-2xl p-[1px] bg-gradient-to-br from-white/10 to-transparent">
                       <div className="bg-[#1A1A1A] p-6 rounded-[27px] flex justify-between items-center relative overflow-hidden">
-                         <div className="absolute top-[-5px] right-[-5px] w-20 h-20 bg-[#FFD000]/10 rounded-full blur-[20px] pointer-events-none"></div>
+                         <div className="absolute top-[-5px] right-[-5px] w-20 h-20 bg-[#FFC107]/10 rounded-full blur-[20px] pointer-events-none"></div>
                          
                          <div>
                             <div className="flex items-center gap-2 mb-1">
-                               <Gift className="w-4.5 h-4.5 text-[#FFD000]" />
+                               <Gift className="w-4.5 h-4.5 text-[#FFC107]" />
                                <h4 className="text-sm font-black text-white tracking-wide">{rew.title}</h4>
                             </div>
                             <p className="text-white/50 text-[11px] leading-relaxed max-w-[200px] mb-4">{rew.desc}</p>
@@ -838,7 +839,7 @@ export default function Profile() {
                                    setScratchProgress(0);
                                    setScratchRevealed(false);
                                  }}
-                                 className="px-4 py-2 bg-[#FFD000] hover:bg-[#F2C500] text-black font-black text-[9px] uppercase tracking-widest rounded-xl transition-all shadow-[0_5px_15px_rgba(255,208,0,0.3)] animate-bounce"
+                                 className="px-4 py-2 bg-[#FFC107] hover:bg-[#F2C500] text-black font-black text-[9px] uppercase tracking-widest rounded-xl transition-all shadow-[0_5px_15px_rgba(255,193,7,0.3)] animate-bounce"
                                >
                                   Scratch Card
                                </button>
@@ -854,7 +855,7 @@ export default function Profile() {
                          ) : (
                             <div className="w-16 h-16 bg-emerald-500/10 rounded-2xl flex flex-col items-center justify-center border border-emerald-500/30 shrink-0">
                                <p className="text-2xl font-black text-emerald-400 tracking-tighter">₹{rew.value}</p>
-                               <p className="text-[7px] font-black text-[#FFD000]/50 tracking-widest">CASH</p>
+                               <p className="text-[7px] font-black text-[#FFC107]/50 tracking-widest">CASH</p>
                             </div>
                          )}
                       </div>
@@ -869,11 +870,11 @@ export default function Profile() {
                       const selected = (currentUser?.rewards || []).find(r => r.id === scratchRewardId);
                       if (!selected) return null;
                       return (
-                         <div className="bg-[#121212] rounded-[42px] border border-[#FFD000]/20 p-8 max-w-sm w-full text-center shadow-[0_0_50px_rgba(255,208,0,0.15)] relative overflow-hidden flex flex-col items-center">
-                            <div className="absolute top-0 left-0 w-full h-[5px] bg-gradient-to-r from-[#FFD000] via-orange-500 to-[#FFD000]"></div>
+                         <div className="bg-[#121212] rounded-[42px] border border-[#FFC107]/20 p-8 max-w-sm w-full text-center shadow-[0_0_50px_rgba(255,193,7,0.15)] relative overflow-hidden flex flex-col items-center">
+                            <div className="absolute top-0 left-0 w-full h-[5px] bg-gradient-to-r from-[#FFC107] via-orange-500 to-[#FFC107]"></div>
                             
                             <h3 className="text-2xl font-black text-white mb-2 tracking-tight">Bihar Swadeshi Scratch Card</h3>
-                            <p className="text-[#FFD000] text-[9px] font-black uppercase tracking-widest mb-8">Tap on card face to scratch securely</p>
+                            <p className="text-[#FFC107] text-[9px] font-black uppercase tracking-widest mb-8">Tap on card face to scratch securely</p>
 
                             <div 
                               onClick={() => handleScratch(selected.id, selected.value)}
@@ -882,8 +883,8 @@ export default function Profile() {
                                {/* Scratch Top Coating */}
                                {!scratchRevealed ? (
                                   <div className="absolute inset-[2px] bg-[#1a1a1a] rounded-[30px] flex flex-col items-center justify-center z-10 text-center p-4">
-                                     <Sparkles className="w-10 h-10 text-[#FFD000] animate-pulse mb-3" />
-                                     <p className="text-white text-xs font-black uppercase tracking-widest leading-relaxed">RAHI AI Vault</p>
+                                     <Sparkles className="w-10 h-10 text-[#FFC107] animate-pulse mb-3" />
+                                     <p className="text-white text-xs font-black uppercase tracking-widest leading-relaxed">RAPDO AI Vault</p>
                                      <p className="text-white/40 text-[9px] font-bold mt-1 uppercase tracking-widest">Tap to Scratch Off Coating</p>
                                   </div>
                                ) : (
@@ -948,7 +949,7 @@ export default function Profile() {
                    </div>
                 ) : (
                    <button 
-                     onClick={() => setSosCountdown(5)}
+                     onClick={() => navigate('/sos')}
                      className="w-48 h-48 rounded-full bg-gradient-to-br from-red-600 to-red-800 border-8 border-[#1A1A1A] hover:border-red-500 transition-all shadow-[0_15px_30px_rgba(239,68,68,0.4)] flex flex-col items-center justify-center active:scale-95 duration-200"
                    >
                       <Shield className="w-12 h-12 text-white fill-white mb-2 animate-pulse" />
@@ -960,7 +961,7 @@ export default function Profile() {
 
              {/* Dynamic Location Sharing Panel */}
              <div className="bg-[#1A1A1A] p-6 rounded-[28px] border border-white/5 mb-8">
-                <h4 className="text-xs font-black uppercase tracking-widest text-[#FFD000] mb-2 flex items-center gap-2">
+                <h4 className="text-xs font-black uppercase tracking-widest text-[#FFC107] mb-2 flex items-center gap-2">
                    <Share2 className="w-4.5 h-4.5" /> Trip GPS Link Sharing
                 </h4>
                 <p className="text-white/50 text-[11px] leading-relaxed mb-4">Share biometric data and current movement route instantly with your listed responders.</p>
@@ -999,7 +1000,7 @@ export default function Profile() {
                 <a href="tel:18003456789" className="flex justify-between items-center bg-white/5 border border-white/5 rounded-xl p-4 hover:border-red-400/20">
                    <div className="flex items-center gap-3">
                       <Phone className="w-4 h-4 text-red-400" />
-                      <span className="text-xs font-bold text-white">RAHI Executive Safety Room</span>
+                      <span className="text-xs font-bold text-white">RAPDO Executive Safety Room</span>
                    </div>
                    <span className="text-xs font-mono font-bold text-red-400">1800-345-6789</span>
                 </a>
@@ -1017,7 +1018,7 @@ export default function Profile() {
                    <ArrowLeft className="w-5 h-5 text-white/70" />
                 </button>
                 <div className="flex-1 text-left">
-                   <h3 className="text-md font-black uppercase tracking-widest text-[#FFD000]">RAHI AI Helpdesk</h3>
+                   <h3 className="text-md font-black uppercase tracking-widest text-[#FFC107]">RAPDO AI Helpdesk</h3>
                    <p className="text-[9px] text-white/40 uppercase tracking-widest">Dual English / हिन्दी Panel</p>
                 </div>
                 <button 
@@ -1027,7 +1028,7 @@ export default function Profile() {
                   }} 
                   className="px-3 py-1.5 bg-white/10 hover:bg-white/20 border border-white/10 rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5"
                 >
-                   <Globe className="w-3.5 h-3.5 text-[#FFD000]" /> {langPreference === 'en' ? 'ENGLISH' : 'हिन्दी'}
+                   <Globe className="w-3.5 h-3.5 text-[#FFC107]" /> {langPreference === 'en' ? 'ENGLISH' : 'हिन्दी'}
                 </button>
              </div>
 
@@ -1037,7 +1038,7 @@ export default function Profile() {
                    {chatMessages.map((msg, i) => (
                       <div key={i} className={`flex flex-col ${msg.sender === 'user' ? 'items-end' : 'items-start'}`}>
                          <div className={`p-4 rounded-[20px] text-xs font-semibold leading-relaxed max-w-[85%] ${
-                           msg.sender === 'user' ? 'bg-[#FFD000] text-black rounded-tr-sm' : 'bg-white/5 text-white/90 rounded-tl-sm border border-white/5'
+                           msg.sender === 'user' ? 'bg-[#FFC107] text-black rounded-tr-sm' : 'bg-white/5 text-white/90 rounded-tl-sm border border-white/5'
                          }`}>
                             {msg.text}
                          </div>
@@ -1052,7 +1053,7 @@ export default function Profile() {
                      value={chatInput} onChange={e => setChatInput(e.target.value)}
                      className="flex-grow bg-white/5 border border-white/5 rounded-xl text-xs font-bold px-4 py-3 outline-none text-white placeholder:text-white/20"
                    />
-                   <button type="submit" className="w-11 h-11 rounded-xl bg-[#FFD000] text-black flex items-center justify-center shrink-0">
+                   <button type="submit" className="w-11 h-11 rounded-xl bg-[#FFC107] text-black flex items-center justify-center shrink-0">
                       <Send className="w-4 h-4" />
                    </button>
                 </form>
@@ -1060,7 +1061,7 @@ export default function Profile() {
 
              {/* Live Support Ticket Creation */}
              <form onSubmit={handleCreateSupportTicket} className="bg-white/5 border border-white/5 p-6 rounded-[28px] space-y-4 text-left">
-                <h4 className="text-xs font-black uppercase tracking-widest text-[#FFD000] flex items-center gap-2">
+                <h4 className="text-xs font-black uppercase tracking-widest text-[#FFC107] flex items-center gap-2">
                    <LifeBuoy className="w-4.5 h-4.5" /> File Official Ticket
                 </h4>
                 <div>
@@ -1086,7 +1087,7 @@ export default function Profile() {
                            onClick={() => setTicketPriority(p as any)}
                            className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all border ${
                              ticketPriority === p 
-                               ? 'bg-[#FFD000] text-black border-[#FFD000]' 
+                               ? 'bg-[#FFC107] text-black border-[#FFC107]' 
                                : 'bg-white/5 text-white/40 border-white/5'
                            }`}
                          >
@@ -1116,7 +1117,7 @@ export default function Profile() {
                 <button onClick={() => setActiveSubmenu('main')} className="w-10 h-10 bg-white/5 border border-white/5 rounded-full flex items-center justify-center">
                    <ArrowLeft className="w-5 h-5 text-white/70" />
                 </button>
-                <h3 className="text-lg font-black uppercase tracking-widest text-[#FFD000]">Settings</h3>
+                <h3 className="text-lg font-black uppercase tracking-widest text-[#FFC107]">Settings</h3>
              </div>
 
              <div className="space-y-4 text-left">
@@ -1153,6 +1154,56 @@ export default function Profile() {
           </div>
         )}
 
+        {/* ====================================
+            SETTINGS MENU
+           ==================================== */}
+        {activeSubmenu === 'settings' && (
+          <div className="p-8 relative z-10 flex-grow flex flex-col overflow-y-auto no-scrollbar">
+             <div className="flex items-center gap-4 mb-8">
+                <button onClick={() => setActiveSubmenu('main')} className="w-10 h-10 bg-white/5 border border-white/5 rounded-full flex items-center justify-center">
+                   <ArrowLeft className="w-5 h-5 text-white/70" />
+                </button>
+                <h3 className="text-lg font-black uppercase tracking-widest text-[#FFC107]">App Settings</h3>
+             </div>
+
+             <div className="space-y-4">
+                <div className="p-5 bg-white/[0.01] border border-white/5 rounded-2xl flex justify-between items-center hover:border-white/10 transition-all cursor-pointer shadow-sm">
+                   <div>
+                      <h4 className="text-xs font-black text-white/80 uppercase tracking-widest flex items-center gap-2"><Lock className="w-4 h-4 text-emerald-400" /> Privacy Center</h4>
+                      <p className="text-[10px] text-white/30 font-bold tracking-wider uppercase mt-1">Manage data sharing & analytics</p>
+                   </div>
+                   <ChevronRight className="w-4 h-4 text-white/20" />
+                </div>
+                
+                <div className="p-5 bg-white/[0.01] border border-white/5 rounded-2xl flex justify-between items-center hover:border-white/10 transition-all cursor-pointer shadow-sm">
+                   <div>
+                      <h4 className="text-xs font-black text-white/80 uppercase tracking-widest flex items-center gap-2"><Bell className="w-4 h-4 text-blue-400" /> Notifications</h4>
+                      <p className="text-[10px] text-white/30 font-bold tracking-wider uppercase mt-1">Push alerts & SMS preferences</p>
+                   </div>
+                   <ChevronRight className="w-4 h-4 text-white/20" />
+                </div>
+                
+                <div className="p-5 bg-white/[0.01] border border-white/5 rounded-2xl flex justify-between items-center hover:border-white/10 transition-all cursor-pointer shadow-sm">
+                   <div>
+                      <h4 className="text-xs font-black text-white/80 uppercase tracking-widest flex items-center gap-2"><Globe className="w-4 h-4 text-purple-400" /> App Language</h4>
+                      <p className="text-[10px] text-white/30 font-bold tracking-wider uppercase mt-1">English, Hindi, Bhojpuri (Beta)</p>
+                   </div>
+                   <ChevronRight className="w-4 h-4 text-white/20" />
+                </div>
+
+                <div className="p-5 bg-white/[0.01] border border-white/5 rounded-2xl flex justify-between items-center mt-6">
+                   <div>
+                      <h4 className="text-xs font-black text-white/80 uppercase tracking-widest">Offline routing cache</h4>
+                      <p className="text-[10px] text-white/30 font-bold tracking-wider uppercase mt-1">Enhances Maps data in low networks</p>
+                   </div>
+                   <div className="w-12 h-6 bg-emerald-500/20 border border-emerald-500/40 rounded-full flex items-center px-1 justify-end cursor-pointer">
+                      <div className="w-4.5 h-4.5 bg-emerald-400 rounded-full"></div>
+                   </div>
+                </div>
+             </div>
+          </div>
+        )}
+
         <BottomNav />
       </div>
     </div>
@@ -1162,7 +1213,7 @@ export default function Profile() {
 function MenuRow({ icon, title, subtitle, highlight = false, danger = false }: { icon: React.ReactNode, title: string, subtitle: string, highlight?: boolean, danger?: boolean }) {
    return (
       <div className="group bg-[#1A1A1A] border border-white/5 hover:border-white/10 transition-all duration-300 rounded-[24px] p-4 flex items-center gap-5 cursor-pointer">
-         <div className={`w-12 h-12 rounded-[18px] flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110 ${danger ? 'bg-red-500/10 text-red-400' : highlight ? 'bg-[#FFD000]/10 text-[#FFD000]' : 'bg-white/5 text-white/50 group-hover:text-white'}`}>
+         <div className={`w-12 h-12 rounded-[18px] flex items-center justify-center shrink-0 transition-transform duration-300 group-hover:scale-110 ${danger ? 'bg-red-500/10 text-red-400' : highlight ? 'bg-[#FFC107]/10 text-[#FFC107]' : 'bg-white/5 text-white/50 group-hover:text-white'}`}>
             {icon}
          </div>
          <div className="flex-1 text-left">

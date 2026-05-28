@@ -1,14 +1,14 @@
 # PHASE 2: Premium Flutter UI Generation
 
-This document contains the production-ready Flutter code for the **RAHI Rider App Home Screen**. It implements the futuristic Black, Yellow, and Gold aesthetic with Glassmorphism, smooth animations, and AI recommendation widgets.
+This document contains the production-ready Flutter code for the **RAPDO Rider App Home Screen**. It implements the futuristic Black, Yellow, and Gold aesthetic with Glassmorphism, smooth animations, and AI recommendation widgets.
 
-## Core RAHI Theme Definitions
+## Core RAPDO Theme Definitions
 
 ```dart
-// lib/core/theme/rahi_theme.dart
+// lib/core/theme/rapdo_theme.dart
 import 'package:flutter/material.dart';
 
-class RahiColors {
+class RapdoColors {
   static const Color primaryBlack = Color(0xFF0F0F0F);
   static const Color luxuryYellow = Color(0xFFFFD000);
   static const Color accentGold = Color(0xFFF5B700);
@@ -16,7 +16,7 @@ class RahiColors {
   static const Color deepGrey = Color(0xFF1E1E1E);
 }
 
-class RahiStyles {
+class RapdoStyles {
   // Ultra-premium Glassmorphism Box Decoration
   static BoxDecoration glassDecoration = BoxDecoration(
     color: Colors.white.withOpacity(0.08),
@@ -39,7 +39,7 @@ class RahiStyles {
 // lib/shared_widgets/glass_card.dart
 import 'dart:ui';
 import 'package:flutter/material.dart';
-import '../core/theme/rahi_theme.dart';
+import '../core/theme/rapdo_theme.dart';
 
 class GlassCard extends StatelessWidget {
   final Widget child;
@@ -58,7 +58,7 @@ class GlassCard extends StatelessWidget {
           filter: ImageFilter.blur(sigmaX: 15, sigmaY: 15),
           child: Container(
             padding: padding,
-            decoration: RahiStyles.glassDecoration,
+            decoration: RapdoStyles.glassDecoration,
             child: child,
           ),
         ),
@@ -68,13 +68,13 @@ class GlassCard extends StatelessWidget {
 }
 ```
 
-## RAHI Rider App Home Screen
+## RAPDO Rider App Home Screen
 
 ```dart
 // lib/features/ride_booking/screens/home_screen.dart
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import '../../../core/theme/rahi_theme.dart';
+import '../../../core/theme/rapdo_theme.dart';
 import '../../../shared_widgets/glass_card.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -110,7 +110,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: RahiColors.primaryBlack,
+      backgroundColor: RapdoColors.primaryBlack,
       body: Stack(
         children: [
           // 1. Live Ambient Map Background
@@ -132,9 +132,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                   begin: Alignment.topCenter,
                   end: Alignment.bottomCenter,
                   colors: [
-                    RahiColors.primaryBlack.withOpacity(0.8),
+                    RapdoColors.primaryBlack.withOpacity(0.8),
                     Colors.transparent,
-                    RahiColors.primaryBlack.withOpacity(0.95),
+                    RapdoColors.primaryBlack.withOpacity(0.95),
                   ],
                   stops: const [0.0, 0.4, 0.7],
                 ),
@@ -171,9 +171,9 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           ],
                         ),
                         CircleAvatar(
-                          backgroundColor: RahiColors.deepGrey,
+                          backgroundColor: RapdoColors.deepGrey,
                           radius: 24,
-                          child: Icon(Icons.person, color: RahiColors.luxuryYellow),
+                          child: Icon(Icons.person, color: RapdoColors.luxuryYellow),
                         )
                       ],
                     ),
@@ -184,13 +184,13 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                       child: Row(
                         children: [
-                          Icon(Icons.auto_awesome, color: RahiColors.accentGold, size: 24),
+                          Icon(Icons.auto_awesome, color: RapdoColors.accentGold, size: 24),
                           const SizedBox(width: 12),
                           Expanded(
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: const [
-                                Text("AI Suggestion", style: TextStyle(color: RahiColors.accentGold, fontSize: 12, fontWeight: FontWeight.bold)),
+                                Text("AI Suggestion", style: TextStyle(color: RapdoColors.accentGold, fontSize: 12, fontWeight: FontWeight.bold)),
                                 Text("Office ride available in 2 mins. Traffic is low.", style: TextStyle(color: Colors.white, fontSize: 14)),
                               ],
                             ),
@@ -213,8 +213,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                               children: [
                                 Container(
                                   padding: const EdgeInsets.all(10),
-                                  decoration: BoxDecoration(color: RahiColors.luxuryYellow.withOpacity(0.2), shape: BoxShape.circle),
-                                  child: Icon(Icons.motorcycle, color: RahiColors.luxuryYellow, size: 32),
+                                  decoration: BoxDecoration(color: RapdoColors.luxuryYellow.withOpacity(0.2), shape: BoxShape.circle),
+                                  child: Icon(Icons.motorcycle, color: RapdoColors.luxuryYellow, size: 32),
                                 ),
                                 const SizedBox(height: 16),
                                 const Text("Bike Ride", style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold, fontFamily: 'Poppins')),
@@ -251,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 20),
                       child: Row(
                         children: [
-                          Icon(Icons.mic, color: RahiColors.luxuryYellow, size: 28),
+                          Icon(Icons.mic, color: RapdoColors.luxuryYellow, size: 28),
                           const SizedBox(width: 16),
                           const Expanded(
                             child: Text(
@@ -261,8 +261,8 @@ class _HomeScreenState extends State<HomeScreen> with SingleTickerProviderStateM
                           ),
                           Container(
                             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                            decoration: BoxDecoration(color: RahiColors.luxuryYellow, borderRadius: BorderRadius.circular(30)),
-                            child: const Text("Go", style: TextStyle(color: RahiColors.primaryBlack, fontWeight: FontWeight.bold)),
+                            decoration: BoxDecoration(color: RapdoColors.luxuryYellow, borderRadius: BorderRadius.circular(30)),
+                            child: const Text("Go", style: TextStyle(color: RapdoColors.primaryBlack, fontWeight: FontWeight.bold)),
                           )
                         ],
                       ),
