@@ -1,6 +1,6 @@
 {
   "name": "RAPDO",
   "description": "Premium Bihar-based bike taxi, parcel delivery, and hyperlocal logistics app.",
-  "requestFramePermissions": [],
+  "requestFramePermissions": ["microphone", "geolocation"],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }

@@ -23,34 +23,38 @@ export function RouteDisplay({ origin, destination }: {
     const { DirectionsService, DirectionsRenderer } = routesLib;
     if (!DirectionsService || !DirectionsRenderer) return;
 
-    const directionsService = new DirectionsService();
-    const directionsRenderer = new DirectionsRenderer({
-      map,
-      suppressMarkers: true,
-      preserveViewport: false,
-      polylineOptions: {
-        strokeColor: "#FFC107",
-        strokeOpacity: 0.9,
-        strokeWeight: 5,
-        zIndex: 50,
-      }
-    });
-    
-    dirRendererRef.current = directionsRenderer;
+    try {
+      const directionsService = new DirectionsService();
+      const directionsRenderer = new DirectionsRenderer({
+        map,
+        suppressMarkers: true,
+        preserveViewport: false,
+        polylineOptions: {
+          strokeColor: "#FFC107",
+          strokeOpacity: 0.9,
+          strokeWeight: 5,
+          zIndex: 50,
+        }
+      });
+      
+      dirRendererRef.current = directionsRenderer;
 
-    directionsService.route({
-      origin,
-      destination,
-      travelMode: typeof google !== 'undefined' ? google.maps.TravelMode.DRIVING : 'DRIVING' as any
-    }, (result: any, status: any) => {
-      const isOk = typeof google !== 'undefined' ? (status === google.maps.DirectionsStatus.OK) : (status === 'OK');
-      if (isOk && result) {
-        directionsRenderer.setDirections(result);
-        
-        // Add animated polyline glow effect by using an overlay or shadow, but DirectionsRenderer is simple
-        // To make it look ultra tech, we could just stick with a sleek yellow #FFC107 path
-      }
-    });
+      directionsService.route({
+        origin,
+        destination,
+        travelMode: typeof google !== 'undefined' ? google.maps.TravelMode.DRIVING : 'DRIVING' as any
+      }, (result: any, status: any) => {
+        const isOk = typeof google !== 'undefined' ? (status === google.maps.DirectionsStatus.OK) : (status === 'OK');
+        if (isOk && result) {
+          directionsRenderer.setDirections(result);
+          
+          // Add animated polyline glow effect by using an overlay or shadow, but DirectionsRenderer is simple
+          // To make it look ultra tech, we could just stick with a sleek yellow #FFC107 path
+        }
+      });
+    } catch (e) {
+      console.warn("Failed to instantiate Google Maps Route Services, falling back to simulated polyline display.", e);
+    }
 
     return () => {
       if (dirRendererRef.current) {

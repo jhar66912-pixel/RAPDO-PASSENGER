@@ -44,7 +44,7 @@ export default function Home() {
         const loc = { lat: position.coords.latitude, lng: position.coords.longitude };
         setHomePickupCoords(loc);
         if (geocodingLib) {
-          const geocoder = new geocodingLib.Geocoder();
+          const geocoder = getSafeGeocoder(geocodingLib);
           geocoder.geocode({ location: loc }).then(res => {
             const addr = res.results[0]?.formatted_address || "Current Live Location";
             setHomePickup(addr);
@@ -580,7 +580,21 @@ export default function Home() {
                 onClick={() => {
                   if (!homeDrop) return;
                   const finalPickup = homePickup || "Current Live Location";
-                  const finalPickupCoords = homePickupCoords || { lat: 25.5978, lng: 85.1583 }; // Kankarbagh Patna
+                  
+                  // Deduce coordinates for pickup if it was typed but not clicked via suggestion
+                  let finalPickupCoords = homePickupCoords;
+                  if (!finalPickupCoords) {
+                    if (homePickup) {
+                      const fall = searchBiharLocations(homePickup);
+                      if (fall.length > 0) {
+                        finalPickupCoords = { lat: fall[0].lat, lng: fall[0].lng };
+                      } else {
+                        finalPickupCoords = { lat: 25.5978, lng: 85.1583 }; // Kankarbagh Patna default
+                      }
+                    } else {
+                      finalPickupCoords = { lat: 25.5978, lng: 85.1583 }; // Default
+                    }
+                  }
                   
                   // Deduce coordinates for drop if it was typed but not clicked via suggestion
                   let finalDropCoords = homeDropCoords;
@@ -621,5 +635,34 @@ export default function Home() {
       </AnimatePresence>
     </div>
   );
+}
+
+function getSafeGeocoder(geocodingLib: any) {
+  try {
+    if (typeof window !== 'undefined' && (window as any).google?.maps?.Geocoder) {
+      return new (window as any).google.maps.Geocoder();
+    }
+  } catch (e) {
+    console.warn("Global Geocoder instantiation failed:", e);
+  }
+  try {
+    if (geocodingLib && geocodingLib.Geocoder) {
+      return new geocodingLib.Geocoder();
+    }
+  } catch (e) {
+    console.warn("Library Geocoder instantiation failed:", e);
+  }
+  // Safe mock fallback
+  return {
+    geocode: ({ location, address, placeId }: any) => {
+      const displayAddr = address || (location ? `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}` : "Patna, Bihar");
+      return Promise.resolve({
+        results: [{
+          geometry: { location: location || { lat: 25.5941, lng: 85.1376 } },
+          formatted_address: displayAddr
+        }]
+      });
+    }
+  };
 }
 

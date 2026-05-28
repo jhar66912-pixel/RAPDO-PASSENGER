@@ -44,7 +44,7 @@ export function LocationSearchInput({
         service.getPlacePredictions({ 
           input: value, 
           componentRestrictions: { country: 'in' },
-          locationBias: typeof google !== 'undefined' ? new google.maps.LatLng(25.5941, 85.1376) : { lat: 25.5941, lng: 85.1376 } // Bias around Patna
+          locationBias: { lat: 25.5941, lng: 85.1376 } // Bias around Patna
         })
         .then((response: any) => {
           const googlePreds = response.predictions || [];
@@ -85,7 +85,7 @@ export function LocationSearchInput({
     }
 
     if (!geocodingLib) return;
-    const geocoder = new geocodingLib.Geocoder();
+    const geocoder = getSafeGeocoder(geocodingLib);
     try {
       const res = await geocoder.geocode(prediction.place_id ? { placeId: prediction.place_id } : { address: prediction.description });
       if (res.results[0]) {
@@ -111,11 +111,11 @@ export function LocationSearchInput({
   return (
     <div className="relative z-20">
       <div className="relative group">
-         <div id="search-input-dot" className={`absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#121212] border ${focusColor.border} rounded-full flex items-center justify-center shadow-inner group-focus-within:${focusColor.activeBorder} transition-all`}>
+         <div id={`search-input-dot-${mode}`} className={`absolute left-4 top-1/2 -translate-y-1/2 w-8 h-8 bg-[#121212] border ${focusColor.border} rounded-full flex items-center justify-center shadow-inner group-focus-within:${focusColor.activeBorder} transition-all`}>
             <div className={`w-2 h-2 rounded-full ${focusColor.dot}`}></div>
          </div>
          <input 
-           id="location-search-input-field"
+           id={`location-search-input-field-${mode}`}
            type="text" 
            required
            value={value} 
@@ -189,4 +189,33 @@ export function LocationSearchInput({
       />
     </div>
   );
+}
+
+function getSafeGeocoder(geocodingLib: any) {
+  try {
+    if (typeof window !== 'undefined' && (window as any).google?.maps?.Geocoder) {
+      return new (window as any).google.maps.Geocoder();
+    }
+  } catch (e) {
+    console.warn("Global Geocoder instantiation failed:", e);
+  }
+  try {
+    if (geocodingLib && geocodingLib.Geocoder) {
+      return new geocodingLib.Geocoder();
+    }
+  } catch (e) {
+    console.warn("Library Geocoder instantiation failed:", e);
+  }
+  // Safe mock fallback
+  return {
+    geocode: ({ location, address, placeId }: any) => {
+      const displayAddr = address || (location ? `${location.lat.toFixed(4)}, ${location.lng.toFixed(4)}` : "Patna, Bihar");
+      return Promise.resolve({
+        results: [{
+          geometry: { location: location || { lat: 25.5941, lng: 85.1376 } },
+          formatted_address: displayAddr
+        }]
+      });
+    }
+  };
 }

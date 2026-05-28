@@ -332,6 +332,158 @@ export const BIHAR_LOCATIONS: BiharLocation[] = [
     lng: 85.2120,
     desc: "Scenic administrative and cultural heritage hub",
     keywords: ["gandhi ashram", "hajipur ashram"]
+  },
+  {
+    name: "Maurya Lok Complex",
+    city: "Patna",
+    lat: 25.6128,
+    lng: 85.1315,
+    desc: "Premium open-air food, shopping & government utility complex",
+    keywords: ["maurya lok", "maurya lok complex", "patna shopping market"]
+  },
+  {
+    name: "Fraser Road",
+    city: "Patna",
+    lat: 25.6105,
+    lng: 85.1352,
+    desc: "High-density retail bank and elite hotel lane",
+    keywords: ["fraser road", "dakbungalow", "dak bungalow chowk"]
+  },
+  {
+    name: "Rajendra Nagar Terminal",
+    city: "Patna",
+    lat: 25.5995,
+    lng: 85.1610,
+    desc: "Elite secondary train platform for superfast express trains",
+    keywords: ["rajendra nagar", "rajendra nagar terminal", "rajendra nagar station"]
+  },
+  {
+    name: "Dharampur Chowk",
+    city: "Samastipur",
+    lat: 25.8525,
+    lng: 85.7890,
+    desc: "Active logistics & wholesale fruit distribution square",
+    keywords: ["dharampur chowk", "dharampur samastipur"]
+  },
+  {
+    name: "Jitwarpur",
+    city: "Samastipur",
+    lat: 25.8450,
+    lng: 85.7580,
+    desc: "Celebrated destination famous for heritage Madhubani Mithila painting",
+    keywords: ["jitwarpur", "jitwarpur art village"]
+  },
+  {
+    name: "Magardahi Ghat Chowk",
+    city: "Samastipur",
+    lat: 25.8655,
+    lng: 85.7845,
+    desc: "Critical river crossing avenue bridging Samastipur and northern towns",
+    keywords: ["magardahi", "magardahi ghat", "magardahi chowk"]
+  },
+  {
+    name: "Darbhanga Airport",
+    city: "Darbhanga",
+    lat: 26.1950,
+    lng: 85.9180,
+    desc: "High-growth commercial flight strip serving Mithilanchal",
+    keywords: ["darbhanga airport", "airport darbhanga", "dbr airport", "flights"]
+  },
+  {
+    name: "Darbhanga Junction",
+    city: "Darbhanga",
+    lat: 26.1512,
+    lng: 85.8945,
+    desc: "Prime passenger railway station connecting Mithila",
+    keywords: ["darbhanga junction", "darbhanga station", "darbhanga railway station"]
+  },
+  {
+    name: "Donar Chowk",
+    city: "Darbhanga",
+    lat: 26.1605,
+    lng: 85.9100,
+    desc: "High traffic wholesale distribution, retail & bypass road",
+    keywords: ["donar chowk", "donar darbhanga"]
+  },
+  {
+    name: "Bairia Bus Stand",
+    city: "Muzaffarpur",
+    lat: 26.1340,
+    lng: 85.3980,
+    desc: "Bihar's ultra-dense interstate bus transit yard in Muzaffarpur",
+    keywords: ["bairia", "bairia stand", "bairia bus stand", "muzaffarpur bus stand"]
+  },
+  {
+    name: "Ahiyapur Chowk",
+    city: "Muzaffarpur",
+    lat: 26.1450,
+    lng: 85.4120,
+    desc: "Major junction leading to NH57 bypass and medical clinics",
+    keywords: ["ahiyapur", "ahiyapur chowk", "ahiyapur thana"]
+  },
+  {
+    name: "Kalambag Chowk",
+    city: "Muzaffarpur",
+    lat: 26.1150,
+    lng: 85.3780,
+    desc: "Dynamic coaching and premium digital cafe hotspot",
+    keywords: ["kalambag chowk", "kalambag", "kalambag road"]
+  },
+  {
+    name: "JGD College Chowk",
+    city: "Begusarai",
+    lat: 25.4250,
+    lng: 86.1380,
+    desc: "Primary college landmark junction",
+    keywords: ["jgd college", "jgd college chowk", "begusarai college"]
+  },
+  {
+    name: "IOCL Barauni Refinery Gate",
+    city: "Begusarai",
+    lat: 25.4110,
+    lng: 86.0950,
+    desc: "Mega petrochemical refinery front intersection",
+    keywords: ["barauni refinery", "refinery gate", "iocl barauni", "barauni"]
+  },
+  {
+    name: "Chand Chauri",
+    city: "Gaya",
+    lat: 24.7890,
+    lng: 85.0020,
+    desc: "Densely populated trade corridor in the old town Gaya",
+    keywords: ["chand chauri", "chand chowri", "old gaya"]
+  },
+  {
+    name: "Delha",
+    city: "Gaya",
+    lat: 24.8120,
+    lng: 84.9920,
+    desc: "West-side railway entry point and fast residential district",
+    keywords: ["delha", "gaya delha"]
+  },
+  {
+    name: "Paswan Chowk",
+    city: "Hajipur",
+    lat: 25.6810,
+    lng: 85.2320,
+    desc: "Primary national highway NH19 crossover transit island of Hajipur",
+    keywords: ["paswan chowk", "paswan chowk hajipur", "hajipur nh19"]
+  },
+  {
+    name: "Hajipur Junction",
+    city: "Hajipur",
+    lat: 25.6790,
+    lng: 85.2185,
+    desc: "Superb East Central Railway Zonal headquarters terminal",
+    keywords: ["hajipur junction", "hajipur station", "hajipur railway station"]
+  },
+  {
+    name: "Sonepur Bridge",
+    city: "Hajipur",
+    lat: 25.6980,
+    lng: 85.1850,
+    desc: "Historic truss bridge spanning river Gandak, connecting to Sonepur",
+    keywords: ["sonepur bridge", "gandak bridge", "sonepur hajipur bridge"]
   }
 ];
 
