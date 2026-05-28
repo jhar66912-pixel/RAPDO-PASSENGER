@@ -15,9 +15,15 @@ service cloud.firestore {
       return data.keys().hasAll(['uid', 'name', 'mobile', 'role', 'createdAt']) &&
         data.uid is string &&
         data.name is string && data.name.size() <= 100 &&
-        data.mobile is string && data.mobile.size() <= 15 &&
+        data.mobile is string && data.mobile.size() <= 20 &&
         data.role is string && (data.role == 'customer' || data.role == 'rider' || data.role == 'admin') &&
-        data.createdAt is number;
+        data.createdAt is number &&
+        (!('avatar' in data.keys()) || data.avatar == null || (data.avatar is string && data.avatar.size() <= 300)) &&
+        (!('walletBalance' in data.keys()) || data.walletBalance == null || data.walletBalance is number) &&
+        (!('savedAddresses' in data.keys()) || data.savedAddresses == null || data.savedAddresses is list) &&
+        (!('emergencyContacts' in data.keys()) || data.emergencyContacts == null || data.emergencyContacts is list) &&
+        (!('paymentMethods' in data.keys()) || data.paymentMethods == null || data.paymentMethods is list) &&
+        (!('rewards' in data.keys()) || data.rewards == null || data.rewards is list);
     }
 
     match /users/{userId} {
@@ -31,20 +37,73 @@ service cloud.firestore {
         data.bookingId is string && data.bookingId.size() <= 128 &&
         data.customerId is string && data.customerId.size() <= 128 &&
         data.customerName is string && data.customerName.size() <= 100 &&
-        data.customerMobile is string && data.customerMobile.size() <= 15 &&
-        data.bookingType is string && data.bookingType.size() <= 20 &&
+        data.customerMobile is string && data.customerMobile.size() <= 20 &&
+        data.bookingType is string && data.bookingType.size() <= 30 &&
         (!('selectedRouteId' in data.keys()) || data.selectedRouteId == null || (data.selectedRouteId is string && data.selectedRouteId.size() <= 128)) &&
         data.pickupName is string && data.pickupName.size() <= 200 &&
         data.dropName is string && data.dropName.size() <= 200 &&
         (!('fare' in data.keys()) || data.fare == null || data.fare is number) &&
         (!('distanceKm' in data.keys()) || data.distanceKm == null || data.distanceKm is number) &&
-        data.status is string && data.status.size() <= 20 &&
+        data.status is string && data.status.size() <= 30 &&
         (!('assignedRiderId' in data.keys()) || data.assignedRiderId == null || (data.assignedRiderId is string && data.assignedRiderId.size() <= 128)) &&
         data.rideOtp is string && data.rideOtp.size() <= 10 &&
-        data.createdAt is number;
+        data.createdAt is number &&
+        (!('scheduledTime' in data.keys()) || data.scheduledTime == null || data.scheduledTime is string);
     }
 
     match /bookings/{bookingId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if true;
+    }
+
+    function isValidTransaction(data) {
+      return data.keys().hasAll(['transactionId', 'customerId', 'title', 'amount', 'type', 'date', 'createdAt']) &&
+        data.transactionId is string && data.transactionId.size() <= 128 &&
+        data.customerId is string && data.customerId.size() <= 128 &&
+        data.title is string && data.title.size() <= 200 &&
+        data.amount is string && data.amount.size() <= 50 &&
+        data.type is string && data.type.size() <= 30 &&
+        data.date is string && data.date.size() <= 100 &&
+        data.createdAt is number;
+    }
+
+    match /transactions/{transactionId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if true;
+    }
+
+    function isValidSafetyAlert(data) {
+      return data.keys().hasAll(['customerId', 'customerName', 'customerMobile', 'timestamp', 'status']) &&
+        data.customerId is string && data.customerId.size() <= 128 &&
+        data.customerName is string && data.customerName.size() <= 100 &&
+        data.customerMobile is string && data.customerMobile.size() <= 30 &&
+        data.timestamp is number &&
+        data.status is string && data.status.size() <= 30;
+    }
+
+    match /safety_alerts/{alertId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if true;
+    }
+
+    function isValidSupportTicket(data) {
+      return data.keys().hasAll(['customerId', 'customerName', 'issue', 'desc', 'priority', 'status', 'createdAt']) &&
+        data.customerId is string && data.customerId.size() <= 128 &&
+        data.customerName is string && data.customerName.size() <= 100 &&
+        data.issue is string && data.issue.size() <= 200 &&
+        data.desc is string && data.desc.size() <= 2000 &&
+        data.priority is string && data.priority.size() <= 30 &&
+        data.status is string && data.status.size() <= 30 &&
+        data.createdAt is number;
+    }
+
+    match /support_tickets/{ticketId} {
       allow read: if true;
       allow create: if true;
       allow update: if true;

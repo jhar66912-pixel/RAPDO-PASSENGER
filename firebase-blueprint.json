@@ -34,6 +34,49 @@
         "createdAt": { "type": "number" }
       },
       "required": ["bookingId", "customerId", "customerName", "customerMobile", "bookingType", "pickupName", "dropName", "status", "rideOtp", "createdAt"]
+    },
+    "Transaction": {
+      "title": "Transaction",
+      "description": "A payment or wallet transaction trace log.",
+      "type": "object",
+      "properties": {
+        "transactionId": { "type": "string" },
+        "customerId": { "type": "string" },
+        "title": { "type": "string" },
+        "amount": { "type": "string" },
+        "type": { "type": "string" },
+        "date": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["transactionId", "customerId", "title", "amount", "type", "date", "createdAt"]
+    },
+    "SafetyAlert": {
+      "title": "SafetyAlert",
+      "description": "An emergency distress alert active log.",
+      "type": "object",
+      "properties": {
+        "customerId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "customerMobile": { "type": "string" },
+        "timestamp": { "type": "number" },
+        "status": { "type": "string" }
+      },
+      "required": ["customerId", "customerName", "customerMobile", "timestamp", "status"]
+    },
+    "SupportTicket": {
+      "title": "SupportTicket",
+      "description": "An escalation support support_ticket.",
+      "type": "object",
+      "properties": {
+        "customerId": { "type": "string" },
+        "customerName": { "type": "string" },
+        "issue": { "type": "string" },
+        "desc": { "type": "string" },
+        "priority": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "number" }
+      },
+      "required": ["customerId", "customerName", "issue", "desc", "priority", "status", "createdAt"]
     }
   },
   "firestore": {
@@ -44,6 +87,18 @@
     "bookings/{bookingId}": {
       "schema": { "$ref": "#/entities/Booking" },
       "description": "Ride bookings"
+    },
+    "transactions/{transactionId}": {
+      "schema": { "$ref": "#/entities/Transaction" },
+      "description": "Wallet transactions"
+    },
+    "safety_alerts/{alertId}": {
+      "schema": { "$ref": "#/entities/SafetyAlert" },
+      "description": "Distress safety broadcasts"
+    },
+    "support_tickets/{ticketId}": {
+      "schema": { "$ref": "#/entities/SupportTicket" },
+      "description": "Escalated helper support tickets"
     }
   }
 }
