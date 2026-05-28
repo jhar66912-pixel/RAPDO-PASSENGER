@@ -235,32 +235,6 @@ export default function Home() {
                    <Mic className="w-5 h-5" />
                 </button>
              </motion.div>
-
-             {/* Quick Actions Base */}
-             <div className="flex gap-3 mt-6 overflow-x-auto no-scrollbar pb-2 pt-1">
-                {[
-                  { icon: <MapPin className="w-4 h-4 text-blue-400" />, label: 'Home', sub: 'Kankarbagh' },
-                  { icon: <Briefcase className="w-4 h-4 text-purple-400" />, label: 'Work', sub: 'Frazer Rd' },
-                  { icon: <History className="w-4 h-4 text-[#FFC107]" />, label: 'Recent', sub: 'PMCH' }
-                ].map((action, i) => (
-                  <motion.div 
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.2 + (i * 0.1) }}
-                    key={i}
-                    onClick={() => navigate('/book')}
-                    className="flex-shrink-0 bg-[#1E1E1E]/80 backdrop-blur-xl border border-white/10 hover:bg-white/10 rounded-[24px] p-3 pl-4 flex items-center gap-4 cursor-pointer min-w-[150px] shadow-lg hover:shadow-xl transition-all group"
-                  >
-                     <div className="w-10 h-10 bg-black/50 rounded-full flex items-center justify-center shadow-inner border border-white/5 group-hover:scale-110 transition-transform">
-                       {action.icon}
-                     </div>
-                     <div>
-                       <p className="text-[#F5F5F5] font-black text-sm tracking-wide">{action.label}</p>
-                       <p className="text-white/40 text-[9px] font-black uppercase tracking-widest">{action.sub}</p>
-                     </div>
-                  </motion.div>
-                ))}
-             </div>
           </div>
 
           <div className="px-6 space-y-5 mt-4">
