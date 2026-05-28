@@ -284,6 +284,9 @@ export default function BookingPage() {
           geocoder.geocode({ location: loc }).then(res => {
             const addr = res.results[0]?.formatted_address || "My Live Location";
             setCustomPickup(addr);
+          }).catch(err => {
+            console.warn("Reverse geocoding lock location fail", err);
+            setCustomPickup("My GPS Coordinates");
           });
         } else {
           setCustomPickup("My GPS Coordinates");
@@ -985,7 +988,7 @@ export default function BookingPage() {
                   {/* Booking Fields & Search Module */}
                   <div className="px-6 space-y-4">
                     {mode === 'custom' ? (
-                      <div className="bg-[#121212] border border-white/5 rounded-3xl p-5 shadow-inner relative space-y-4">
+                      <div className="relative space-y-4">
                          
                          {/* Visual linking bar */}
                          <div className="absolute left-[34px] top-[46px] bottom-[46px] w-[2px] bg-gradient-to-b from-[#FFC107]/40 to-[#3B82F6]/40 border-dashed pointer-events-none z-0" />
@@ -1102,7 +1105,7 @@ export default function BookingPage() {
                          </AnimatePresence>
                       </div>
                     ) : (
-                      <div className="bg-[#121212] border border-white/5 rounded-3xl p-5 shadow-inner">
+                      <div className="relative">
                         <select 
                           required
                           value={selectedRouteId}

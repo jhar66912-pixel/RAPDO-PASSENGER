@@ -39,8 +39,8 @@ export function LocationSearchInput({
 
     // Debounce the call to Google Places API to save free tier limits
     const timerId = setTimeout(() => {
-      const service = new places.AutocompleteService();
       try {
+        const service = new places.AutocompleteService();
         service.getPlacePredictions({ 
           input: value, 
           componentRestrictions: { country: 'in' },

@@ -334,32 +334,37 @@ export default function AiHelp() {
       return;
     }
 
-    const recognition = new SpeechRecognition();
-    recognition.lang = 'hi-IN'; // Tune speech listener for Hindi / Hinglish voice queries!
-    recognition.continuous = false;
-    recognition.interimResults = false;
-
-    recognition.onresult = (event: any) => {
-      const trans = event.results[0]?.[0]?.transcript;
-      if (trans) {
-        setInputValue(trans);
-      }
-    };
-
-    recognition.onerror = (e: any) => {
-      console.warn("Speech API Error, firing safe fallback text:", e);
-      setInputValue("Patna Junction jane me kitna time lagega?");
-    };
-
-    recognition.onend = () => {
-      setIsRecording(false);
-      playSynthesizedChime("receive");
-    };
-
     try {
+      const recognition = new SpeechRecognition();
+      recognition.lang = 'hi-IN'; // Tune speech listener for Hindi / Hinglish voice queries!
+      recognition.continuous = false;
+      recognition.interimResults = false;
+
+      recognition.onresult = (event: any) => {
+        const trans = event.results[0]?.[0]?.transcript;
+        if (trans) {
+          setInputValue(trans);
+        }
+      };
+
+      recognition.onerror = (e: any) => {
+        console.warn("Speech API Error, firing safe fallback text:", e);
+        setInputValue("Patna Junction jane me kitna time lagega?");
+      };
+
+      recognition.onend = () => {
+        setIsRecording(false);
+        playSynthesizedChime("receive");
+      };
+
       recognition.start();
     } catch (e) {
-      setIsRecording(false);
+      console.error("SpeechRecognition instantiation/start error, using fallback instead", e);
+      setTimeout(() => {
+        setInputValue("Patna Junction jane me kitna time lagega?");
+        setIsRecording(false);
+        playSynthesizedChime("receive");
+      }, 1500);
     }
   };
 
