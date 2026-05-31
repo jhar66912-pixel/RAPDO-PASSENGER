@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { motion, AnimatePresence } from "motion/react";
 import { Map, useMapsLibrary } from '../components/SmartMapView';
 import { LiveCaptains } from '../components/LiveCaptains';
@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { useAuth } from "../lib/auth";
 import BottomNav from "../components/BottomNav";
+import { Bike3D } from "../components/Bike3D";
 
 export default function Home() {
   const { currentUser, loading: authLoading } = useAuth();
@@ -235,6 +236,55 @@ export default function Home() {
                    <Mic className="w-5 h-5" />
                 </button>
              </motion.div>
+
+             {/* Ride Favorites */}
+             <motion.div 
+               initial={{ opacity: 0, y: 10 }}
+               animate={{ opacity: 1, y: 0 }}
+               transition={{ delay: 0.1 }}
+               className="flex gap-3 mt-4 overflow-x-auto no-scrollbar"
+             >
+                <button
+                  onClick={() => {
+                    navigate('/book', {
+                      state: {
+                        mode: 'custom',
+                        pickup: "Current Live Location",
+                        drop: "Home, Patna, Bihar",
+                        pickupCoords: homePickupCoords || { lat: 25.5978, lng: 85.1583 },
+                        dropCoords: { lat: 25.6024, lng: 85.1376 },
+                        selectionMode: 'drop'
+                      }
+                    });
+                  }}
+                  className="flex items-center gap-2 bg-white/10 hover:bg-white/15 border border-white/5 hover:border-[#FFC107]/40 rounded-full px-4 py-2.5 transition-all text-[#F5F5F5] shrink-0"
+                >
+                  <div className="w-7 h-7 rounded-full bg-black/40 flex items-center justify-center">
+                     <svg className="w-3.5 h-3.5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" /></svg>
+                  </div>
+                  <span className="font-bold text-sm tracking-wide">Home</span>
+                </button>
+                <button
+                  onClick={() => {
+                    navigate('/book', {
+                      state: {
+                        mode: 'custom',
+                        pickup: "Current Live Location",
+                        drop: "Work, Patna, Bihar",
+                        pickupCoords: homePickupCoords || { lat: 25.5978, lng: 85.1583 },
+                        dropCoords: { lat: 25.6133, lng: 85.1111 },
+                        selectionMode: 'drop'
+                      }
+                    });
+                  }}
+                  className="flex items-center gap-2 bg-white/10 hover:bg-white/15 border border-white/5 hover:border-[#FFC107]/40 rounded-full px-4 py-2.5 transition-all text-[#F5F5F5] shrink-0"
+                >
+                  <div className="w-7 h-7 rounded-full bg-black/40 flex items-center justify-center">
+                     <svg className="w-3.5 h-3.5 text-white/80" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg>
+                  </div>
+                  <span className="font-bold text-sm tracking-wide">Work</span>
+                </button>
+             </motion.div>
           </div>
 
           <div className="px-6 space-y-5 mt-4">
@@ -249,17 +299,23 @@ export default function Home() {
                  whileHover={{ y: -5, scale: 1.02 }}
                  whileTap={{ scale: 0.98 }}
                  onClick={() => navigate('/book')}
-                 className="col-span-2 bg-[#1E1E1E] border border-white/10 hover:border-[#FFC107]/40 rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.5)] hover:shadow-[0_20px_50px_rgba(255,193,7,0.15)] relative group cursor-pointer h-[240px]"
+                 className="col-span-2 bg-[#1E1E1E] border border-white/10 hover:border-[#FFC107]/40 rounded-[32px] overflow-hidden shadow-[0_20px_40px_rgba(0,0,0,0.5)] hover:shadow-[0_20px_50px_rgba(255,193,7,0.15)] relative group h-[240px]"
                >
-                 <img src="https://images.unsplash.com/photo-1622185135505-2d795003994a?auto=format&fit=crop&q=100&w=1200" alt="Bike Ride Background" referrerPolicy="no-referrer" className="absolute inset-0 w-full h-full object-cover opacity-60 mix-blend-luminosity group-hover:mix-blend-normal group-hover:scale-110 transition-all duration-1000 ease-out" />
+                 {/* 3D Floating Bike */}
+                 <div onClick={(e) => e.stopPropagation()} className="absolute inset-0 w-[140%] -right-[20%] -bottom-10 pointer-events-auto h-full mix-blend-screen opacity-90 group-hover:opacity-100 transition-opacity duration-700">
+                    <Suspense fallback={<div className="absolute inset-0 flex items-center justify-center"><div className="w-8 h-8 border-2 border-[#FFC107] border-t-transparent rounded-full animate-spin"></div></div>}>
+                       <Bike3D />
+                    </Suspense>
+                 </div>
+                 
                  <div className="absolute inset-0 bg-gradient-to-t from-[#0D0D0D] via-[#0D0D0D]/60 to-transparent z-10 pointer-events-none"></div>
                  <div className="absolute inset-0 bg-gradient-to-r from-[#FFC107]/20 to-transparent mix-blend-overlay z-10 pointer-events-none opacity-0 group-hover:opacity-100 transition-opacity duration-500"></div>
                  
-                 <div className="relative z-20 p-8 flex flex-col justify-end h-full">
+                 <div className="relative z-20 p-8 flex flex-col justify-end h-full pointer-events-none">
                    <div className="w-16 h-16 bg-black/60 backdrop-blur-xl rounded-[24px] flex items-center justify-center mb-4 shadow-[0_8px_32px_rgba(0,0,0,0.4)] border border-white/10 group-hover:border-[#FFC107]/50 group-hover:bg-[#FFC107] transition-all duration-300">
-                     <Bike className="w-8 h-8 text-[#FFC107] drop-shadow-md group-hover:text-black transition-colors" />
+                     <Bike className="w-8 h-8 text-[#FFC107] drop-shadow-md group-hover:text-black transition-colors pointer-events-auto cursor-pointer" onClick={(e) => { e.stopPropagation(); navigate('/book'); }} />
                    </div>
-                   <h3 className="text-[#F5F5F5] text-4xl font-black tracking-tight mb-2 drop-shadow-lg">Ride RAPDO</h3>
+                   <h3 className="text-[#F5F5F5] text-4xl font-black tracking-tight mb-2 drop-shadow-lg cursor-pointer pointer-events-auto" onClick={(e) => { e.stopPropagation(); navigate('/book'); }}>Ride RAPDO</h3>
                    <div className="flex items-center gap-3">
                      <p className="text-white/80 text-sm font-bold tracking-wide drop-shadow-lg">Fastest way to move in Bihar</p>
                      <div className="bg-[#FFC107]/20 border border-[#FFC107]/40 rounded-full px-2 py-0.5 text-[#FFC107] text-[9px] font-black uppercase tracking-widest animate-pulse shadow-[0_0_10px_rgba(255,193,7,0.3)]">Live</div>
@@ -541,7 +597,7 @@ export default function Home() {
                     key={id}
                     whileHover={{ scale: 1.02, x: 4, backgroundColor: "rgba(255,193,7,0.15)", borderColor: "rgba(255,193,7,0.4)" }}
                     whileTap={{ scale: 0.98 }}
-                    transition={{ style: "spring", stiffness: 400, damping: 25, duration: 0.2 }}
+                    transition={{ type: "spring", stiffness: 400, damping: 25, duration: 0.2 }}
                     onClick={() => {
                       const completeStr = `${item.title}, ${item.city}, Bihar`;
                       if (selectionMode === 'pickup') {

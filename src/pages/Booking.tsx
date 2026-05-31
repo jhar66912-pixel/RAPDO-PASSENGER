@@ -7,7 +7,7 @@ import {
   MapPin, Search, Navigation, Star, PhoneCall, Sparkles, Bike, 
   PackageOpen, Mic, Calendar, X, LocateFixed, Target, Compass, 
   ShieldCheck, Activity, Heart, Clock, ArrowRight, ChevronRight, 
-  Check, Volume2, Info, Landmark, HelpCircle, RefreshCw
+  Check, Volume2, Info, Landmark, HelpCircle, RefreshCw, History
 } from 'lucide-react';
 import { searchBiharLocations, BiharLocation } from '../lib/locationDb';
 import { Map, Marker, useMapsLibrary, MapCameraHandler } from '../components/SmartMapView';
@@ -749,15 +749,18 @@ export default function BookingPage() {
                     </div>
                   </div>
 
-                  {/* Simulated Server Console for premium user delight */}
+                  {/* Pulsing Loading Skeletons for Driver Match */}
                   {bookingStatus.status === 'searching' && (
-                    <div className="mt-4 bg-black/60 p-3.5 rounded-2xl border border-white/5 h-28 overflow-y-auto font-mono text-[9px] text-[#FFC107]/80 space-y-1.5 no-scrollbar scroll-smooth">
-                      {matchingLogs.map((log, idx) => (
-                        <div key={idx} className="flex items-start gap-1.5 animate-fade-in-down">
-                          <span className="text-white/30">•</span>
-                          <span className="tracking-wide leading-snug">{log}</span>
-                        </div>
-                      ))}
+                    <div className="mt-4 bg-[#141414] p-4 rounded-2xl border border-white/5 flex items-center gap-3 relative overflow-hidden">
+                       <div className="w-12 h-12 rounded-full bg-white/5 animate-pulse shrink-0 border border-white/10" />
+                       <div className="flex-1 space-y-2">
+                          <div className="w-1/3 h-2 bg-white/10 animate-pulse rounded-full" />
+                          <div className="w-2/3 h-3 bg-white/10 animate-pulse rounded-full" />
+                          <div className="w-1/2 h-2 bg-white/5 animate-pulse rounded-full" />
+                       </div>
+                       <div className="w-10 h-10 rounded-full bg-white/5 animate-pulse shrink-0" />
+                       
+                       <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#FFC107]/5 to-transparent animate-[shimmer_2s_infinite]" />
                     </div>
                   )}
 
@@ -766,21 +769,40 @@ export default function BookingPage() {
                     <motion.div 
                       initial={{ scale: 0.9, opacity: 0 }}
                       animate={{ scale: 1, opacity: 1 }}
-                      className="mt-4 bg-[#141414] p-4 rounded-2xl border border-[#FFC107]/20 flex items-center gap-3"
+                      className="mt-4 flex flex-col gap-3"
                     >
-                      <div className="w-12 h-12 rounded-full bg-[#1A1A1A] border border-[#FFC107]/30 flex items-center justify-center text-xl">
-                        🧑🏽‍✈️
+                      {/* Active Progress Bar */}
+                      <div className="bg-[#141414] p-4 rounded-2xl border border-white/5 space-y-4">
+                        <div className="flex justify-between text-[9px] font-black uppercase tracking-widest">
+                          <span className="text-[#FFC107]">Pickup</span>
+                          <span className="text-white/40">Drop-off</span>
+                        </div>
+                        <div className="h-1.5 w-full bg-white/10 rounded-full overflow-hidden relative">
+                          <motion.div
+                            initial={{ width: "0%" }}
+                            animate={{ width: "65%" }}
+                            transition={{ duration: 15, ease: "linear" }}
+                            className="absolute top-0 left-0 h-full bg-[#FFC107] rounded-full"
+                          />
+                        </div>
+                        <p className="text-white/50 text-[10px] text-center font-bold uppercase tracking-wider">Captain is on the way</p>
                       </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="text-[9px] uppercase text-[#FFC107] tracking-wider font-extrabold flex items-center gap-1">
-                          <Star className="w-3 h-3 fill-[#FFC107] text-[#FFC107]" /> 4.9 Rated Captain
-                        </p>
-                        <h4 className="text-white font-black text-sm truncate">Captain Rajesh Kumar</h4>
-                        <p className="text-white/40 text-[10px] uppercase font-bold tracking-wider mt-0.5">Hero Splendor • BR-09A-4831</p>
+
+                      <div className="bg-[#141414] p-4 rounded-2xl border border-[#FFC107]/20 flex items-center gap-3">
+                        <div className="w-12 h-12 rounded-full bg-[#1A1A1A] border border-[#FFC107]/30 flex items-center justify-center text-xl">
+                          🧑🏽‍✈️
+                        </div>
+                        <div className="flex-1 min-w-0">
+                          <p className="text-[9px] uppercase text-[#FFC107] tracking-wider font-extrabold flex items-center gap-1">
+                            <Star className="w-3 h-3 fill-[#FFC107] text-[#FFC107]" /> 4.9 Rated Captain
+                          </p>
+                          <h4 className="text-white font-black text-sm truncate">Captain Rajesh Kumar</h4>
+                          <p className="text-white/40 text-[10px] uppercase font-bold tracking-wider mt-0.5">Hero Splendor • BR-09A-4831</p>
+                        </div>
+                        <a href="tel:9999999999" className="w-10 h-10 rounded-full bg-[#FFC107] text-black flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
+                          <PhoneCall className="w-4 h-4 text-black" />
+                        </a>
                       </div>
-                      <a href="tel:9999999999" className="w-10 h-10 rounded-full bg-[#FFC107] text-black flex items-center justify-center hover:scale-110 active:scale-95 transition-all">
-                        <PhoneCall className="w-4 h-4 text-black" />
-                      </a>
                     </motion.div>
                   )}
                 </div>

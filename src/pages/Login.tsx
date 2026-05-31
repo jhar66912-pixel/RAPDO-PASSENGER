@@ -653,7 +653,7 @@ export default function Login() {
                       key={index}
                       type="text"
                       maxLength={1}
-                      ref={(el) => (otpInputsRef.current[index] = el as HTMLInputElement)}
+                      ref={(el) => { otpInputsRef.current[index] = el as HTMLInputElement; }}
                       value={data}
                       onChange={(e) => handleOtpChange(e.target.value, index)}
                       onKeyDown={(e) => handleOtpKeyDown(e, index)}

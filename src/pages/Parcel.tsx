@@ -62,21 +62,41 @@ export default function Parcel() {
                <div className="space-y-3 mt-8">
                  <h3 className="text-white/40 text-[10px] font-black tracking-widest uppercase mb-4 px-2">Live B2B Connects</h3>
                  {[
-                   { id: 'ORD-8821', dest: 'Kankarbagh Medico', status: 'Captain En Route', time: '12 MIN ETA' },
-                   { id: 'ORD-8822', dest: 'Boring Rd Diagnostics', status: 'Searching Rider', time: '--' },
-                   { id: 'ORD-8823', dest: 'Patna Super Specialty', status: 'Processing', time: 'Pending' }
+                   { id: 'ORD-8821', dest: 'Kankarbagh Medico', status: 'Captain En Route', time: '12 MIN ETA', progress: '65%' },
+                   { id: 'ORD-8822', dest: 'Boring Rd Diagnostics', status: 'Searching Rider', time: '--', progress: '0%' },
+                   { id: 'ORD-8823', dest: 'Patna Super Specialty', status: 'Processing', time: 'Pending', progress: '0%' }
                  ].map((order, i) => (
-                    <div key={i} className="bg-[#121212] border border-white/5 p-4 rounded-[20px] flex items-center justify-between hover:bg-white/[0.04] hover:border-white/20 transition-all cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1">
-                      <div className="flex items-center gap-3">
-                        <div className={`w-10 h-10 rounded-[14px] flex items-center justify-center border shadow-inner ${order.status === 'Searching Rider' || order.status === 'Processing' ? 'border-orange-500/20 bg-orange-500/10 text-orange-400' : 'border-green-500/20 bg-green-500/10 text-green-400'}`}>
-                           <Box className="w-5 h-5" />
+                    <div key={i} className="bg-[#121212] border border-white/5 p-4 rounded-[20px] flex flex-col justify-between hover:bg-white/[0.04] hover:border-white/20 transition-all cursor-pointer shadow-sm hover:shadow-xl hover:-translate-y-1">
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className={`w-10 h-10 rounded-[14px] flex items-center justify-center border shadow-inner ${order.status === 'Searching Rider' || order.status === 'Processing' ? 'border-orange-500/20 bg-orange-500/10 text-orange-400' : 'border-[#FFC107]/30 bg-[#FFC107]/10 text-[#FFC107]'}`}>
+                             <Box className="w-5 h-5" />
+                          </div>
+                          <div>
+                             <p className="text-white font-bold text-sm tracking-wide">{order.dest}</p>
+                             <p className="text-white/40 text-[10px] font-bold mt-0.5 tracking-wider uppercase">{order.status} • <span className="text-[#FFC107]">{order.id}</span></p>
+                          </div>
                         </div>
-                        <div>
-                           <p className="text-white font-bold text-sm tracking-wide">{order.dest}</p>
-                           <p className="text-white/40 text-[10px] font-bold mt-0.5 tracking-wider uppercase">{order.status} • <span className="text-[#FFC107]">{order.id}</span></p>
-                        </div>
+                        <span className="text-white/30 text-[9px] font-black uppercase tracking-widest bg-white/5 border border-white/5 px-2 py-1.5 rounded-lg shadow-sm">{order.time}</span>
                       </div>
-                      <span className="text-white/30 text-[9px] font-black uppercase tracking-widest bg-white/5 border border-white/5 px-2 py-1.5 rounded-lg shadow-sm">{order.time}</span>
+                      
+                      {/* Active Progress Bar */}
+                      {order.status === 'Captain En Route' && (
+                        <div className="mt-4">
+                          <div className="flex justify-between text-[8px] font-black uppercase tracking-widest mb-1.5">
+                            <span className="text-[#FFC107]">Pickup</span>
+                            <span className="text-white/40">Drop-off</span>
+                          </div>
+                          <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden relative">
+                            <div
+                              className="absolute top-0 left-0 h-full bg-[#FFC107] rounded-full transition-all duration-1000 ease-in-out"
+                              style={{ width: order.progress }}
+                            >
+                               <div className="absolute top-0 right-0 bottom-0 w-8 bg-gradient-to-r from-transparent to-white/50 animate-pulse" />
+                            </div>
+                          </div>
+                        </div>
+                      )}
                     </div>
                  ))}
                </div>

@@ -82,7 +82,13 @@ export default function Navbar() {
                 >
                   <span className="relative z-10">{link.name}</span>
                   {isActive && (
-                    <div className="absolute inset-0 bg-[#FFC107]/10 rounded-full blur-sm"></div>
+                    <>
+                      {/* Soft ambient background glow */}
+                      <div className="absolute inset-0 bg-[#FFC107]/12 rounded-full blur-xs" />
+                      
+                      {/* Active bottom underline with subtle glow */}
+                      <div className="absolute bottom-[3px] left-1/2 -translate-x-1/2 w-8 h-[2.5px] bg-[#FFC107] rounded-full shadow-[0_0_10px_rgb(255,193,7)] transition-all duration-500" />
+                    </>
                   )}
                   <div className={`absolute inset-0 bg-white/5 rounded-full scale-50 opacity-0 group-hover:scale-100 group-hover:opacity-100 transition-all duration-300 ease-out ${isActive ? 'hidden' : 'block'}`}></div>
                 </Link>
@@ -219,15 +225,26 @@ export default function Navbar() {
                  </div>
               ) : null}
 
-              {navLinks.map((link) => (
-                <Link
-                  key={link.name}
-                  to={link.path}
-                  className="px-5 py-4 text-white/50 font-black text-sm uppercase tracking-widest rounded-[20px] hover:bg-white/5 hover:text-[#FFC107] transition-colors"
-                >
-                  {link.name}
-                </Link>
-              ))}
+              {navLinks.map((link) => {
+                const isActive =
+                  location.pathname === link.path ||
+                  (link.path.includes("#") &&
+                    location.hash === link.path.replace("/", ""));
+                return (
+                  <Link
+                    key={link.name}
+                    to={link.path}
+                    className={`px-5 py-4 font-black text-sm uppercase tracking-widest rounded-[20px] transition-all duration-300 relative flex items-center justify-between group ${
+                      isActive ? "text-[#FFC107] bg-[#FFC107]/5" : "text-white/50 hover:bg-white/5 hover:text-[#FFC107]"
+                    }`}
+                  >
+                    <span>{link.name}</span>
+                    {isActive && (
+                      <span className="w-2 h-2 rounded-full bg-[#FFC107] shadow-[0_0_8px_rgb(255,193,7)]" />
+                    )}
+                  </Link>
+                );
+              })}
 
               <div className="pt-6 mt-2 border-t border-white/5 flex flex-col gap-3">
                 {currentUser ? (

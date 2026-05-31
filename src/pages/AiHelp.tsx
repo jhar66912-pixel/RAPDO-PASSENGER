@@ -206,7 +206,7 @@ export default function AiHelp() {
       setMessages((prev) => {
         return prev.map((m) => {
           if (m.id === userMessage.id) {
-            return { ...m, status: "sent" };
+            return { ...m, status: "sent" as "sent" };
           }
           return m;
         }).concat({
@@ -223,7 +223,7 @@ export default function AiHelp() {
       playSynthesizedChime("receive");
       
       setMessages((prev) => 
-        prev.map((m) => (m.id === userMessage.id ? { ...m, status: "failed" } : m)).concat({
+        prev.map((m) => (m.id === userMessage.id ? { ...m, status: "failed" as "failed" } : m)).concat({
           id: `reply_err_${Date.now()}`,
           text: "Pranam bhai! RAPDO network me thoda interruption hai. Par aap direct SOS call pe humari emergency support team se baat kar sakte hain: +91 8252988672.",
           role: "assistant",
