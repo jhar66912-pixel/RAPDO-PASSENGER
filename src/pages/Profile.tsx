@@ -471,8 +471,11 @@ export default function Profile() {
                <button onClick={() => setActiveSubmenu('payments')} className="w-full text-left">
                   <MenuRow icon={<CreditCard />} title="Payment Methods" subtitle="Configure UPI & Debit gateways" />
                </button>
-               <button onClick={() => setActiveSubmenu('rewards')} className="w-full text-left">
-                  <MenuRow icon={<Gift />} title="Rewards Hub" subtitle="Unpack premium scratch cashbacks" highlight />
+               <button onClick={() => navigate('/rewards')} className="w-full text-left">
+                  <MenuRow icon={<Gift />} title="Rewards Hub" subtitle="Unpack premium scratch cashbacks & Loyalty" highlight />
+               </button>
+               <button onClick={() => navigate('/referral')} className="w-full text-left">
+                  <MenuRow icon={<Share2 />} title="Refer & Earn" subtitle="Invite friends and earn ₹50 wallet cash" />
                </button>
                <button onClick={() => setActiveSubmenu('contacts')} className="w-full text-left">
                   <MenuRow icon={<Shield />} title="Safety Contacts" subtitle="Linked SOS target logs" />

@@ -15,6 +15,8 @@ import Activity from './pages/Activity';
 import Wallet from './pages/Wallet';
 import Pricing from './pages/Pricing';
 import AiHelp from './pages/AiHelp';
+import Rewards from './pages/Rewards';
+import Referral from './pages/Referral';
 import CaptainDashboard from './pages/CaptainDashboard';
 import PremiumPayment from './pages/PremiumPayment';
 import DesignSystem from './pages/DesignSystem';
@@ -72,6 +74,16 @@ export default function App() {
                 <Route path="/wallet" element={
                   <ProtectedRoute role="customer">
                     <Wallet />
+                  </ProtectedRoute>
+                } />
+                <Route path="/rewards" element={
+                  <ProtectedRoute role="customer">
+                    <Rewards />
+                  </ProtectedRoute>
+                } />
+                <Route path="/referral" element={
+                  <ProtectedRoute role="customer">
+                    <Referral />
                   </ProtectedRoute>
                 } />
                 <Route path="/ai-help" element={

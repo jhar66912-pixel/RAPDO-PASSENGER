@@ -1,0 +1,6 @@
+{
+	"appId": "com.rapdo.passenger",
+	"appName": "RAPDO",
+	"webDir": "dist",
+	"bundledWebRuntime": false
+}
