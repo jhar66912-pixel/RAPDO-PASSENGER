@@ -16,6 +16,9 @@ import {
 import { useAuth } from "../lib/auth";
 import BottomNav from "../components/BottomNav";
 import { Bike3D } from "../components/Bike3D";
+import { WeatherWidget } from "../components/WeatherWidget";
+import { NotificationCenter } from "../components/NotificationCenter";
+import { useNotifications, initFCM } from "../lib/notifications";
 
 export default function Home() {
   const { currentUser, loading: authLoading } = useAuth();
@@ -30,13 +33,42 @@ export default function Home() {
   const [isAutoLocating, setIsAutoLocating] = useState(false);
   const [selectionMode, setSelectionMode] = useState<'pickup' | 'drop'>('drop');
   const [isVoiceOpen, setIsVoiceOpen] = useState(false);
+  const [isNotifOpen, setIsNotifOpen] = useState(false);
+  const [currentCityName, setCurrentCityName] = useState("Samastipur, BR");
 
+  const { unreadCount } = useNotifications();
   const geocodingLib = useMapsLibrary('geocoding');
+
+  useEffect(() => {
+    initFCM();
+  }, []);
+
+  useEffect(() => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition((pos) => {
+        const lat = pos.coords.latitude;
+        const lng = pos.coords.longitude;
+        let city = 'Patna, BR';
+        if (lat > 25.8 && lng > 85.7) city = 'Samastipur, BR';
+        else if (lat > 26.1) city = 'Darbhanga, BR';
+        else if (lat > 26.0 && lng < 85.5) city = 'Muzaffarpur, BR';
+        else if (lat > 25.4 && lng > 86.0) city = 'Begusarai, BR';
+        else if (lat > 25.6 && lat < 25.8 && lng > 85.1 && lng < 85.3) city = 'Hajipur, BR';
+        else if (lat < 24.8) city = 'Gaya, BR';
+        else city = 'Samastipur, BR';
+        setCurrentCityName(city);
+      }, () => {
+        setCurrentCityName("Samastipur, BR");
+      });
+    } else {
+      setCurrentCityName("Samastipur, BR");
+    }
+  }, []);
 
   const detectLiveLocation = () => {
     if (!navigator.geolocation) {
-      setHomePickup("Kankarbagh, Patna, Bihar");
-      setHomePickupCoords({ lat: 25.5941, lng: 85.1583 });
+      setHomePickup("Samastipur Junction, Samastipur, Bihar");
+      setHomePickupCoords({ lat: 25.8624, lng: 85.7831 });
       return;
     }
     setIsAutoLocating(true);
@@ -60,9 +92,9 @@ export default function Home() {
       (error) => {
         console.error("GPS error", error);
         setIsAutoLocating(false);
-        // Fallback to Kankarbagh Patna
-        setHomePickupCoords({ lat: 25.5978, lng: 85.1583 });
-        setHomePickup("Kankarbagh, Patna, Bihar");
+        // Fallback to Samastipur
+        setHomePickupCoords({ lat: 25.8624, lng: 85.7831 });
+        setHomePickup("Samastipur Junction, Samastipur, Bihar");
       },
       { enableHighAccuracy: true, timeout: 8000 }
     );
@@ -143,7 +175,7 @@ export default function Home() {
         {/* Cinematic Live Map Background Header */}
         <div className="absolute top-0 left-0 w-full h-[400px] z-0 pointer-events-none" style={{ maskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)', WebkitMaskImage: 'linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%)' }}>
            <Map 
-             defaultCenter={{lat: 25.5941, lng: 85.1376}} // Patna
+             defaultCenter={{lat: 25.8624, lng: 85.7831}} // Patna
              defaultZoom={14}
              disableDefaultUI={true}
              gestureHandling="none"
@@ -181,7 +213,7 @@ export default function Home() {
                </motion.div>
                <div>
                  <p className="text-[#FFC107] text-[10px] font-black tracking-widest uppercase flex items-center gap-1.5 drop-shadow-md">
-                   <LocateFixed className="w-3.5 h-3.5" /> Patna, BR
+                   <LocateFixed className="w-3.5 h-3.5" /> {currentCityName}
                  </p>
                  <h1 className="text-2xl font-black text-[#F5F5F5] tracking-tight flex items-center gap-2 drop-shadow-md">
                    {currentUser?.name ? `Hi, ${currentUser.name.split(" ")[0]}` : "Good Evening"} 
@@ -195,13 +227,14 @@ export default function Home() {
             </div>
             
             <div className="flex items-center gap-3">
-               <motion.div whileTap={{ scale: 0.9 }} className="w-11 h-11 bg-[#1E1E1E]/80 backdrop-blur-xl rounded-[18px] border border-white/10 flex items-center justify-center shadow-[0_4px_15px_rgba(0,0,0,0.5)] relative cursor-pointer hover:bg-white/10 transition-colors">
-                 <CloudSun className="w-5 h-5 text-[#F5F5F5]" />
-                 <span className="absolute -top-1 -right-1 text-[9px] font-black bg-blue-500 text-white px-1.5 py-0.5 rounded-[8px] border border-black shadow-sm">28°</span>
-               </motion.div>
-               <motion.div whileTap={{ scale: 0.9 }} className="w-11 h-11 bg-[#1E1E1E]/80 backdrop-blur-xl rounded-[18px] border border-white/10 flex items-center justify-center shadow-[0_4px_15px_rgba(0,0,0,0.5)] relative cursor-pointer hover:bg-white/10 transition-colors">
+               <WeatherWidget />
+               <motion.div whileTap={{ scale: 0.9 }} onClick={() => setIsNotifOpen(true)} className="w-11 h-11 bg-[#1E1E1E]/80 backdrop-blur-xl rounded-[18px] border border-white/10 flex items-center justify-center shadow-[0_4px_15px_rgba(0,0,0,0.5)] relative cursor-pointer hover:bg-white/10 transition-colors">
                  <Bell className="w-5 h-5 text-[#F5F5F5]" />
-                 <span className="absolute -top-1 -right-1 w-3 h-3 bg-red-500 rounded-full border-2 border-[#1E1E1E]"></span>
+                 {unreadCount > 0 && (
+                   <span className="absolute -top-1 -right-1 w-4 h-4 bg-red-500 rounded-full text-[9px] font-black flex items-center justify-center text-white border-2 border-[#1E1E1E]">
+                     {unreadCount}
+                   </span>
+                 )}
                </motion.div>
             </div>
           </div>
@@ -492,6 +525,11 @@ export default function Home() {
         
         <BottomNav />
       </div>
+
+      <NotificationCenter 
+        isOpen={isNotifOpen} 
+        onClose={() => setIsNotifOpen(false)} 
+      />
 
       <VoiceSearchModal 
         isOpen={isVoiceOpen} 
