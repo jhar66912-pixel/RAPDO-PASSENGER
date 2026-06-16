@@ -4,17 +4,17 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "tsx server.ts",
-    "build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
-    "start": "node dist/server.cjs",
+    "dev": "node server.js",
+    "build": "echo 'Skipping node build for Android project'",
+    "start": "node server.js",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
     "lint": "tsc --noEmit"
   },
   "dependencies": {
-    "@capacitor/android": "^8.3.4",
+    "@capacitor/android": "^8.4.0",
     "@capacitor/app": "^8.1.0",
-    "@capacitor/core": "^8.3.4",
+    "@capacitor/core": "^8.4.0",
     "@capacitor/device": "^8.0.2",
     "@capacitor/geolocation": "^8.2.0",
     "@capacitor/push-notifications": "^8.1.1",
@@ -53,7 +53,7 @@
     "zustand": "^5.0.13"
   },
   "devDependencies": {
-    "@capacitor/cli": "^8.3.4",
+    "@capacitor/cli": "^8.4.0",
     "@firebase/eslint-plugin-security-rules": "^0.0.2"
   }
 }
