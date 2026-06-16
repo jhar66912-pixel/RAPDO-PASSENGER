@@ -1,6 +1,6 @@
 import React, { useRef, useMemo, memo } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
-import { Float, PresentationControls, Environment, Grid, Stars, Trail } from '@react-three/drei';
+import { Float, PresentationControls } from '@react-three/drei';
 import * as THREE from 'three';
 
 const StylizedCyberBike = () => {
@@ -84,37 +84,20 @@ const LightTrails = () => {
   );
 };
 
-const CyberGrid = () => {
-  return (
-    <Grid
-      position={[0, -0.5, 0]}
-      args={[40, 40]}
-      cellSize={1}
-      cellThickness={1}
-      cellColor="#3B82F6"
-      sectionSize={4}
-      sectionThickness={1.5}
-      sectionColor="#FFC107"
-      fadeDistance={20}
-      fadeStrength={2}
-    />
-  );
-};
-
 export const CinematicHero3D = memo(() => {
   return (
     <div className="absolute inset-0 w-full h-full pointer-events-auto cursor-grab active:cursor-grabbing z-0 font-sans">
       <Canvas
         camera={{ position: [0, 2, 8], fov: 45 }}
         gl={{ antialias: true, alpha: true, toneMapping: THREE.ACESFilmicToneMapping }}
-        dpr={[1, 2]}
+        dpr={1}
       >
         <color attach="background" args={['#050505']} />
         <fog attach="fog" args={['#050505', 5, 20]} />
         
-        <ambientLight intensity={0.5} />
-        <spotLight position={[5, 10, 5]} intensity={2} color="#FFC107" angle={0.5} penumbra={1} castShadow />
-        <pointLight position={[-5, 5, -5]} intensity={1.5} color="#3B82F6" />
+        <ambientLight intensity={1.5} />
+        <spotLight position={[5, 10, 5]} intensity={2.5} color="#FFC107" angle={0.5} penumbra={1} castShadow={false} />
+        <pointLight position={[-5, 5, -5]} intensity={2} color="#3B82F6" />
         
         <PresentationControls
           {...{
@@ -131,10 +114,7 @@ export const CinematicHero3D = memo(() => {
           </Float>
         </PresentationControls>
 
-        <CyberGrid />
         <LightTrails />
-        <Stars radius={50} depth={20} count={3000} factor={4} saturation={1} fade speed={1} />
-        <Environment preset="city" />
       </Canvas>
     </div>
   );

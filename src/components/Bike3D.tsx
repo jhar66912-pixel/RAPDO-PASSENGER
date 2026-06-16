@@ -88,7 +88,7 @@ export const Bike3D = memo(() => {
       <Canvas
         camera={{ position: [5, 4, 8], fov: 35, near: 0.1, far: 50 }}
         gl={{ alpha: true, antialias: true }}
-        dpr={[1, 2]}
+        dpr={1}
       >
         <ambientLight intensity={1.5} />
         <directionalLight 
