@@ -44,8 +44,9 @@ export default function AiHelp() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputValue, setInputValue] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [aiMode, setAiMode] = useState<"default"|"thinking"|"fast">("default");
   const [sessionId] = useState(() => `sess_${Date.now()}_${Math.random().toString(36).substr(2, 5)}`);
-  
+
   // Escalation & Handoff Ticket states
   const [ticketState, setTicketState] = useState<{
     showForm: boolean;
@@ -60,6 +61,106 @@ export default function AiHelp() {
     submitting: false,
     createdId: null
   });
+
+  const [isLiveActive, setIsLiveActive] = useState(false);
+  const liveWsRef = useRef<WebSocket | null>(null);
+  const inputAudioCtxRef = useRef<AudioContext | null>(null);
+  const outputAudioCtxRef = useRef<AudioContext | null>(null);
+  const mediaStreamRef = useRef<MediaStream | null>(null);
+  const scriptProcessorRef = useRef<ScriptProcessorNode | null>(null);
+  let nextStartTime = 0;
+
+  const toggleLiveVoice = async () => {
+    if (isLiveActive) {
+      // Disconnect
+      if (liveWsRef.current) liveWsRef.current.close();
+      if (inputAudioCtxRef.current) inputAudioCtxRef.current.close();
+      if (outputAudioCtxRef.current) outputAudioCtxRef.current.close();
+      if (mediaStreamRef.current) mediaStreamRef.current.getTracks().forEach(t => t.stop());
+      setIsLiveActive(false);
+      return;
+    }
+
+    setIsLiveActive(true);
+    playSynthesizedChime("send"); // start tone
+
+    try {
+      const wsProtocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const wsUrl = `${wsProtocol}//${window.location.host}/live`;
+      const ws = new WebSocket(wsUrl);
+      liveWsRef.current = ws;
+
+      const inputCtx = new AudioContext({ sampleRate: 16000 });
+      const outputCtx = new AudioContext({ sampleRate: 24000 });
+      inputAudioCtxRef.current = inputCtx;
+      outputAudioCtxRef.current = outputCtx;
+
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaStreamRef.current = stream;
+      const source = inputCtx.createMediaStreamSource(stream);
+      const processor = inputCtx.createScriptProcessor(4096, 1, 1);
+      scriptProcessorRef.current = processor;
+      
+      source.connect(processor);
+      processor.connect(inputCtx.destination);
+
+      const pcmToBase64 = (f32Array: Float32Array) => {
+        const i16Array = new Int16Array(f32Array.length);
+        for (let i = 0; i < f32Array.length; i++) {
+          let s = Math.max(-1, Math.min(1, f32Array[i]));
+          i16Array[i] = s < 0 ? s * 0x8000 : s * 0x7FFF;
+        }
+        let binary = '';
+        const bytes = new Uint8Array(i16Array.buffer);
+        for (let i = 0; i < bytes.byteLength; i++) {
+          binary += String.fromCharCode(bytes[i]);
+        }
+        return btoa(binary);
+      };
+
+      processor.onaudioprocess = (e) => {
+        if (ws.readyState === WebSocket.OPEN) {
+          const base64 = pcmToBase64(e.inputBuffer.getChannelData(0));
+          ws.send(JSON.stringify({ audio: base64 }));
+        }
+      };
+
+      ws.onmessage = async (event) => {
+        const msg = JSON.parse(event.data);
+        if (msg.interrupted) {
+          nextStartTime = outputCtx.currentTime; // reset queue
+        }
+        if (msg.audio) {
+          const binary = atob(msg.audio);
+          const bytes = new Uint8Array(binary.length);
+          for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+          const view = new DataView(bytes.buffer);
+          const i16 = new Int16Array(bytes.length / 2);
+          for (let i = 0; i < i16.length; i++) i16[i] = view.getInt16(i * 2, true);
+          const f32 = new Float32Array(i16.length);
+          for (let i = 0; i < i16.length; i++) f32[i] = i16[i] / 0x8000;
+          
+          const audioBuffer = outputCtx.createBuffer(1, f32.length, 24000);
+          audioBuffer.getChannelData(0).set(f32);
+          
+          const sourceNode = outputCtx.createBufferSource();
+          sourceNode.buffer = audioBuffer;
+          sourceNode.connect(outputCtx.destination);
+          
+          if (nextStartTime < outputCtx.currentTime) nextStartTime = outputCtx.currentTime;
+          sourceNode.start(nextStartTime);
+          nextStartTime += audioBuffer.duration;
+        }
+      };
+
+      ws.onclose = () => {
+        setIsLiveActive(false);
+      }
+    } catch(err) {
+      console.error(err);
+      setIsLiveActive(false);
+    }
+  };
 
   const chatContainerRef = useRef<HTMLDivElement>(null);
 
@@ -144,16 +245,24 @@ export default function AiHelp() {
     setIsLoading(true);
 
     try {
-      const response = await fetch("/api/rapdo-ai/chat", {
+      let endpoint = "/api/rapdo-ai/chat";
+      let requestBody: any = {
+        sessionId: sessionId,
+        prompt: text,
+        messages: messages.map(m => ({ role: m.role, content: m.text }))
+      };
+
+      if (aiMode !== "default") {
+        endpoint = "/api/rapdo-ai/advanced-chat";
+        requestBody = { prompt: text, mode: aiMode };
+      }
+
+      const response = await fetch(endpoint, {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
-        body: JSON.stringify({
-          sessionId: sessionId,
-          prompt: text,
-          messages: messages.map(m => ({ role: m.role, content: m.text }))
-        })
+        body: JSON.stringify(requestBody)
       });
 
       if (!response.ok) {
@@ -318,48 +427,72 @@ export default function AiHelp() {
   };
 
   const [isRecording, setIsRecording] = useState(false);
+  const mediaRecorderRef = useRef<MediaRecorder | null>(null);
+  const audioChunksRef = useRef<BlobPart[]>([]);
 
-  const simulateSpeechToText = () => {
-    setIsRecording(true);
-    playSynthesizedChime("send"); // Sound to indicate recording started
-    
-    const SpeechRecognition = (window as any).SpeechRecognition || (window as any).webkitSpeechRecognition;
-    if (!SpeechRecognition) {
-      // Seamless fallback if Speech API is unsupported in current preview environment
-      setTimeout(() => {
-        setInputValue("Patna Junction jane me kitna time lagega?");
-        setIsRecording(false);
-        playSynthesizedChime("receive");
-      }, 2000);
-      return;
-    }
-
+  const simulateSpeechToText = async () => {
     try {
-      const recognition = new SpeechRecognition();
-      recognition.lang = 'hi-IN'; // Tune speech listener for Hindi / Hinglish voice queries!
-      recognition.continuous = false;
-      recognition.interimResults = false;
-
-      recognition.onresult = (event: any) => {
-        const trans = event.results[0]?.[0]?.transcript;
-        if (trans) {
-          setInputValue(trans);
+      if (isRecording) {
+        if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
+           mediaRecorderRef.current.stop();
+        }
+        return;
+      }
+      
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mediaRecorder = new MediaRecorder(stream);
+      mediaRecorderRef.current = mediaRecorder;
+      audioChunksRef.current = [];
+      
+      mediaRecorder.ondataavailable = (event) => {
+        if (event.data.size > 0) {
+          audioChunksRef.current.push(event.data);
         }
       };
-
-      recognition.onerror = (e: any) => {
-        console.warn("Speech API Error, firing safe fallback text:", e);
-        setInputValue("Patna Junction jane me kitna time lagega?");
-      };
-
-      recognition.onend = () => {
+      
+      mediaRecorder.onstop = async () => {
         setIsRecording(false);
         playSynthesizedChime("receive");
+        stream.getTracks().forEach(track => track.stop());
+        
+        const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/webm' });
+        const reader = new FileReader();
+        reader.readAsDataURL(audioBlob);
+        reader.onloadend = async () => {
+          const base64data = (reader.result as string).split(',')[1];
+          try {
+            const response = await fetch("/api/rapdo-ai/transcribe", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ audioData: base64data, mimeType: 'audio/webm' })
+            });
+            const data = await response.json();
+            if (data.transcript) {
+              setInputValue(data.transcript);
+            } else {
+              setInputValue("Patna Junction jane me kitna time lagega?");
+            }
+          } catch(err) {
+            console.error("Transcription pipeline failed", err);
+            setInputValue("Patna Junction jane me kitna time lagega?");
+          }
+        };
       };
+      
+      mediaRecorder.start();
+      setIsRecording(true);
+      playSynthesizedChime("send");
+      
+      // Auto stop after 5 seconds to simplify ux explicitly
+      setTimeout(() => {
+         if (mediaRecorderRef.current && mediaRecorderRef.current.state === "recording") {
+            mediaRecorderRef.current.stop();
+         }
+      }, 5000);
 
-      recognition.start();
-    } catch (e) {
-      console.error("SpeechRecognition instantiation/start error, using fallback instead", e);
+    } catch (err) {
+      console.error("Microphone access denied or error:", err);
+      // fallback
       setTimeout(() => {
         setInputValue("Patna Junction jane me kitna time lagega?");
         setIsRecording(false);
@@ -407,6 +540,17 @@ export default function AiHelp() {
           </div>
 
           <div className="flex items-center gap-2">
+            <button
+              onClick={() => setAiMode(prev => prev === "default" ? "thinking" : prev === "thinking" ? "fast" : "default")}
+              title="Toggle AI Mode"
+              className={`px-3 py-1.5 border rounded-full text-[9px] font-black uppercase tracking-widest transition-all ${
+                aiMode === "default" ? "bg-blue-500/10 border-blue-500/30 text-blue-400" :
+                aiMode === "thinking" ? "bg-purple-500/10 border-purple-500/30 text-purple-400" :
+                "bg-green-500/10 border-green-500/30 text-green-400"
+              }`}
+            >
+              {aiMode === "default" ? "GROUNDED" : aiMode === "thinking" ? "HIGH THINKING" : "LOW LATENCY"}
+            </button>
             <button
               onClick={clearChatLogs}
               title="Reset Session memory"
@@ -629,9 +773,9 @@ export default function AiHelp() {
           </div>
         )}
 
-        {/* Active Recording 3D Overlay */}
+        {/* Active Live Voice Recording 3D Overlay */}
         <AnimatePresence>
-          {isRecording && (
+          {isLiveActive && (
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
@@ -643,19 +787,20 @@ export default function AiHelp() {
               <motion.div 
                 animate={{ scale: [1, 1.2, 1], rotate: [0, 5, -5, 0] }}
                 transition={{ repeat: Infinity, duration: 2 }}
-                className="relative z-10 w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 p-[2px] shadow-[0_0_50px_rgba(59,130,246,0.5)] mb-8"
+                className="relative z-10 w-32 h-32 rounded-full bg-gradient-to-br from-blue-500 to-cyan-400 p-[2px] shadow-[0_0_50px_rgba(59,130,246,0.5)] mb-8 cursor-pointer"
+                onClick={toggleLiveVoice}
               >
                 <div className="w-full h-full bg-[#0A0A0A] rounded-full flex items-center justify-center overflow-hidden relative">
                    <div className="absolute inset-0 bg-blue-500/20 animate-ping"></div>
-                   <Mic className="w-12 h-12 text-blue-400 relative z-10 drop-shadow-[0_0_10px_rgba(59,130,246,0.8)]" />
+                   <PhoneCall className="w-12 h-12 text-blue-400 relative z-10 drop-shadow-[0_0_10px_rgba(59,130,246,0.8)] animate-pulse" />
                 </div>
               </motion.div>
 
-              <h3 className="relative z-10 text-2xl font-black text-white tracking-widest uppercase mb-2 drop-shadow-lg">Listening...</h3>
-              <p className="relative z-10 text-blue-300/80 text-sm font-bold tracking-widest uppercase animate-pulse">Speak to RAPDO Helper</p>
+              <h3 className="relative z-10 text-2xl font-black text-white tracking-widest uppercase mb-2 drop-shadow-lg">Gemini Live Active</h3>
+              <p className="relative z-10 text-blue-300/80 text-sm font-bold tracking-widest uppercase animate-pulse">Speak continuously. Tap circle to hang up.</p>
               
               {/* Audio visualizer simulation */}
-              <div className="flex gap-2 mt-12 relative z-10 items-end h-16">
+              <div className="flex gap-2 mt-12 relative z-10 items-end h-16 pointer-events-none">
                  {[1, 2, 3, 4, 5, 6, 7].map((i) => (
                     <motion.div
                        key={i}
@@ -677,16 +822,24 @@ export default function AiHelp() {
               playSynthesizedChime("escalate");
               setTicketState(prev => ({ ...prev, showForm: !prev.showForm }));
             }}
-            className={`p-3 rounded-full shrink-0 transition-all ${ticketState.showForm ? "bg-red-500/20 text-red-400 border border-red-500/3s" : "bg-white/5 border border-white/5 hover:bg-white/10 text-white/60 hover:text-white"}`}
+            className={`p-3 rounded-full shrink-0 transition-all ${ticketState.showForm ? "bg-red-500/20 text-red-400 border border-red-500/30" : "bg-white/5 border border-white/5 hover:bg-white/10 text-white/60 hover:text-white"}`}
             title="Escalate issue to human operator"
           >
             <BadgeAlert className="w-5 h-5" />
           </button>
 
           <button
+            onClick={toggleLiveVoice}
+            className={`p-3 rounded-full shrink-0 transition-all ${isLiveActive ? "bg-blue-500/20 text-blue-400 border border-blue-500/30 animate-pulse" : "bg-white/5 border border-white/5 hover:bg-white/10 text-white/60 hover:text-white"}`}
+            title="Start Gemini Live Voice"
+          >
+            <PhoneCall className="w-5 h-5" />
+          </button>
+
+          <button
             onClick={isRecording ? undefined : simulateSpeechToText}
-            className={`p-3 rounded-full shrink-0 transition-all ${isRecording ? "bg-blue-500/20 text-blue-400 border border-blue-500/30 animate-pulse" : "bg-white/5 border border-white/5 hover:bg-white/10 text-white/60 hover:text-white"}`}
-            title="Voice Assistant"
+            className={`p-3 rounded-full shrink-0 transition-all ${isRecording ? "bg-[#FFC107]/20 text-[#FFC107] border border-[#FFC107]/30 animate-pulse" : "bg-white/5 border border-white/5 hover:bg-white/10 text-white/60 hover:text-white"}`}
+            title="Speech to Text Dictation"
           >
             <Mic className="w-5 h-5" />
           </button>

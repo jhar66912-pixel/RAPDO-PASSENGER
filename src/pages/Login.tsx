@@ -18,7 +18,7 @@ import {
   Bookmark
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import firebaseConfig from '../../firebase-applet-config.json';
+import { firebaseConfig } from '../lib/firebase-config';
 import { User as AppUser } from '../types';
 
 type StageType = 'splash' | 'welcome' | 'credentials' | 'otp' | 'profile';

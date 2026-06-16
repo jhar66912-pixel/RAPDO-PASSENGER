@@ -2,7 +2,9 @@ import express from "express";
 import path from "path";
 import dotenv from "dotenv";
 import { createServer as createViteServer } from "vite";
-import { GoogleGenAI } from "@google/genai";
+import { GoogleGenAI, LiveServerMessage, Modality } from "@google/genai";
+import { WebSocketServer } from "ws";
+import http from "http";
 
 // Initialize environment variables
 dotenv.config();
@@ -213,9 +215,13 @@ app.post("/api/rapdo-ai/chat", async (req, res): Promise<any> => {
       parts: [{ text: msg.content }]
     }));
 
+    // Choose model and config based on requested features (simulate reading from req.body.features if provided, else use defaults). Let's use grounding tools for the default chat.
+    const tools: any[] = [{ type: 'google_search' }, { type: 'google_maps' }];
+
     const geminiResponse = await ai.models.generateContent({
       model: "gemini-3.5-flash",
       contents: mappedContents,
+      tools: tools,
       config: {
         systemInstruction: MASTER_SYSTEM_PROMPT,
         temperature: 0.6,
@@ -252,6 +258,52 @@ app.post("/api/rapdo-ai/chat", async (req, res): Promise<any> => {
   }
 });
 
+// Advanced Chat Endpoint (Supports High Thinking or Low Latency based on body param)
+app.post("/api/rapdo-ai/advanced-chat", async (req, res): Promise<any> => {
+  const { prompt, mode } = req.body;
+  try {
+    let model = "gemini-3.5-flash";
+    let config: any = { systemInstruction: MASTER_SYSTEM_PROMPT };
+
+    if (mode === "thinking") {
+      model = "gemini-3.1-pro-preview";
+      config = { ...config, thinkingLevel: "HIGH" }; // Per prompt: "set \`thinkingLevel\` to \`ThinkingLevel.HIGH\`"
+    } else if (mode === "fast") {
+      model = "gemini-3.1-flash-lite";
+    }
+
+    const response = await ai.models.generateContent({
+      model,
+      contents: prompt,
+      config
+    });
+    res.json({ reply: response.text });
+  } catch (err: any) {
+    console.error("Advanced chat error:", err);
+    res.status(500).json({ error: "Failed to generate advanced response." });
+  }
+});
+
+// Audio Transcription Endpoint
+app.post("/api/rapdo-ai/transcribe", async (req, res): Promise<any> => {
+  const { audioData, mimeType } = req.body; // Expects base64 encoded audio
+  try {
+    if (!audioData) return res.status(400).json({ error: "missing audio data" });
+    
+    const response = await ai.models.generateContent({
+      model: "gemini-3.5-flash",
+      contents: [
+         { role: "user", parts: [ { inlineData: { mimeType: mimeType || "audio/webm", data: audioData } }, { text: "Transcribe the audio accurately in Hinglish or Hindi." } ] }
+      ]
+    });
+    
+    res.json({ transcript: response.text });
+  } catch (err: any) {
+    console.error("Transcription error:", err);
+    res.status(500).json({ error: "Failed to transcribe audio." });
+  }
+});
+
 // Vite middleware integration for live development previews
 async function initializeServer() {
   if (process.env.NODE_ENV !== "production") {
@@ -268,8 +320,53 @@ async function initializeServer() {
     });
   }
 
-  app.listen(PORT, "0.0.0.0", () => {
+  const server = app.listen(PORT, "0.0.0.0", () => {
     console.log(`[RAPDO Full-stack Server] Booted successfully on http://0.0.0.0:${PORT}`);
+  });
+
+  // Attach WebSocketServer for Gemini Live Voice Endpoint
+  const wss = new WebSocketServer({ server, path: '/live' });
+
+  wss.on("connection", async (clientWs) => {
+    try {
+      const session = await ai.live.connect({
+        model: "gemini-3.1-flash-live-preview",
+        callbacks: {
+          onmessage: (message: LiveServerMessage) => {
+            const audio = message.serverContent?.modelTurn?.parts[0]?.inlineData?.data;
+            if (audio) clientWs.send(JSON.stringify({ audio }));
+            if (message.serverContent?.interrupted)
+              clientWs.send(JSON.stringify({ interrupted: true }));
+          },
+        },
+        config: {
+          responseModalities: [Modality.AUDIO], // Must be [Modality.AUDIO]
+          speechConfig: {
+            // 'Puck', 'Charon', 'Kore', 'Fenrir', 'Zephyr'
+            voiceConfig: { prebuiltVoiceConfig: { voiceName: "Zephyr" } },
+          },
+          systemInstruction: MASTER_SYSTEM_PROMPT,
+        },
+      });
+
+      clientWs.on("message", (data) => {
+        try {
+          const { audio } = JSON.parse(data.toString());
+          if (audio) {
+            session.sendRealtimeInput({
+              audio: { data: audio, mimeType: "audio/pcm;rate=16000" },
+            });
+          }
+        } catch(e) { console.error("WS error:", e) }
+      });
+      
+      clientWs.on("close", () => {
+        // Assume session is closed/disconnected
+      });
+
+    } catch(err) {
+      console.error("Live AI connection failed", err);
+    }
   });
 }
 

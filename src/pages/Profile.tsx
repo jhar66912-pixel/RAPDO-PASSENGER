@@ -483,9 +483,14 @@ export default function Profile() {
                <button onClick={() => setActiveSubmenu('safety')} className="w-full text-left">
                   <MenuRow icon={<Shield />} title="SOS Safety Center" subtitle="Emergency alarm, alerts & sharing" danger />
                </button>
-               <button onClick={() => setActiveSubmenu('support')} className="w-full text-left">
-                  <MenuRow icon={<MessageSquare />} title="Help & Support Desk" subtitle="Bilingual regional AI Companion chat" />
+               <button onClick={() => setActiveSubmenu('settings')} className="w-full text-left">
+                  <MenuRow icon={<Settings />} title="Settings" subtitle="App configurations" />
                </button>
+               {currentUser?.role === 'admin' && (
+                 <button onClick={() => navigate('/admin')} className="w-full text-left">
+                    <MenuRow icon={<AlertOctagon />} title="Admin Panel" subtitle="Statewide Telemetry & Controls" highlight />
+                 </button>
+               )}
             </div>
 
             {/* Logout Row */}

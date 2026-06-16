@@ -88,7 +88,7 @@ export function LocationSearchInput({
     const geocoder = getSafeGeocoder(geocodingLib);
     try {
       const res = await geocoder.geocode(prediction.place_id ? { placeId: prediction.place_id } : { address: prediction.description });
-      if (res.results[0]) {
+      if (res?.results?.[0]) {
         const latLng = res.results[0].geometry.location;
         onSelect?.({ 
           lat: typeof latLng.lat === 'function' ? latLng.lat() : latLng.lat, 

@@ -27,6 +27,7 @@ import SafetyCenter from './pages/SafetyCenter';
 import TrustGuard from './pages/TrustGuard';
 import Contact from './pages/Contact';
 import SosEmergency from './pages/SosEmergency';
+import AdminDashboard from './pages/AdminDashboard';
 
 function ProtectedRoute({ children, role }: { children: ReactNode; role: string }) {
   const { currentUser, loading } = useAuth();
@@ -106,6 +107,11 @@ export default function App() {
                 <Route path="/captain" element={
                   <ProtectedRoute role="captain">
                     <CaptainDashboard />
+                  </ProtectedRoute>
+                } />
+                <Route path="/admin" element={
+                  <ProtectedRoute role="admin">
+                    <AdminDashboard />
                   </ProtectedRoute>
                 } />
               </Routes>

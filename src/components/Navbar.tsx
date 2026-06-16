@@ -121,7 +121,7 @@ export default function Navbar() {
                   </div>
                   <div className="flex flex-col items-start pr-1 hidden lg:flex">
                     <span className="text-white text-xs font-black tracking-wide leading-tight">
-                      {currentUser.name?.split(" ")[0]}
+                      {currentUser.name ? currentUser.name.split(" ")[0] : "User"}
                     </span>
                   </div>
                   <ChevronDown

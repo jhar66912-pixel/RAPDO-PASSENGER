@@ -81,7 +81,7 @@ export default function Home() {
           if (geocodingLib) {
           const geocoder = getSafeGeocoder(geocodingLib);
           geocoder.geocode({ location: loc }).then(res => {
-            const addr = res.results[0]?.formatted_address || "Current Live Location";
+            const addr = res?.results?.[0]?.formatted_address || "Current Live Location";
             setHomePickup(addr);
           }).catch(() => {
             setHomePickup("Current Live Location");
