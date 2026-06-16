@@ -117,12 +117,14 @@ export const CinematicHero3D = memo(() => {
         <pointLight position={[-5, 5, -5]} intensity={1.5} color="#3B82F6" />
         
         <PresentationControls
-          global
-          rotation={[0, -Math.PI / 8, 0]}
-          polar={[-Math.PI / 6, Math.PI / 4]}
-          azimuth={[-Math.PI / 2, Math.PI / 2]}
-          config={{ mass: 2, tension: 400 }}
-          snap={{ mass: 4, tension: 400 }}
+          {...{
+            global: true,
+            rotation: [0, -Math.PI / 8, 0],
+            polar: [-Math.PI / 6, Math.PI / 4],
+            azimuth: [-Math.PI / 2, Math.PI / 2],
+            config: { mass: 2, tension: 400 },
+            snap: { mass: 4, tension: 400 }
+          } as any}
         >
           <Float speed={2} rotationIntensity={0.5} floatIntensity={1}>
             <StylizedCyberBike />

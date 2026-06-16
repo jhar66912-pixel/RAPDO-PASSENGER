@@ -43,7 +43,7 @@ export type User = {
   uid: string;
   name: string;
   mobile: string;
-  role: 'customer' | 'admin' | 'rider' | 'captain';
+  role: 'customer' | 'admin' | 'rider';
   createdAt: number;
   savedAddresses?: SavedAddress[];
   emergencyContacts?: EmergencyContact[];

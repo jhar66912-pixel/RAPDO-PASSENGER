@@ -95,13 +95,9 @@ export default function Login() {
       setIsLoading(true);
       setError('');
       setUnauthorizedDomain(null);
-      await login(role);
+      await login();
       showToast("Google Authentication successful! Swagat hai.", "success");
-      if ((role as string) === 'captain') {
-        navigate('/captain');
-      } else {
-        navigate('/book');
-      }
+      navigate('/book');
     } catch (err: any) {
        const errMsg = err.message || '';
        console.error("Google Auth Error:", err);
@@ -184,17 +180,12 @@ export default function Login() {
     try {
       setIsLoading(true);
       if (authMethod === 'phone') {
-        await loginWithPhone(mobileNumber, role, name, emailAddress);
+        await loginWithPhone(mobileNumber, name, emailAddress);
       } else {
-        await loginWithEmail(emailAddress, role, name, mobileNumber);
+        await loginWithEmail(emailAddress, name, mobileNumber);
       }
       showToast(`🔥 RAPDO super ecosystem me swagat hai, ${name}!`, "success");
-      
-      if ((role as string) === 'captain') {
-        navigate('/captain');
-      } else {
-        navigate('/book');
-      }
+      navigate('/book');
     } catch (err: any) {
       showToast(err.message || "Profile registration failed.", "error");
     } finally {
@@ -219,13 +210,9 @@ export default function Login() {
       if (isNewAccount) {
         setStage('profile');
       } else {
-        await loginWithEmail(emailAddress, role, "RAPDO User");
+        await loginWithEmail(emailAddress, "RAPDO User");
         showToast("Swagat hai! Loyalty profile synchronized successfully.", "success");
-        if ((role as string) === 'captain') {
-          navigate('/captain');
-        } else {
-          navigate('/book');
-        }
+        navigate('/book');
       }
     } catch (err: any) {
       setError(err?.message || "Email login failed.");
@@ -234,18 +221,15 @@ export default function Login() {
     }
   };
 
-  const handleBypassLogin = async (bypassRole: AppUser['role']) => {
+  // Deprecated Role argument
+  const handleBypassLogin = async () => {
     if (isLoading) return;
     try {
       setIsLoading(true);
       setError('');
-      await loginDemo(bypassRole);
-      showToast(`⚡ Demo Commute Bypass enabled! Role: ${bypassRole}`, "success");
-      if ((bypassRole as string) === 'captain') {
-        navigate('/captain');
-      } else {
-        navigate('/book');
-      }
+      await loginDemo();
+      showToast(`⚡ Demo Commute Bypass enabled!`, "success");
+      navigate('/book');
     } catch (err: any) {
        setError(err.message || 'Bypass failed.');
     } finally {
@@ -353,42 +337,26 @@ export default function Login() {
                   <p className="text-white/40 text-xs font-bold uppercase tracking-wider mt-2">Pick your RAPDO identity to get started</p>
                 </div>
 
-                <div className="space-y-4 pt-4">
+                <div className="flex-1 flex flex-col justify-center items-center pt-4">
                   
-                  {/* Option 1: Customer Passenger */}
+                  {/* Option 1: Customer Passenger (Expanded & Centered) */}
                   <button
                     onClick={() => {
                       setRole('customer');
                       setStage('credentials');
                     }}
-                    className={`w-full group text-left p-5 rounded-[24px] border transition-all flex items-center gap-4 ${role === 'customer' ? 'bg-[#FFC107]/10 border-[#FFC107] shadow-[0_10px_25px_rgba(255,193,7,0.15)]' : 'bg-[#181818]/80 border-white/5 hover:border-white/10 hover:bg-[#1E1E1E]'}`}
+                    className={`w-full group text-center p-8 rounded-[32px] border transition-all flex flex-col items-center justify-center gap-6 ${role === 'customer' ? 'bg-[#FFC107]/10 border-[#FFC107] shadow-[0_10px_25px_rgba(255,193,7,0.15)]' : 'bg-[#181818]/80 border-white/5 hover:border-[#FFC107]/40 hover:bg-[#1E1E1E]'}`}
                   >
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-[#FFC107] to-[#E5BB00] flex items-center justify-center text-black shadow-lg">
-                      <User className="w-6 h-6 stroke-[2.5]" />
+                    <div className="w-20 h-20 rounded-[28px] bg-gradient-to-br from-[#FFC107] to-[#E5BB00] flex items-center justify-center text-black shadow-[0_15px_30px_rgba(255,193,7,0.3)]">
+                      <User className="w-10 h-10 stroke-[2.5]" />
                     </div>
-                    <div className="flex-1">
-                      <h4 className="text-sm font-black text-white uppercase tracking-wider leading-none">Passenger Commute</h4>
-                      <p className="text-[10px] text-white/50 font-bold mt-1 leading-snug">Book Bike-taxi, auto, cabs & quick express parcel deliveries in Bihar</p>
+                    <div>
+                      <h4 className="text-xl font-black text-white uppercase tracking-wider leading-none mb-3">Passenger Commute</h4>
+                      <p className="text-xs text-white/50 font-bold max-w-xs mx-auto leading-relaxed">Book Bike-taxi, auto, cabs & quick express parcel deliveries in Bihar.</p>
                     </div>
-                    <ArrowRight className="w-5 h-5 text-white/30 group-hover:text-[#FFC107] group-hover:translate-x-1 transition-all" />
-                  </button>
-
-                  {/* Option 2: Driver Captain */}
-                  <button
-                    onClick={() => {
-                      setRole('captain' as any);
-                      setStage('credentials');
-                    }}
-                    className={`w-full group text-left p-5 rounded-[24px] border transition-all flex items-center gap-4 ${(role as string) === 'captain' ? 'bg-indigo-500/10 border-indigo-500 shadow-[0_10px_25px_rgba(79,70,229,0.15)]' : 'bg-[#181818]/80 border-white/5 hover:border-white/10 hover:bg-[#1E1E1E]'}`}
-                  >
-                    <div className="w-12 h-12 rounded-2xl bg-gradient-to-br from-indigo-500 to-indigo-600 flex items-center justify-center text-white shadow-lg">
-                      <Smartphone className="w-6 h-6 stroke-[2.5]" />
+                    <div className="flex items-center justify-center gap-2 text-[#FFC107] text-[10px] font-black tracking-widest uppercase mt-2">
+                       Continue <ArrowRight className="w-4 h-4 group-hover:translate-x-1.5 transition-all" />
                     </div>
-                    <div className="flex-1">
-                      <h4 className="text-sm font-black text-white uppercase tracking-wider leading-none">RAPDO Captain</h4>
-                      <p className="text-[10px] text-white/50 font-bold mt-1 leading-snug">Register your bike/auto, drive, earn maximum payout & support Patna local commute!</p>
-                    </div>
-                    <ArrowRight className="w-5 h-5 text-white/30 group-hover:text-indigo-400 group-hover:translate-x-1 transition-all" />
                   </button>
 
                 </div>
@@ -592,20 +560,13 @@ export default function Login() {
                     DEVELOPMENT ENVIRONMENT BYPASS
                   </p>
                   
-                  <div className="grid grid-cols-2 gap-2 mt-2">
+                  <div className="flex justify-center mt-2">
                      <button
                        type="button"
-                       onClick={() => handleBypassLogin('customer')}
-                       className="py-3 px-3 rounded-2xl bg-[#FFC107]/5 hover:bg-[#FFC107]/10 border border-[#FFC107]/10 text-[#FFC107] font-black text-[9px] uppercase tracking-widest text-center transition-all duration-300"
+                       onClick={() => handleBypassLogin()}
+                       className="w-full py-3 px-3 rounded-2xl bg-[#FFC107]/5 hover:bg-[#FFC107]/10 border border-[#FFC107]/10 text-[#FFC107] font-black text-[9px] uppercase tracking-widest text-center transition-all duration-300"
                      >
                        ⚡ Customer Bypass
-                     </button>
-                     <button
-                       type="button"
-                       onClick={() => handleBypassLogin('captain' as any)}
-                       className="py-3 px-3 rounded-2xl bg-indigo-500/5 hover:bg-indigo-500/10 border border-indigo-500/10 text-indigo-400 font-black text-[9px] uppercase tracking-widest text-center transition-all duration-300"
-                     >
-                       ⭐ Captain Bypass
                      </button>
                   </div>
                 </div>

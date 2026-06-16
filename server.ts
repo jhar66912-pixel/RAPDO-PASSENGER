@@ -221,10 +221,10 @@ app.post("/api/rapdo-ai/chat", async (req, res): Promise<any> => {
     const geminiResponse = await ai.models.generateContent({
       model: "gemini-3.5-flash",
       contents: mappedContents,
-      tools: tools,
       config: {
         systemInstruction: MASTER_SYSTEM_PROMPT,
         temperature: 0.6,
+        tools: tools,
       }
     });
 
@@ -267,7 +267,7 @@ app.post("/api/rapdo-ai/advanced-chat", async (req, res): Promise<any> => {
 
     if (mode === "thinking") {
       model = "gemini-3.1-pro-preview";
-      config = { ...config, thinkingLevel: "HIGH" }; // Per prompt: "set \`thinkingLevel\` to \`ThinkingLevel.HIGH\`"
+      config = { ...config, thinkingConfig: { thinkingLevel: "HIGH" } };
     } else if (mode === "fast") {
       model = "gemini-3.1-flash-lite";
     }

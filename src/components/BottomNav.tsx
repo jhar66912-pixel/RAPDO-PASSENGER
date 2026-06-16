@@ -6,8 +6,6 @@ import { motion } from 'motion/react';
 
 export default function BottomNav() {
   const location = useLocation();
-  const { currentUser } = useAuth();
-  const isCaptain = currentUser?.role === 'captain';
 
   return (
     <motion.div 
@@ -17,7 +15,7 @@ export default function BottomNav() {
       className="fixed bottom-6 left-1/2 -translate-x-1/2 w-[95%] max-w-[420px] h-20 bg-[#0f0f0f]/80 backdrop-blur-2xl border border-white/10 rounded-[40px] shadow-[0_20px_60px_rgba(0,0,0,0.5)] flex items-center justify-between px-4 z-50 overflow-visible"
     >
       <div className="absolute inset-0 bg-gradient-to-r from-white/5 to-transparent rounded-[40px] pointer-events-none" />
-      <NavItem to={isCaptain ? "/captain" : "/"} current={location.pathname} icon={<Home className="w-6 h-6" />} label="Home" activeColor="text-[#FFC107]" glowColor="shadow-[#FFC107]/60" />
+      <NavItem to="/" current={location.pathname} icon={<Home className="w-6 h-6" />} label="Home" activeColor="text-[#FFC107]" glowColor="shadow-[#FFC107]/60" />
       <NavItem to="/book" current={location.pathname} icon={<Navigation className="w-6 h-6" />} label="Ride" activeColor="text-blue-400" glowColor="shadow-blue-500/60" />
       <NavItem to="/parcel" current={location.pathname} icon={<Package className="w-6 h-6" />} label="Parcel" activeColor="text-green-400" glowColor="shadow-green-500/60" />
       <NavItem to="/activity" current={location.pathname} icon={<History className="w-6 h-6" />} label="Activity" activeColor="text-orange-400" glowColor="shadow-orange-500/60" />
@@ -28,7 +26,7 @@ export default function BottomNav() {
 }
 
 function NavItem({ to, current, icon, label, activeColor, glowColor }: { to: string, current: string, icon: React.ReactNode, label: string, activeColor: string, glowColor: string }) {
-  const isActive = current === to || (current.startsWith(to) && to !== '/' && to !== '/captain');
+  const isActive = current === to || (current.startsWith(to) && to !== '/');
   
   return (
     <Link to={to} className="flex flex-col items-center justify-center gap-1.5 relative group w-14 h-full">

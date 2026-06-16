@@ -14,10 +14,10 @@ import { doc, getDoc, setDoc, onSnapshot } from 'firebase/firestore';
 interface AuthContextType {
   currentUser: AppUser | null;
   loading: boolean;
-  login: (role: AppUser['role']) => Promise<void>;
-  loginDemo: (role: AppUser['role']) => Promise<void>;
-  loginWithPhone: (mobile: string, role: AppUser['role'], name?: string, email?: string) => Promise<void>;
-  loginWithEmail: (email: string, role: AppUser['role'], name?: string, mobile?: string) => Promise<void>;
+  login: () => Promise<void>;
+  loginDemo: () => Promise<void>;
+  loginWithPhone: (mobile: string, name?: string, email?: string) => Promise<void>;
+  loginWithEmail: (email: string, name?: string, mobile?: string) => Promise<void>;
   logout: () => Promise<void>;
   getAccessToken: () => string | null;
   updateUserProfile: (profileData: Partial<AppUser>) => Promise<void>;
@@ -33,13 +33,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   // Fallback demo local login to bypass any Firebase login restrictions inside sandbox iframes
-  const loginDemo = async (role: AppUser['role']) => {
+  const loginDemo = async () => {
     setLoading(true);
     const mockUser: AppUser = {
       uid: 'demo-user-888',
       name: 'Riddhi Sen (Bihar Demo)',
       mobile: '+91 94314 88888',
-      role: role,
+      role: 'customer',
       createdAt: Date.now(),
       savedAddresses: [
         { id: 'addr-1', label: 'Home (Patna Jn)', address: 'Near Platform 1, Patna Junction Railway Station, Bihar' },
@@ -76,7 +76,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   // Perform secure SMS Simulation and log user directly with fully connected Firestore document
-  const loginWithPhone = async (mobile: string, role: AppUser['role'], name = 'RAPDO Passenger', email = 'passenger@rapdo.in') => {
+  const loginWithPhone = async (mobile: string, name = 'RAPDO Passenger', email = 'passenger@rapdo.in') => {
     setLoading(true);
     const cleanNumber = mobile.replace(/[^0-9]/g, '');
     const uid = `phone_${cleanNumber}`;
@@ -109,22 +109,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           uid,
           name,
           mobile,
-          role,
+          role: 'customer',
           createdAt: Date.now(),
           savedAddresses: defaultAddresses,
           emergencyContacts: defaultContacts,
           paymentMethods: defaultPayments,
           rewards: defaultRewards,
           currentLanguage: 'en',
-          avatar: role === ('captain' as any) ? '👨🏽‍✈️' : '🧑🏽'
+          avatar: '🧑🏽'
         };
         await setDoc(userDocRef, appUser);
       } else {
         appUser = userDoc.data() as AppUser;
-        if (appUser.role !== role) {
-          appUser.role = role;
-          await setDoc(userDocRef, appUser, { merge: true });
-        }
+        appUser.role = 'customer';
+        await setDoc(userDocRef, appUser, { merge: true });
       }
 
       localStorage.setItem('rapdo_auth_uid', uid);
@@ -135,14 +133,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         uid,
         name,
         mobile,
-        role,
+        role: 'customer',
         createdAt: Date.now(),
         savedAddresses: defaultAddresses,
         emergencyContacts: defaultContacts,
         paymentMethods: defaultPayments,
         rewards: defaultRewards,
         currentLanguage: 'en',
-        avatar: role === ('captain' as any) ? '👨🏽‍✈️' : '🧑🏽'
+        avatar: '🧑🏽'
       };
       localStorage.setItem('rapdo_auth_uid', uid);
       setCurrentUser(appUser);
@@ -152,7 +150,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   // Perform Email authentication with Firestore synchronization
-  const loginWithEmail = async (email: string, role: AppUser['role'], name = 'RAPDO User', mobile = '+91 94310 00000') => {
+  const loginWithEmail = async (email: string, name = 'RAPDO User', mobile = '+91 94310 00000') => {
     setLoading(true);
     const cleanEmail = email.toLowerCase().replace(/[^a-z0-9]/g, '');
     const uid = `email_${cleanEmail}`;
@@ -185,22 +183,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           uid,
           name,
           mobile,
-          role,
+          role: 'customer',
           createdAt: Date.now(),
           savedAddresses: defaultAddresses,
           emergencyContacts: defaultContacts,
           paymentMethods: defaultPayments,
           rewards: defaultRewards,
           currentLanguage: 'en',
-          avatar: role === ('captain' as any) ? '👨🏽‍✈️' : '🧑🏽'
+          avatar: '🧑🏽'
         };
         await setDoc(userDocRef, appUser);
       } else {
         appUser = userDoc.data() as AppUser;
-        if (appUser.role !== role) {
-          appUser.role = role;
-          await setDoc(userDocRef, appUser, { merge: true });
-        }
+        appUser.role = 'customer';
+        await setDoc(userDocRef, appUser, { merge: true });
       }
 
       localStorage.setItem('rapdo_auth_uid', uid);
@@ -211,14 +207,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         uid,
         name,
         mobile,
-        role,
+        role: 'customer',
         createdAt: Date.now(),
         savedAddresses: defaultAddresses,
         emergencyContacts: defaultContacts,
         paymentMethods: defaultPayments,
         rewards: defaultRewards,
         currentLanguage: 'en',
-        avatar: role === ('captain' as any) ? '👨🏽‍✈️' : '🧑🏽'
+        avatar: '🧑🏽'
       };
       localStorage.setItem('rapdo_auth_uid', uid);
       setCurrentUser(appUser);
@@ -346,10 +342,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     };
   }, []);
 
-  const login = async (role: AppUser['role']) => {
+  const login = async () => {
     const provider = new GoogleAuthProvider();
-    provider.addScope('https://www.googleapis.com/auth/calendar.events');
-    provider.setCustomParameters({ prompt: 'consent' });
+    provider.addScope('email');
+    provider.addScope('profile');
+    provider.setCustomParameters({ prompt: 'select_account' });
 
     try {
       isSigningIn = true;
@@ -357,8 +354,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       try {
         result = await signInWithPopup(auth, provider);
       } catch (popupErr: any) {
-        console.warn("Popup blocked or unauthorized in this domain, testing redirect fallback...", popupErr);
-        // Fallback directly to Redirect
+        console.warn("Popup failed, using redirect fallback...", popupErr);
         if (
           popupErr?.code === 'auth/cancelled-popup-request' || 
           popupErr?.code === 'auth/popup-closed-by-user' || 
@@ -389,26 +385,33 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           appUser = {
             uid: firebaseUser.uid,
             name: firebaseUser.displayName || 'RAPDO Passenger',
-            mobile: firebaseUser.phoneNumber || '+91 94310 11111',
-            role: role,
+            email: firebaseUser.email || '',
+            photoURL: firebaseUser.photoURL || '',
+            mobile: firebaseUser.phoneNumber || '',
+            role: 'customer',
             createdAt: Date.now(),
+            lastLogin: Date.now(),
           };
           await setDoc(userDocRef, appUser);
         } else {
           appUser = userDoc.data() as AppUser;
-          if (appUser.role !== role) {
-             appUser.role = role;
-             await setDoc(userDocRef, appUser, { merge: true });
-          }
+          appUser.role = 'customer';
+          appUser.lastLogin = Date.now();
+          if (firebaseUser.email) appUser.email = firebaseUser.email;
+          if (firebaseUser.photoURL) appUser.photoURL = firebaseUser.photoURL;
+          await setDoc(userDocRef, appUser, { merge: true });
         }
       } catch (dbError: any) {
         console.warn("Firestore read failed, fallback directly:", dbError);
         appUser = {
           uid: firebaseUser.uid,
           name: firebaseUser.displayName || 'RAPDO Passenger',
-          mobile: firebaseUser.phoneNumber || '+91 94310 11111',
-          role: role,
+          email: firebaseUser.email || '',
+          photoURL: firebaseUser.photoURL || '',
+          mobile: firebaseUser.phoneNumber || '',
+          role: 'customer',
           createdAt: Date.now(),
+          lastLogin: Date.now(),
         };
       }
       

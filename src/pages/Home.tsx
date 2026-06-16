@@ -6,6 +6,9 @@ import { LiveCaptains } from '../components/LiveCaptains';
 import { LocationSearchInput } from '../components/LocationSearchInput';
 import { VoiceSearchModal } from '../components/VoiceSearchModal';
 import { searchBiharLocations, BiharLocation } from '../lib/locationDb';
+import { db } from '../lib/firebase';
+import { collection, query, where, orderBy, limit, onSnapshot } from 'firebase/firestore';
+import { ActiveRideTrackingCard } from '../components/ActiveRideTrackingCard';
 import {
   MapPin, PhoneCall, ShieldCheck, Zap, Navigation, Sparkles, ArrowRight,
   Package, Database, Search, Clock, CarTaxiFront, LocateFixed,
@@ -40,6 +43,29 @@ export default function Home() {
 
   const { unreadCount } = useNotifications();
   const geocodingLib = useMapsLibrary('geocoding');
+  const [activeBooking, setActiveBooking] = useState<any | null>(null);
+
+  // Subscribe to any active bookings of this customer (searching, assigned, arrived, in_trip)
+  useEffect(() => {
+    if (!currentUser) return;
+    const q = query(
+      collection(db, 'bookings'),
+      where('customerId', '==', currentUser.uid),
+      where('status', 'in', ['searching', 'assigned', 'arrived', 'in_trip']),
+      orderBy('timestamp', 'desc'),
+      limit(1)
+    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      if (!snapshot.empty) {
+        setActiveBooking(snapshot.docs[0].data());
+      } else {
+        setActiveBooking(null);
+      }
+    }, (error) => {
+      console.warn("Active bookings snapshot failed:", error);
+    });
+    return () => unsubscribe();
+  }, [currentUser]);
 
   useEffect(() => {
     initFCM();
@@ -296,6 +322,13 @@ export default function Home() {
 
           <div className="px-6 space-y-5 mt-8 relative z-20">
             
+            {/* ACTIVE RIDE TRACKING CARD */}
+            <AnimatePresence>
+              {activeBooking && (
+                <ActiveRideTrackingCard initialBooking={activeBooking} />
+              )}
+            </AnimatePresence>
+            
             {/* 3. MAIN SERVICES (Floating 3D Cards) */}
             <h2 className="text-[10px] text-[#FFC107] font-black uppercase tracking-[0.2em] flex items-center gap-2 mb-2"><Crown className="w-3.5 h-3.5 text-[#FFC107]"/> Ecosystem Services</h2>
             <div className="grid grid-cols-2 gap-4">
@@ -377,33 +410,6 @@ export default function Home() {
                     </div>
                     <h3 className="text-white font-black text-2xl tracking-tight mb-1">B2B</h3>
                     <p className="text-[#F5F5F5]/50 text-[10px] font-black uppercase tracking-[0.2em] group-hover:text-purple-300 transition-colors">Logistics Fleet</p>
-                 </div>
-               </motion.div>
-
-               {/* 4. CAPTAIN PROGRAM */}
-               <motion.div 
-                 initial={{ opacity: 0, y: 30 }}
-                 whileInView={{ opacity: 1, y: 0 }}
-                 viewport={{ once: true, margin: "100px" }}
-                 whileHover={{ y: -5, scale: 1.02 }}
-                 whileTap={{ scale: 0.98 }}
-                 onClick={() => navigate('/captain')}
-                 className="col-span-2 bg-gradient-to-r from-emerald-900/20 to-black/60 backdrop-blur-2xl border border-white/10 hover:border-emerald-500/50 rounded-[32px] overflow-hidden shadow-2xl relative group cursor-pointer h-[160px] flex items-center p-6"
-               >
-                 <div className="absolute inset-0 bg-emerald-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                 <div className="absolute inset-0 bg-[linear-gradient(45deg,transparent,rgba(16,185,129,0.1),transparent)] -translate-x-[100%] group-hover:translate-x-[100%] transition-transform duration-1000 ease-in-out" />
-
-                 <div className="relative z-20 flex items-center gap-6 w-full">
-                    <div className="w-20 h-20 bg-white/5 backdrop-blur-md border border-white/10 rounded-[24px] flex items-center justify-center shrink-0 group-hover:bg-emerald-500 group-hover:shadow-[0_0_40px_rgba(16,185,129,0.6)] transition-all duration-500">
-                        <Briefcase className="w-8 h-8 text-emerald-400 group-hover:text-white transition-colors" />
-                    </div>
-                    <div className="flex-1">
-                      <h3 className="text-white font-black text-3xl tracking-tight mb-1">Drive & Earn</h3>
-                      <p className="text-[#F5F5F5]/50 text-[11px] font-black uppercase tracking-[0.2em] group-hover:text-emerald-300 transition-colors">Join the Bihar Fleet</p>
-                    </div>
-                    <div className="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center text-white/50 group-hover:text-emerald-400 group-hover:bg-emerald-500/20 transition-all border border-transparent group-hover:border-emerald-500/30">
-                      <ArrowRight className="w-5 h-5" />
-                    </div>
                  </div>
                </motion.div>
             </div>

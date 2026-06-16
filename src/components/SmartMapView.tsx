@@ -510,7 +510,11 @@ export function useMapsLibrary(name: string): any {
   const dummyRoutes = useRef({
     DirectionsService: class {
       route(request: any, callback: any) {
-        callback({}, 'OK');
+        callback({
+          routes: [{
+            legs: [{ distance: { value: 5000 }, duration: { value: 600 } }]
+          }]
+        }, 'OK');
       }
     },
     DirectionsRenderer: class {

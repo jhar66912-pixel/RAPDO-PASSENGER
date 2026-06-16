@@ -17,7 +17,7 @@ import Pricing from './pages/Pricing';
 import AiHelp from './pages/AiHelp';
 import Rewards from './pages/Rewards';
 import Referral from './pages/Referral';
-import CaptainDashboard from './pages/CaptainDashboard';
+
 import PremiumPayment from './pages/PremiumPayment';
 import DesignSystem from './pages/DesignSystem';
 
@@ -104,11 +104,7 @@ export default function App() {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/sos" element={<SosEmergency />} />
 
-                <Route path="/captain" element={
-                  <ProtectedRoute role="captain">
-                    <CaptainDashboard />
-                  </ProtectedRoute>
-                } />
+
                 <Route path="/admin" element={
                   <ProtectedRoute role="admin">
                     <AdminDashboard />

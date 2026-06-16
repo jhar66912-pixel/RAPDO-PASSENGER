@@ -5,7 +5,7 @@ import { useAuth } from '../lib/auth';
 import { MapPin, Search, Navigation, Clock, ShieldCheck, CreditCard, ChevronLeft, Mic, ChevronRight, X, LocateFixed, CarTaxiFront, Sparkles, ChevronUp, ChevronDown, PhoneCall, MessageSquare } from 'lucide-react';
 import { Map, Marker, useMap, useMapsLibrary } from '../components/SmartMapView';
 import { db } from '../lib/firebase';
-import { setDoc, doc } from 'firebase/firestore';
+import { setDoc, doc, updateDoc, onSnapshot, query, collection, where, orderBy, limit } from 'firebase/firestore';
 
 interface LocationInfo {
   lat: number;
@@ -46,37 +46,97 @@ export default function Booking() {
   const [isListening, setIsListening] = useState(false);
 
   // Real-time tracking simulation states
+  const [activeBookingId, setActiveBookingId] = useState<string | null>(null);
   const [bookingState, setBookingState] = useState<'initial' | 'searching' | 'assigned'>('initial');
   const [driverLocation, setDriverLocation] = useState<google.maps.LatLngLiteral | null>(null);
   const [driverEta, setDriverEta] = useState<number | null>(null);
   const [driverCardExpanded, setDriverCardExpanded] = useState(false);
 
-  // Driver Simulation Movement
+  // Subscribe to any active bookings of this customer (searching, assigned, arrived, in_trip) in real-time
   useEffect(() => {
-    if (bookingState === 'assigned' && driverLocation && pickup) {
-      const interval = setInterval(() => {
-         setDriverLocation(prev => {
-            if (!prev) return prev;
-            const latDiff = pickup.lat - prev.lat;
-            const lngDiff = pickup.lng - prev.lng;
-            
-            if (Math.abs(latDiff) < 0.0001 && Math.abs(lngDiff) < 0.0001) {
-              setDriverEta(0);
-              return prev;
-            }
+    if (!currentUser) return;
+    const q = query(
+      collection(db, 'bookings'),
+      where('customerId', '==', currentUser.uid),
+      where('status', 'in', ['searching', 'assigned', 'arrived', 'in_trip']),
+      orderBy('timestamp', 'desc'),
+      limit(1)
+    );
+    const unsubscribe = onSnapshot(q, (snapshot) => {
+      if (!snapshot.empty) {
+        const docData = snapshot.docs[0].data();
+        setActiveBookingId(docData.bookingId);
+        setBookingState(docData.status === 'searching' ? 'searching' : 'assigned');
+        
+        if (docData.pickup) {
+          setPickup(docData.pickup);
+          setPickupQuery(docData.pickup.address);
+        }
+        if (docData.dropoff) {
+          setDropoff(docData.dropoff);
+          setDropoffQuery(docData.dropoff.address);
+        }
+        if (docData.driverLocation) {
+          setDriverLocation(docData.driverLocation);
+        }
+        if (docData.driverEta !== undefined) {
+          setDriverEta(docData.driverEta);
+        }
+      } else {
+        setActiveBookingId(null);
+        setBookingState('initial');
+      }
+    }, (error) => {
+      console.warn("Subscribing to bookings snapshot is currently inactive/idle:", error);
+    });
+    return () => unsubscribe();
+  }, [currentUser]);
 
-            const moveStep = 0.05;
-            setDriverEta(prevEta => (prevEta ? Math.max(1, prevEta - 0.1) : 1));
+  // Integrated Full-Stack Active Driver Location Simulator
+  useEffect(() => {
+    if (!activeBookingId || !pickup) return;
 
-            return {
-               lat: prev.lat + (latDiff * moveStep),
-               lng: prev.lng + (lngDiff * moveStep)
-            };
-         });
-      }, 1000);
-      return () => clearInterval(interval);
-    }
-  }, [bookingState, pickup]);
+    const interval = setInterval(async () => {
+      const bookingRef = doc(db, 'bookings', activeBookingId);
+      
+      if (bookingState === 'searching') {
+        const drvLat = pickup.lat - 0.009;
+        const drvLng = pickup.lng - 0.009;
+        await updateDoc(bookingRef, {
+          status: 'assigned',
+          driverLocation: { lat: drvLat, lng: drvLng },
+          driverEta: 5,
+          driverName: 'Ramesh K.',
+          driverPhone: '+91 94310 82741',
+          vehicleInfo: 'White Suzuki Swift',
+          vehiclePlate: 'BR 01 FX 9021',
+          driverRating: 4.9,
+          driverAvatar: 'https://i.pravatar.cc/150?u=rapdo_drv1'
+        });
+      } else if (bookingState === 'assigned' && driverLocation) {
+        const latDiff = pickup.lat - driverLocation.lat;
+        const lngDiff = pickup.lng - driverLocation.lng;
+
+        if (Math.abs(latDiff) < 0.0003 && Math.abs(lngDiff) < 0.0003) {
+          await updateDoc(bookingRef, {
+            status: 'arrived',
+            driverEta: 0,
+            driverLocation: pickup
+          });
+        } else {
+          const nextLat = driverLocation.lat + (latDiff * 0.15);
+          const nextLng = driverLocation.lng + (lngDiff * 0.15);
+          const nextEta = Math.max(1, Math.round(5 * (1 - (Math.abs(latDiff) / 0.009))));
+          await updateDoc(bookingRef, {
+            driverLocation: { lat: nextLat, lng: nextLng },
+            driverEta: nextEta
+          });
+        }
+      }
+    }, 4000);
+
+    return () => clearInterval(interval);
+  }, [activeBookingId, bookingState, driverLocation, pickup]);
 
   // Auto-locate
   const handleLocateMe = () => {
@@ -179,7 +239,16 @@ export default function Booking() {
 
   const directionsRendererRef = useRef<google.maps.DirectionsRenderer | null>(null);
 
-  // Route calculation
+  const [selectedVehicle, setSelectedVehicle] = useState<'bike' | 'auto' | 'mini' | 'sedan'>('mini');
+
+  const VEHICLE_RATES = {
+    bike: { name: 'Rapdo Bike', base: 10, perKm: 4 },
+    auto: { name: 'Local Auto', base: 15, perKm: 6 },
+    mini: { name: 'Mini Tour', base: 20, perKm: 8 },
+    sedan: { name: 'Sedan Plus', base: 30, perKm: 12 },
+  };
+
+  // Route & Fare calculation using Directions and Distance Matrix
   useEffect(() => {
     if (!routesLib || !map || !pickup || !dropoff) return;
 
@@ -196,7 +265,7 @@ export default function Booking() {
     }
 
     const directionsService = new routesLib.DirectionsService();
-
+    // Use Directions API just for rendering the polyline
     directionsService.route({
       origin: { lat: pickup.lat, lng: pickup.lng },
       destination: { lat: dropoff.lat, lng: dropoff.lng },
@@ -204,21 +273,25 @@ export default function Booking() {
     }, (result: any, status: any) => {
       if (status === 'OK' && result) {
         directionsRendererRef.current?.setDirections(result);
-        
-        const route = result.routes[0];
-        let distMeters = 0;
-        let durSecs = 0;
-        
-        route.legs.forEach((leg: any) => {
-          distMeters += leg.distance?.value || 0;
-          durSecs += leg.duration?.value || 0;
-        });
-
-        setDistanceKm(distMeters / 1000);
-        setEtaMins(Math.ceil(durSecs / 60));
-      } else {
-        console.error('Directions request failed due to ' + status);
       }
+    });
+
+    // Use Distance Matrix API specifically for accurate fare estimation
+    const distanceMatrixService = new routesLib.DistanceMatrixService();
+    distanceMatrixService.getDistanceMatrix({
+      origins: [pickup],
+      destinations: [dropoff],
+      travelMode: 'DRIVING' as any,
+    }, (response: any, status: any) => {
+       if (status === 'OK' && response?.rows?.length > 0 && response.rows[0].elements?.length > 0) {
+         const elements = response.rows[0].elements[0];
+         if (elements.status === 'OK') {
+           setDistanceKm(elements.distance.value / 1000);
+           setEtaMins(Math.ceil(elements.duration.value / 60));
+         }
+       } else {
+         console.error('Distance Matrix failed:', status);
+       }
     });
 
     return () => {
@@ -233,10 +306,11 @@ export default function Booking() {
   const calculateFareDetails = () => {
     if (distanceKm === null) return null;
     const dist = distanceKm;
-    let base = 20;
+    const vehicle = VEHICLE_RATES[selectedVehicle];
+    let base = vehicle.base;
     let extra = 0;
     if (dist > 3) {
-      extra = (dist - 3) * 8;
+      extra = (dist - 3) * vehicle.perKm;
     }
     const subtotal = base + extra;
     let discount = 0;
@@ -268,21 +342,13 @@ export default function Booking() {
         distanceKm,
         etaMins,
         fare: fareDetails.finalFare,
+        vehicleType: VEHICLE_RATES[selectedVehicle].name,
         status: 'searching',
         timestamp: Date.now()
       });
       
+      setActiveBookingId(bookingId);
       setBookingState('searching');
-      
-      // Simulate finding a captain
-      setTimeout(() => {
-         setBookingState('assigned');
-         const drvLat = pickup.lat - 0.009;
-         const drvLng = pickup.lng - 0.009;
-         setDriverLocation({ lat: drvLat, lng: drvLng });
-         setDriverEta(5);
-      }, 3500);
-
     } catch (e) {
       console.error(e);
       alert('Failed to book ride.');
@@ -471,6 +537,29 @@ export default function Booking() {
                    ) : null
                 )}
 
+                {/* Vehicle Selection */}
+                {distanceKm !== null && fareDetails && (
+                  <div className="mb-5 overflow-x-auto no-scrollbar pb-2">
+                    <div className="flex gap-3">
+                      {(Object.keys(VEHICLE_RATES) as Array<keyof typeof VEHICLE_RATES>).map((type) => {
+                         const match = VEHICLE_RATES[type];
+                         return (
+                           <button
+                             key={type}
+                             onClick={() => setSelectedVehicle(type)}
+                             className={`min-w-[100px] p-3 rounded-xl border flex flex-col items-center gap-2 transition-all ${selectedVehicle === type ? 'bg-[#FFC107]/20 border-[#FFC107]' : 'bg-[#1A1A1A] border-white/10 hover:border-white/30'}`}
+                           >
+                             <CarTaxiFront className={`w-6 h-6 ${selectedVehicle === type ? 'text-[#FFC107]' : 'text-white/50'}`} />
+                             <div className="text-center">
+                               <p className={`text-xs font-bold ${selectedVehicle === type ? 'text-[#FFC107]' : 'text-white'}`}>{match.name}</p>
+                             </div>
+                           </button>
+                         )
+                      })}
+                    </div>
+                  </div>
+                )}
+
                 {/* Fare Breakdown Card */}
                 <AnimatePresence>
                   {distanceKm !== null && fareDetails && (
@@ -513,7 +602,7 @@ export default function Booking() {
                           </div>
                           {fareDetails.extra > 0 && (
                             <div className="flex justify-between font-medium text-white/60 hover:text-white/80 transition-colors">
-                              <span>Extra Radius ({(distanceKm - 3).toFixed(1)} KM × ₹8)</span>
+                              <span>Extra Radius ({(distanceKm - 3).toFixed(1)} KM × ₹{VEHICLE_RATES[selectedVehicle].perKm})</span>
                               <span className="text-red-400">+ ₹{fareDetails.extra.toFixed(2)}</span>
                             </div>
                           )}
@@ -639,7 +728,7 @@ export default function Booking() {
                            </button>
                        </div>
                        <div className="mt-3">
-                           <button className="w-full bg-red-500/10 hover:bg-red-500/20 transition-colors py-3 rounded-xl font-bold text-red-500 flex items-center justify-center gap-2 border border-red-500/20 text-xs">
+                           <button onClick={async () => { if (activeBookingId) { await updateDoc(doc(db, "bookings", activeBookingId), { status: "cancelled" }); } }} className="w-full bg-red-500/10 hover:bg-red-500/20 transition-colors py-3 rounded-xl font-bold text-red-500 flex items-center justify-center gap-2 border border-red-500/20 text-xs cursor-pointer shadow-sm">
                                Abort Ride
                            </button>
                        </div>

@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../lib/auth';
 
 export default function SafetyCenter() {
-  const [activeTab, setActiveTab] = useState<'rider' | 'captain' | 'tech'>('rider');
+  const [activeTab, setActiveTab] = useState<'rider' | 'tech'>('rider');
   const navigate = useNavigate();
   const { currentUser } = useAuth();
 
@@ -66,12 +66,11 @@ export default function SafetyCenter() {
         <div className="flex flex-wrap gap-2 md:gap-4 justify-center">
           {[
             { id: 'rider', label: 'Rider Safety', icon: <UserCheck className="w-4 h-4" /> },
-            { id: 'captain', label: 'Captain Safety', icon: <ShieldCheck className="w-4 h-4" /> },
             { id: 'tech', label: 'AI Guard', icon: <Eye className="w-4 h-4" /> }
           ].map(tab => (
             <button
               key={tab.id}
-              onClick={() => setActiveTab(tab.id as any)}
+              onClick={() => setActiveTab(tab.id as 'rider' | 'tech')}
               className={`flex items-center gap-2 px-6 py-3 rounded-xl text-xs font-black uppercase tracking-widest transition-all ${
                 activeTab === tab.id 
                   ? 'bg-white text-black shadow-[0_0_20px_rgba(255,255,255,0.2)]' 
@@ -106,14 +105,6 @@ export default function SafetyCenter() {
                 </>
               )}
               
-              {activeTab === 'captain' && (
-                <>
-                  <FeatureCard icon={<Camera />} title="Rider KYC Verification" desc="High-risk zones require riders to upload valid identification before booking limits are removed." />
-                  <FeatureCard icon={<MapPin />} title="No-Go Zones" desc="Certain highly vulnerable geographical sectors are restricted late night to protect captain assets." />
-                  <FeatureCard icon={<BellRing />} title="Captain SOS" desc="Dedicated discreet emergency trigger sending distress signals directly to local response teams." />
-                </>
-              )}
-
               {activeTab === 'tech' && (
                 <>
                   <FeatureCard icon={<Eye />} title="AI Anomaly Engine" desc="Machine learning models flag statistically abnormal prolonged stops or erratic pacing." />
